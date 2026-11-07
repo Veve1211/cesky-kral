@@ -1,6 +1,7 @@
 import "server-only";
 import { randomInt } from "node:crypto";
 
+import { ROUND_PLAN, toDifficulty } from "@/lib/game-rules";
 import { getPrisma } from "@/lib/prisma";
 import { isValidSlug } from "@/lib/slug";
 import type { QuizQuestion } from "@/lib/quiz-types";
@@ -19,6 +20,7 @@ function shuffle<T>(items: readonly T[]): T[] {
 const questionSelect = {
   id: true,
   text: true,
+  difficulty: true,
   king: { select: { name: true } },
   answers: { select: { id: true, text: true }, orderBy: { id: "asc" } },
 } as const;
@@ -26,6 +28,7 @@ const questionSelect = {
 type QuestionRow = {
   id: number;
   text: string;
+  difficulty: number;
   king: { name: string };
   answers: { id: number; text: string }[];
 };
@@ -34,19 +37,28 @@ function toQuizQuestion(row: QuestionRow): QuizQuestion {
   return {
     id: row.id,
     text: row.text,
+    difficulty: toDifficulty(row.difficulty),
     kingName: row.king.name,
     answers: shuffle(row.answers),
   };
 }
 
+/**
+ * One king round: picks questions by ROUND_PLAN (2 easy, 2 medium, 1 hard),
+ * random within each level, ordered from easy to hard.
+ */
 export async function getKingQuestions(slug: string): Promise<QuizQuestion[]> {
   if (!isValidSlug(slug)) return [];
   const rows = await getPrisma().question.findMany({
     where: { king: { slug } },
-    orderBy: { id: "asc" },
     select: questionSelect,
   });
-  return rows.map(toQuizQuestion);
+
+  return ROUND_PLAN.flatMap(({ difficulty, count }) =>
+    shuffle(rows.filter((row) => toDifficulty(row.difficulty) === difficulty))
+      .slice(0, count)
+      .map(toQuizQuestion),
+  );
 }
 
 export async function getRandomQuestions(count: number): Promise<QuizQuestion[]> {
@@ -58,10 +70,11 @@ export async function getRandomQuestions(count: number): Promise<QuizQuestion[]>
     where: { id: { in: picked } },
     select: questionSelect,
   });
-  // Keep the random order of `picked`.
+  // Random order of `picked`, then stable sort from easy to hard.
   const byId = new Map(rows.map((row) => [row.id, row]));
   return picked
     .map((id) => byId.get(id))
     .filter((row): row is QuestionRow => row !== undefined)
+    .sort((a, b) => a.difficulty - b.difficulty)
     .map(toQuizQuestion);
 }

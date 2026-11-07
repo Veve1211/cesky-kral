@@ -32,9 +32,11 @@ model Question {
   text        String
   explanation String
   sourceUrl   String?
+  /// 1 = easy, 2 = medium, 3 = hard (CHECK constraint in migration)
+  difficulty  Int      @default(1)
   answers     Answer[]
 
-  @@index([kingId])
+  @@index([kingId, difficulty])
 }
 
 model Answer {

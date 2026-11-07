@@ -25,16 +25,19 @@
 - Prostředí: Claude Code na webu (claude.ai/code), bez Dockeru
 
 ## Herní logika
-- Každý král má 5 otázek, každá otázka má přesně 3 odpovědi, z toho 1 správnou.
+- Každý král má 9 otázek: 3 lehké, 3 střední, 3 těžké (seed to validuje). Každá otázka má přesně 3 odpovědi, z toho 1 správnou.
+- Kolo o krále = 5 otázek: 2 lehké, 2 střední, 1 těžká, v tomto pořadí, v rámci úrovně náhodně (`ROUND_PLAN`).
+- U otázky štítek obtížnosti: 1–3 korunky.
+- Na začátku hry o krále i rychlovky zdobný štítek „⚔️ Rytířský slib: Odlož AI i internet. Králové vše vidí. 👁️“.
 - Po odpovědi hned ukaž správně/špatně + jednu větu vysvětlení.
 - 4 a více správně z 5 = král se přidá do sbírky.
-- Rychlovka: 10 náhodných otázek napříč králi.
+- Rychlovka: 10 náhodných otázek napříč králi, seřazených od lehkých po těžké.
 - Hodnosti podle počtu získaných králů: panoš → rytíř → šlechtic → rádce krále.
 - Postup hráče se ukládá v prohlížeči (localStorage), bez účtů.
 
 ## Datový model
 - King: name, slug, reignFrom, reignTo, dynasty, shortBio, imageUrl, order
-- Question: kingId, text, explanation, sourceUrl
+- Question: kingId, text, explanation, sourceUrl, difficulty (1 lehká, 2 střední, 3 těžká; CHECK 1–3 v DB)
 - Answer: questionId, text, isCorrect
 - Obsah se nahrává přes Prisma seed (prisma/seed.ts).
 
@@ -83,7 +86,7 @@ Pokud NODE_ENV=production:
 - Next.js 16 (App Router, `src/`, Cache Components zapnuté), Tailwind 4, Prisma 7
 - `src/app/` – stránky: `page.tsx` (galerie /), `kral/[slug]/` (hra), `rychlovka/`, `zdroje/` (licence obrázků a písem), `not-found.tsx`, `layout.tsx` (fonty, hlavička, metadata), `opengraph-image.tsx` (náhled pro sdílení), `globals.css` (barvy, pergamen, animace)
 - `src/app/actions/quiz.ts` – server action `checkAnswer` (ověření odpovědi na serveru)
-- `src/components/` – `site-header`, `king-card`, `king-portrait` (zlatý rám, silueta), `crest` (erb s iniciálou = placeholder), `ornaments` (rohy, oddělovač, koruna), `illuminated-initial`, `royal-celebration`, `quiz` (hra + výsledky + otočení karty, klient), `collection-gallery` (klient)
+- `src/components/` – `site-header`, `king-card`, `king-portrait` (zlatý rám, silueta), `crest` (erb s iniciálou = placeholder), `ornaments` (rohy, oddělovač, koruna), `illuminated-initial`, `royal-celebration`, `difficulty-badge` (korunky), `knight-oath` (rytířský slib), `quiz` (hra + výsledky + otočení karty, klient), `collection-gallery` (klient)
 - `src/components/ui/` – shadcn komponenty (button, card, progress)
 - `src/lib/` – `utils.ts` (cn), `game-rules.ts` (konstanty, `getRank`), `prisma.ts` (klient s adapterem pg), `kings.ts` (dotazy na krále), `questions.ts` (otázky bez správnosti, míchání), `quiz-types.ts`, `collection.ts` (sbírka v localStorage), `slug.ts`, `king-initial.ts`, `king-image.ts` (povolené cesty obrázků), `image-credits.ts`
 - `assets/fonts/` – TTF písma pro generování OG obrázku (+ OFL licence)
@@ -105,6 +108,7 @@ Pokud NODE_ENV=production:
 - 2026-11-07: Railway nastaven (DATABASE_URL, doména) a nasazuje z větve dev; PR do main zatím nedělat
 - 2026-11-07: vzhled iluminovaného rukopisu; Playfair nahrazen Grenze Gotisch (Almendra nemá ť/ď, Unifraktur nemá české znaky)
 - 2026-11-07: cloud prostředí `cesky-kral` povoluje Wikimedia Commons (Default ho blokuje); Commons omezuje počet stažení – stahovat pomalu, se slušným User-Agent
+- 2026-11-07: obtížnost otázek (migrace `question_difficulty`, sloupec s výchozí 1, nedestruktivní); 9 otázek na krále
 - 2026-11-07: obrázky: Přemysl Otakar II. = jezdecká pečeť 1273 (kresba K. von Sava 1864, PD-old; Mucha má Unclear-PD-US), Karel IV. = výřez z votivního obrazu Jana Očka, Marie Terezie = kresba Meytens; všechny PD ověřené na Commons
 
 ## Údržba tohoto souboru

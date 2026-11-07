@@ -17,3 +17,4 @@ Living list of known risks. Update with every feature.
 - **External source links**: rendered only for `https://` URLs with `target="_blank" rel="noopener noreferrer"`.
 - **Open Graph `metadataBase`**: taken from `RAILWAY_PUBLIC_DOMAIN` only if it matches a hostname pattern; otherwise localhost (no user input involved).
 - **Image licenses**: only public-domain images from Wikimedia Commons, each verified on its file page and listed on /zdroje before use.
+- **Question difficulty**: DB CHECK constraint (1–3), seed validates exactly 3+3+3 questions per king and no duplicate texts; server maps any unexpected value to a safe default (`toDifficulty`).
