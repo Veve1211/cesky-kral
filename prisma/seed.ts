@@ -13,7 +13,10 @@ import { PrismaClient } from "../src/generated/prisma/client";
 
 config({ path: ".env.local" });
 
+type Difficulty = 1 | 2 | 3; // 1 easy, 2 medium, 3 hard
+
 type SeedQuestion = {
+  difficulty: Difficulty;
   text: string;
   correct: string;
   wrong: [string, string];
@@ -48,6 +51,7 @@ const kings: SeedKing[] = [
     sourceUrl: "https://en.wikipedia.org/wiki/Ottokar_II_of_Bohemia",
     questions: [
       {
+        difficulty: 1,
         text: "Jakou přezdívku Přemysl Otakar II. měl?",
         correct: "Král železný a zlatý",
         wrong: ["Otec vlasti", "Král dobrý"],
@@ -55,6 +59,7 @@ const kings: SeedKing[] = [
           "Přezdívku získal díky bohatství své říše a vojenské síle.",
       },
       {
+        difficulty: 1,
         text: "Kdo byl jeho otec?",
         correct: "Václav I.",
         wrong: ["Václav II.", "Vladislav II."],
@@ -62,6 +67,7 @@ const kings: SeedKing[] = [
           "Na trůn nastoupil v roce 1253 po smrti svého otce Václava I.",
       },
       {
+        difficulty: 1,
         text: "Ve které bitvě v roce 1278 padl?",
         correct: "Na Moravském poli",
         wrong: ["Na Bílé hoře", "U Kresčaku"],
@@ -69,6 +75,7 @@ const kings: SeedKing[] = [
           "Bitva na Moravském poli 26. srpna 1278 skončila jeho porážkou a smrtí.",
       },
       {
+        difficulty: 2,
         text: "Kdo byl jeho protivníkem na Moravském poli?",
         correct: "Rudolf Habsburský",
         wrong: ["Fridrich II. Pruský", "Jan Lucemburský"],
@@ -76,6 +83,7 @@ const kings: SeedKing[] = [
           "Rudolf Habsburský, zvolený římský král, mu upíral rakouské země.",
       },
       {
+        difficulty: 2,
         text: "Které město Přemysl Otakar II. založil roku 1265?",
         correct: "České Budějovice",
         wrong: ["Plzeň", "Kutná Hora"],
@@ -83,6 +91,38 @@ const kings: SeedKing[] = [
           "České Budějovice slavily 750 let od založení v roce 2015.",
         sourceUrl:
           "https://ct24.ceskatelevize.cz/clanek/regiony/v-ceskych-budejovicich-by-chtel-zit-kazdy-uz-750-let-135932",
+      },
+      {
+        difficulty: 2,
+        text: "S kým se Přemysl Otakar II. oženil, aby upevnil nárok na Rakousy?",
+        correct: "S Markétou Babenberskou",
+        wrong: ["S Kunhutou Uherskou", "S Eliškou Přemyslovnou"],
+        explanation:
+          "Markéta byla sestrou zesnulého rakouského vévody Fridricha II. Babenberského.",
+      },
+      {
+        difficulty: 3,
+        text: "Kolik nových měst Přemysl Otakar II. přibližně založil?",
+        correct: "Asi 30",
+        wrong: ["Asi 5", "Asi 100"],
+        explanation:
+          "Jedním z nich jsou i České Budějovice.",
+      },
+      {
+        difficulty: 3,
+        text: "Po kom Přemysl Otakar II. převzal Korutany a Kraňsko?",
+        correct: "Po Oldřichu III. Sponheimském",
+        wrong: ["Po Fridrichu II. Babenberském", "Po Rudolfu Habsburském"],
+        explanation:
+          "Jeho panství tak sahalo od Krkonoš až na území dnešního Slovinska.",
+      },
+      {
+        difficulty: 3,
+        text: "Proč se Přemysl Otakar II. v roce 1273 nestal římským králem?",
+        correct: "Kurfiřti zvolili Rudolfa Habsburského",
+        wrong: ["Sám odmítl kandidovat", "Zemřel ještě před volbou"],
+        explanation:
+          "Spor s Rudolfem pak skončil Otakarovou smrtí na Moravském poli.",
       },
     ],
   },
@@ -98,6 +138,7 @@ const kings: SeedKing[] = [
     sourceUrl: "https://prague.eu/en/2024/03/13/charles-iv-the-greatest-czech",
     questions: [
       {
+        difficulty: 2,
         text: "Jaké jméno dostal Karel IV. původně?",
         correct: "Václav",
         wrong: ["Jan", "Ludvík"],
@@ -105,6 +146,7 @@ const kings: SeedKing[] = [
           "Pojmenovali ho po předcích z matčiny strany, jméno Karel přijal až ve Francii.",
       },
       {
+        difficulty: 1,
         text: "Kdo byla jeho matka?",
         correct: "Eliška Přemyslovna",
         wrong: ["Anežka Česká", "Blanka z Valois"],
@@ -112,12 +154,14 @@ const kings: SeedKing[] = [
           "Eliška Přemyslovna byla dcerou Václava II., Blanka z Valois byla Karlova první manželka.",
       },
       {
+        difficulty: 1,
         text: "Co Karel IV. založil 7. dubna 1348?",
         correct: "Univerzitu v Praze",
         wrong: ["Národní divadlo", "Pražský hrad"],
         explanation: "Pražská univerzita je nejstarší ve střední Evropě.",
       },
       {
+        difficulty: 2,
         text: "Která část Prahy vznikla roku 1348?",
         correct: "Nové Město",
         wrong: ["Malá Strana", "Staré Město"],
@@ -125,6 +169,7 @@ const kings: SeedKing[] = [
           "Založení Nového Města je považováno za jeho nejvýznamnější stavební čin.",
       },
       {
+        difficulty: 2,
         text: "Ve kterém roce položil základní kámen Karlova mostu?",
         correct: "1357",
         wrong: ["1415", "1620"],
@@ -132,6 +177,42 @@ const kings: SeedKing[] = [
           "Most nahradil starší Juditin most, který zničila povodeň.",
         sourceUrl:
           "https://www.novinky.cz/clanek/veda-skoly-pred-660-lety-polozil-karel-iv-zakladni-kamen-mostu-ktery-z-prahy-udelal-velemesto-40039120",
+      },
+      {
+        difficulty: 1,
+        text: "Jakou nejvyšší hodnost Karel IV. získal?",
+        correct: "Římský císař",
+        wrong: ["Papež", "Francouzský král"],
+        explanation:
+          "Na císaře byl korunován v Římě 5. dubna 1355.",
+        sourceUrl: "https://en.wikipedia.org/wiki/Charles_IV,_Holy_Roman_Emperor",
+      },
+      {
+        difficulty: 3,
+        text: "U kterého královského dvora strávil Karel sedm let mládí?",
+        correct: "U francouzského",
+        wrong: ["U uherského", "U anglického"],
+        explanation:
+          "Jméno Karel přijal na počest francouzského krále Karla IV., u jehož dvora žil.",
+        sourceUrl: "https://en.wikipedia.org/wiki/Charles_IV,_Holy_Roman_Emperor",
+      },
+      {
+        difficulty: 3,
+        text: "Co upravovala Zlatá bula, kterou Karel vydal roku 1356?",
+        correct: "Volbu římského krále",
+        wrong: ["Založení pražské univerzity", "Stavbu Karlova mostu"],
+        explanation:
+          "Zlatá bula stanovila pravidla, podle kterých se volil král Svaté říše římské.",
+        sourceUrl: "https://en.wikipedia.org/wiki/Charles_IV,_Holy_Roman_Emperor",
+      },
+      {
+        difficulty: 3,
+        text: "Kdy byl Karel korunován českým králem?",
+        correct: "2. září 1347",
+        wrong: ["26. srpna 1346", "7. dubna 1348"],
+        explanation:
+          "26. srpna 1346 padl jeho otec Jan Lucemburský u Kresčaku, 7. dubna 1348 Karel založil univerzitu.",
+        sourceUrl: "https://en.wikipedia.org/wiki/Charles_IV,_Holy_Roman_Emperor",
       },
     ],
   },
@@ -149,6 +230,7 @@ const kings: SeedKing[] = [
       "https://ct24.ceskatelevize.cz/clanek/archiv/macecha-a-reformator-221103",
     questions: [
       {
+        difficulty: 2,
         text: "Díky kterému dokumentu mohla Marie Terezie nastoupit na trůn?",
         correct: "Pragmatické sankci",
         wrong: ["Zlaté bule sicilské", "Majestátu Rudolfa II."],
@@ -156,6 +238,7 @@ const kings: SeedKing[] = [
           "Pragmatická sankce umožnila dědit trůn i ženám, když rod vymřel po meči.",
       },
       {
+        difficulty: 1,
         text: "Kdo byl jejím otcem?",
         correct: "Karel VI.",
         wrong: ["Josef II.", "Leopold II."],
@@ -163,6 +246,7 @@ const kings: SeedKing[] = [
           "Smrtí Karla VI. vymřeli Habsburkové po meči a trůn zdědila jeho dcera.",
       },
       {
+        difficulty: 1,
         text: "Kdo byl jejím manželem?",
         correct: "František Štěpán Lotrinský",
         wrong: ["Fridrich II. Pruský", "Josef II."],
@@ -170,6 +254,7 @@ const kings: SeedKing[] = [
           "Josef II. byl její syn a spoluvládce, Fridrich II. její největší nepřítel.",
       },
       {
+        difficulty: 2,
         text: "Kterou zemi jí hned na začátku vlády zabral pruský král Fridrich II.?",
         correct: "Slezsko",
         wrong: ["Moravu", "Uhry"],
@@ -177,11 +262,48 @@ const kings: SeedKing[] = [
           "Ztráta většiny Slezska byla největší územní ztrátou její vlády.",
       },
       {
+        difficulty: 2,
         text: "Co Marie Terezie zavedla patentem z roku 1774?",
         correct: "Povinnou školní docházku",
         wrong: ["Zrušení nevolnictví", "Toleranční patent"],
         explanation:
           "Školní povinnost platila pro děti od 6 do 12 let, nevolnictví a toleranci zavedl až Josef II.",
+      },
+      {
+        difficulty: 1,
+        text: "Kolik dětí Marie Terezie porodila?",
+        correct: "16",
+        wrong: ["4", "8"],
+        explanation:
+          "Šestnáct dětí porodila během devatenácti let, v letech 1737–1756.",
+        sourceUrl: "https://en.wikipedia.org/wiki/Maria_Theresa",
+      },
+      {
+        difficulty: 3,
+        text: "Kde byla Marie Terezie v roce 1743 korunována českou královnou?",
+        correct: "V katedrále sv. Víta v Praze",
+        wrong: ["Ve Svatoštěpánském dómu ve Vídni", "V katedrále sv. Petra a Pavla v Brně"],
+        explanation:
+          "Korunovace proběhla 12. května 1743.",
+        sourceUrl: "https://en.wikipedia.org/wiki/Maria_Theresa",
+      },
+      {
+        difficulty: 3,
+        text: "Kdo se stal v roce 1765 spoluvládcem Marie Terezie?",
+        correct: "Její syn Josef II.",
+        wrong: ["Její manžel František Štěpán", "Fridrich II. Pruský"],
+        explanation:
+          "Josef vládl s matkou až do její smrti v roce 1780, pak už sám.",
+        sourceUrl: "https://ct24.ceskatelevize.cz/clanek/archiv/macecha-a-reformator-221103",
+      },
+      {
+        difficulty: 3,
+        text: "Jak dlouho podle patentu z roku 1774 trvala povinná školní docházka?",
+        correct: "Od 6 do 12 let věku",
+        wrong: ["Od 10 do 15 let věku", "Od 3 do 6 let věku"],
+        explanation:
+          "Povinnost šlo splnit i soukromým vyučováním, které si mohly dovolit hlavně bohatší rodiny.",
+        sourceUrl: "https://ct24.ceskatelevize.cz/clanek/archiv/macecha-a-reformator-221103",
       },
     ],
   },
@@ -202,8 +324,19 @@ function validate(data: SeedKing[]) {
     if (!/^\/kings\/[a-z0-9-]+\.webp$/.test(king.imageUrl)) {
       throw new Error(`${king.slug}: invalid imageUrl`);
     }
-    if (king.questions.length !== 5) {
-      throw new Error(`${king.slug}: expected 5 questions`);
+    // Exactly 3 easy + 3 medium + 3 hard questions per king.
+    if (king.questions.length !== 9) {
+      throw new Error(`${king.slug}: expected 9 questions, got ${king.questions.length}`);
+    }
+    for (const level of [1, 2, 3] as const) {
+      const count = king.questions.filter((q) => q.difficulty === level).length;
+      if (count !== 3) {
+        throw new Error(`${king.slug}: expected 3 questions of difficulty ${level}, got ${count}`);
+      }
+    }
+    const texts = new Set(king.questions.map((q) => q.text));
+    if (texts.size !== king.questions.length) {
+      throw new Error(`${king.slug}: duplicate question text`);
     }
     for (const url of [king.sourceUrl, ...king.questions.map((q) => q.sourceUrl)]) {
       if (url !== undefined && !url.startsWith("https://")) {
@@ -244,6 +377,7 @@ async function main() {
               text: q.text,
               explanation: q.explanation,
               sourceUrl: q.sourceUrl ?? sourceUrl,
+              difficulty: q.difficulty,
               answers: {
                 create: [
                   { text: q.correct, isCorrect: true },

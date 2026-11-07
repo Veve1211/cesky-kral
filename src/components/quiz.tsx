@@ -6,7 +6,9 @@ import { useRouter } from "next/navigation";
 import { ArrowRight, Check, ExternalLink, RotateCcw, X } from "lucide-react";
 
 import { checkAnswer } from "@/app/actions/quiz";
+import { DifficultyBadge } from "@/components/difficulty-badge";
 import { KingPortrait } from "@/components/king-portrait";
+import { KnightOath } from "@/components/knight-oath";
 import { CardCorners, OrnamentDivider } from "@/components/ornaments";
 import { RoyalCelebration } from "@/components/royal-celebration";
 import { Button } from "@/components/ui/button";
@@ -130,6 +132,8 @@ export function Quiz(props: QuizProps) {
 
   return (
     <div className="flex flex-col gap-6">
+      {index === 0 && <KnightOath />}
+
       <div className="flex flex-col gap-2">
         <div className="flex justify-between text-sm">
           <span>
@@ -149,9 +153,12 @@ export function Quiz(props: QuizProps) {
       <Card key={question.id} className="animate-card-reveal">
         <CardCorners className="m-1 size-8 text-gold-dark" />
         <CardHeader>
-          <p className="text-xs font-semibold tracking-[0.2em] text-gold-dark uppercase">
-            {props.mode === "quick" ? question.kingName : `Otázka ${index + 1}`}
-          </p>
+          <div className="flex items-center justify-between gap-3">
+            <p className="text-xs font-semibold tracking-[0.2em] text-gold-dark uppercase">
+              {props.mode === "quick" ? question.kingName : `Otázka ${index + 1}`}
+            </p>
+            <DifficultyBadge difficulty={question.difficulty} className="mr-4" />
+          </div>
           <h2 className="text-2xl leading-snug font-bold sm:text-3xl">
             {question.text}
           </h2>
