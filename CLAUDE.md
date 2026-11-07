@@ -73,18 +73,20 @@ Pokud NODE_ENV=production:
 - Primární: #14213d (tmavě modrá)
 - Akcent: #c9a227 (zlatá)
 - Pozadí karet: #f5efe0 (pergamen)
-- Nadpisy: Playfair Display, text: Inter (obě s českou diakritikou)
-- Styl: sběratelské karty jako z erbovní knihy, zaoblené rohy, jemné animace (odkrytí karty, správná odpověď)
+- Nadpisy: Grenze Gotisch, iniciály/erby: Uncial Antiqua, text: Inter (všechna ověřená na ř, ě, ů, ť, ď)
+- Styl: iluminovaný rukopis – pergamen z CSS gradientů, zlacené rámy (`.gilt`), vlastní SVG ornamenty, zlatá iniciála; animace: otočení karty po výhře, zelené pulznutí / zatřesení, slavnostní obrazovka Rádce krále; respektuje prefers-reduced-motion
 - Mobile first
-- Nezískaný král: tmavá silueta s otazníkem
+- Nezískaný král: tmavá silueta obrázku (nebo erbu) se zlatým otazníkem
+- Obrázky králů: jen public domain z Wikimedia Commons, `public/kings/<slug>.webp` (max 800 px), kredity v `src/lib/image-credits.ts` → stránka /zdroje
 
 ## Struktura projektu
 - Next.js 16 (App Router, `src/`, Cache Components zapnuté), Tailwind 4, Prisma 7
-- `src/app/` – stránky: `page.tsx` (galerie /), `kral/[slug]/` (hra), `rychlovka/`, `not-found.tsx`, `layout.tsx` (fonty, hlavička), `globals.css` (barvy, animace)
+- `src/app/` – stránky: `page.tsx` (galerie /), `kral/[slug]/` (hra), `rychlovka/`, `zdroje/` (licence obrázků a písem), `not-found.tsx`, `layout.tsx` (fonty, hlavička, metadata), `opengraph-image.tsx` (náhled pro sdílení), `globals.css` (barvy, pergamen, animace)
 - `src/app/actions/quiz.ts` – server action `checkAnswer` (ověření odpovědi na serveru)
-- `src/components/` – `site-header`, `king-card`, `crest` (erb s iniciálou = placeholder), `quiz` (hra + výsledky, klient), `collection-gallery` (galerie podle sbírky, klient)
+- `src/components/` – `site-header`, `king-card`, `king-portrait` (zlatý rám, silueta), `crest` (erb s iniciálou = placeholder), `ornaments` (rohy, oddělovač, koruna), `illuminated-initial`, `royal-celebration`, `quiz` (hra + výsledky + otočení karty, klient), `collection-gallery` (klient)
 - `src/components/ui/` – shadcn komponenty (button, card, progress)
-- `src/lib/` – `utils.ts` (cn), `game-rules.ts` (konstanty, `getRank`), `prisma.ts` (klient s adapterem pg), `kings.ts` (dotazy na krále), `questions.ts` (otázky bez správnosti, míchání), `quiz-types.ts`, `collection.ts` (sbírka v localStorage), `slug.ts`, `king-initial.ts`
+- `src/lib/` – `utils.ts` (cn), `game-rules.ts` (konstanty, `getRank`), `prisma.ts` (klient s adapterem pg), `kings.ts` (dotazy na krále), `questions.ts` (otázky bez správnosti, míchání), `quiz-types.ts`, `collection.ts` (sbírka v localStorage), `slug.ts`, `king-initial.ts`, `king-image.ts` (povolené cesty obrázků), `image-credits.ts`
+- `assets/fonts/` – TTF písma pro generování OG obrázku (+ OFL licence)
 - `prisma/schema.prisma` – King, Question, Answer; `prisma/migrations/` – migrace; `prisma/seed.ts` – obsah (idempotentní); `prisma.config.ts` čte `.env.local`
 - `src/generated/prisma` – vygenerovaný klient (gitignored, `npm install` ho vytvoří přes postinstall)
 - `.env.example` – vzor proměnných; `security_warnings.md` – rizika
@@ -101,6 +103,8 @@ Pokud NODE_ENV=production:
 - 2026-11-07: hodnost podle podílu sbírky: 0 = panoš, < 1/2 = rytíř, ≥ 1/2 = šlechtic, všichni = rádce krále
 - 2026-11-07: localStorage klíč `cesky-kral:collection`, tvar `{ version: 1, kings: string[] }`
 - 2026-11-07: Railway nastaven (DATABASE_URL, doména) a nasazuje z větve dev; PR do main zatím nedělat
+- 2026-11-07: vzhled iluminovaného rukopisu; Playfair nahrazen Grenze Gotisch (Almendra nemá ť/ď, Unifraktur nemá české znaky)
+- 2026-11-07: Wikimedia Commons je z cloud prostředí blokované – obrázky králů zatím chybí, místo nich erb s iniciálou
 
 ## Údržba tohoto souboru
 - Aktualizuj po každé strukturální změně, novém pravidlu nebo rozhodnutí

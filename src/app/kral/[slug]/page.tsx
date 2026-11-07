@@ -5,10 +5,12 @@ import { notFound } from "next/navigation";
 import { connection } from "next/server";
 import { ArrowLeft } from "lucide-react";
 
-import { Crest } from "@/components/crest";
+import { IlluminatedInitial } from "@/components/illuminated-initial";
+import { KingPortrait } from "@/components/king-portrait";
+import { CardCorners, OrnamentDivider } from "@/components/ornaments";
 import { Quiz } from "@/components/quiz";
 import { CORRECT_TO_COLLECT } from "@/lib/game-rules";
-import { getKingBySlug, kingInitial } from "@/lib/kings";
+import { getKingBySlug, getKingSlugs, kingInitial } from "@/lib/kings";
 import { getKingQuestions } from "@/lib/questions";
 
 export async function generateMetadata({
@@ -17,7 +19,11 @@ export async function generateMetadata({
   await connection();
   const { slug } = await params;
   const king = await getKingBySlug(slug);
-  return { title: king ? king.name : "Král nenalezen" };
+  if (!king) return { title: "Král nenalezen" };
+  return {
+    title: king.name,
+    description: `Zahraj si o kartu: ${king.name}. ${king.shortBio}`,
+  };
 }
 
 export default function KingGamePage({ params }: PageProps<"/kral/[slug]">) {
@@ -44,29 +50,55 @@ async function KingGame({ params }: { params: Promise<{ slug: string }> }) {
   const king = await getKingBySlug(slug);
   if (!king) notFound();
 
-  const questions = await getKingQuestions(king.slug);
+  const [questions, allSlugs] = await Promise.all([
+    getKingQuestions(king.slug),
+    getKingSlugs(),
+  ]);
   const initial = kingInitial(king.name);
+  const bio = king.shortBio.trim();
 
   return (
     <>
-      <header className="flex items-start gap-4">
-        <Crest initial={initial} className="w-16 shrink-0" />
-        <div className="flex flex-col gap-1">
-          <p className="text-xs font-semibold uppercase tracking-widest text-accent">
-            Hra o kartu · {CORRECT_TO_COLLECT} správně = karta
+      <header className="parchment relative flex flex-col items-center gap-4 rounded-2xl p-5 text-center sm:p-6">
+        <CardCorners className="m-1 size-8 text-gold-dark" />
+        <div className="w-32 sm:w-36">
+          <KingPortrait
+            name={king.name}
+            initial={initial}
+            imageUrl={king.imageUrl}
+            priority
+            sizes="144px"
+          />
+        </div>
+        <div className="flex flex-col items-center gap-1">
+          <p className="text-xs font-semibold tracking-[0.2em] text-gold-dark uppercase">
+            Hra o kartu · {CORRECT_TO_COLLECT} z 5 správně
           </p>
-          <h1 className="text-3xl font-bold leading-tight">{king.name}</h1>
+          <h1 className="text-4xl leading-tight font-bold sm:text-5xl">{king.name}</h1>
           <p className="text-sm text-muted-foreground">
             {king.reignFrom}–{king.reignTo} · {king.dynasty}
           </p>
-          <p className="text-sm">{king.shortBio}</p>
         </div>
+        <OrnamentDivider />
+        {bio && (
+          <p className="text-left text-ink/90">
+            <IlluminatedInitial letter={bio.charAt(0)} size="md" />
+            <span className="sr-only">{bio.charAt(0)}</span>
+            {bio.slice(1)}
+          </p>
+        )}
       </header>
 
       <Quiz
         mode="king"
         questions={questions}
-        king={{ slug: king.slug, name: king.name, initial }}
+        allKingSlugs={allSlugs}
+        king={{
+          slug: king.slug,
+          name: king.name,
+          initial,
+          imageUrl: king.imageUrl,
+        }}
       />
     </>
   );
@@ -75,8 +107,8 @@ async function KingGame({ params }: { params: Promise<{ slug: string }> }) {
 function GameSkeleton() {
   return (
     <div aria-busy="true" aria-label="Načítám hru" className="flex flex-col gap-6">
-      <div className="h-24 animate-pulse rounded-2xl bg-card" />
-      <div className="h-80 animate-pulse rounded-2xl bg-card" />
+      <div className="parchment h-72 animate-pulse rounded-2xl" />
+      <div className="parchment h-80 animate-pulse rounded-2xl" />
     </div>
   );
 }

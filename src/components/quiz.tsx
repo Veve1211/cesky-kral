@@ -1,16 +1,18 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useEffect, useState, useTransition } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { ArrowRight, Check, ExternalLink, RotateCcw, X } from "lucide-react";
 
 import { checkAnswer } from "@/app/actions/quiz";
-import { Crest } from "@/components/crest";
+import { KingPortrait } from "@/components/king-portrait";
+import { CardCorners, OrnamentDivider } from "@/components/ornaments";
+import { RoyalCelebration } from "@/components/royal-celebration";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
-import { addToCollection } from "@/lib/collection";
+import { addToCollection, readCollection } from "@/lib/collection";
 import { CORRECT_TO_COLLECT } from "@/lib/game-rules";
 import type { AnswerResult, QuizQuestion } from "@/lib/quiz-types";
 import { cn } from "@/lib/utils";
@@ -21,7 +23,13 @@ type QuizProps =
   | {
       mode: "king";
       questions: QuizQuestion[];
-      king: { slug: string; name: string; initial: string };
+      allKingSlugs: string[];
+      king: {
+        slug: string;
+        name: string;
+        initial: string;
+        imageUrl: string | null;
+      };
     }
   | { mode: "quick"; questions: QuizQuestion[] };
 
@@ -36,6 +44,7 @@ export function Quiz(props: QuizProps) {
   const [error, setError] = useState<string | null>(null);
   const [finished, setFinished] = useState(false);
   const [collected, setCollected] = useState(false);
+  const [completedAll, setCompletedAll] = useState(false);
   const [isPending, startTransition] = useTransition();
 
   const total = questions.length;
@@ -75,6 +84,11 @@ export function Quiz(props: QuizProps) {
     if (props.mode === "king" && score >= CORRECT_TO_COLLECT) {
       addToCollection(props.king.slug);
       setCollected(true);
+      const owned = new Set(readCollection());
+      setCompletedAll(
+        props.allKingSlugs.length > 0 &&
+          props.allKingSlugs.every((slug) => owned.has(slug)),
+      );
     }
     setFinished(true);
   }
@@ -87,6 +101,7 @@ export function Quiz(props: QuizProps) {
     setError(null);
     setFinished(false);
     setCollected(false);
+    setCompletedAll(false);
     router.refresh(); // new shuffle / new random questions from the server
   }
 
@@ -107,6 +122,7 @@ export function Quiz(props: QuizProps) {
         score={score}
         total={total}
         collected={collected}
+        completedAll={completedAll}
         onRestart={restart}
       />
     );
@@ -131,11 +147,12 @@ export function Quiz(props: QuizProps) {
       </div>
 
       <Card key={question.id} className="animate-card-reveal">
+        <CardCorners className="m-1 size-8 text-gold-dark" />
         <CardHeader>
-          <p className="text-xs font-semibold uppercase tracking-widest text-accent">
-            {props.mode === "quick" ? question.kingName : "Otázka"}
+          <p className="text-xs font-semibold tracking-[0.2em] text-gold-dark uppercase">
+            {props.mode === "quick" ? question.kingName : `Otázka ${index + 1}`}
           </p>
-          <h2 className="text-xl font-bold leading-snug sm:text-2xl">
+          <h2 className="text-2xl leading-snug font-bold sm:text-3xl">
             {question.text}
           </h2>
         </CardHeader>
@@ -160,15 +177,15 @@ export function Quiz(props: QuizProps) {
                   locked && "pointer-events-none",
                   isPending && selectedId === answer.id && "animate-pulse border-accent",
                   isCorrect &&
-                    "animate-answer-pop border-success bg-success text-white",
+                    "animate-answer-pulse border-success bg-success text-white hover:bg-success",
                   isWrongPick &&
-                    "animate-answer-shake border-destructive bg-destructive text-white",
+                    "animate-answer-shake border-destructive bg-destructive text-white hover:bg-destructive",
                   isDimmed && "opacity-50",
                 )}
               >
                 <span
                   className={cn(
-                    "flex size-7 shrink-0 items-center justify-center rounded-full bg-navy font-heading text-sm text-gold",
+                    "flex size-7 shrink-0 items-center justify-center rounded-full bg-navy text-xs font-bold text-gold",
                     (isCorrect || isWrongPick) && "bg-white/20 text-white",
                   )}
                   aria-hidden
@@ -195,7 +212,7 @@ export function Quiz(props: QuizProps) {
           {feedback && (
             <div
               role="status"
-              className="animate-in fade-in slide-in-from-bottom-2 flex flex-col gap-3 rounded-xl bg-background/70 p-4 duration-300"
+              className="animate-in fade-in slide-in-from-bottom-2 flex flex-col gap-3 rounded-xl border border-gold/40 bg-white/40 p-4 duration-300"
             >
               <p
                 className={cn(
@@ -234,6 +251,7 @@ function Results(
     score: number;
     total: number;
     collected: boolean;
+    completedAll: boolean;
     onRestart: () => void;
   },
 ) {
@@ -241,26 +259,34 @@ function Results(
 
   if (props.mode === "king" && props.collected) {
     return (
-      <Card className="items-center text-center">
-        <CardContent className="flex flex-col items-center gap-4">
-          <p className="text-xs font-semibold uppercase tracking-widest text-accent">
-            Skóre {score} z {total}
-          </p>
-          <div className="animate-card-reveal w-48 rounded-2xl border-2 border-gold bg-parchment p-6 shadow-lg [animation-duration:900ms]">
-            <Crest initial={props.king.initial} />
-            <p className="mt-3 font-heading text-xl font-bold">
-              {props.king.name}
+      <div className="flex flex-col gap-6">
+        <Card className="items-center text-center">
+          <CardCorners className="m-1 size-8 text-gold-dark" />
+          <CardContent className="flex flex-col items-center gap-4">
+            <p className="text-xs font-semibold tracking-[0.2em] text-gold-dark uppercase">
+              Skóre {score} z {total}
             </p>
-          </div>
-          <h2 className="text-2xl font-bold">Král je ve tvé sbírce!</h2>
-          <p className="text-muted-foreground">
-            Skvělá práce. Karta už na tebe čeká v galerii.
-          </p>
-          <Button asChild variant="accent" size="lg">
-            <Link href="/">Do sbírky</Link>
-          </Button>
-        </CardContent>
-      </Card>
+            <CardFlipReveal king={props.king} />
+            <h2 className="text-4xl font-bold">Král je ve tvé sbírce!</h2>
+            <OrnamentDivider />
+            <p className="text-muted-foreground">
+              Skvělá práce. Karta už na tebe čeká v galerii.
+            </p>
+            {!props.completedAll && (
+              <Button asChild variant="accent" size="lg">
+                <Link href="/">Do sbírky</Link>
+              </Button>
+            )}
+          </CardContent>
+        </Card>
+        {props.completedAll && (
+          <RoyalCelebration total={props.allKingSlugs.length}>
+            <Button asChild variant="accent" size="lg" className="mt-2">
+              <Link href="/">Prohlédnout sbírku</Link>
+            </Button>
+          </RoyalCelebration>
+        )}
+      </div>
     );
   }
 
@@ -268,14 +294,16 @@ function Results(
 
   return (
     <Card className="animate-card-reveal items-center text-center">
+      <CardCorners className="m-1 size-8 text-gold-dark" />
       <CardContent className="flex flex-col items-center gap-4">
-        <p className="text-xs font-semibold uppercase tracking-widest text-accent">
+        <p className="text-xs font-semibold tracking-[0.2em] text-gold-dark uppercase">
           {isKing ? "Konec hry" : "Konec rychlovky"}
         </p>
-        <p className="font-heading text-5xl font-bold">
+        <p className="font-heading text-7xl font-bold">
           {score}
-          <span className="text-2xl text-muted-foreground"> z {total}</span>
+          <span className="text-3xl text-muted-foreground"> z {total}</span>
         </p>
+        <OrnamentDivider />
         <p className="text-muted-foreground">
           {isKing
             ? `Na kartu potřebuješ aspoň ${CORRECT_TO_COLLECT} správné odpovědi. Zkus to znovu!`
@@ -284,7 +312,7 @@ function Results(
               : "Dobrá práce! Dáš příště víc?"}
         </p>
         <div className="flex flex-wrap justify-center gap-3">
-          <Button onClick={onRestart} size="lg">
+          <Button onClick={onRestart} size="lg" variant={isKing ? "accent" : "default"}>
             <RotateCcw aria-hidden />
             {isKing ? "Zkusit znovu" : "Hrát znovu"}
           </Button>
@@ -294,5 +322,47 @@ function Results(
         </div>
       </CardContent>
     </Card>
+  );
+}
+
+/** Card turns over from the dark silhouette to the king's portrait. */
+function CardFlipReveal({
+  king,
+}: {
+  king: { name: string; initial: string; imageUrl: string | null };
+}) {
+  const [flipped, setFlipped] = useState(false);
+
+  useEffect(() => {
+    const timer = window.setTimeout(() => setFlipped(true), 350);
+    return () => window.clearTimeout(timer);
+  }, []);
+
+  return (
+    <div className="flip-scene w-44 sm:w-52" aria-live="polite">
+      <div className="flip-card" data-flipped={flipped}>
+        {/* front = before the flip: silhouette */}
+        <div className="flip-face rounded-2xl bg-navy p-3 shadow-lg">
+          <KingPortrait
+            name={king.name}
+            initial={king.initial}
+            imageUrl={king.imageUrl}
+            locked
+            sizes="208px"
+          />
+          <p className="mt-2 text-center font-heading text-xl text-parchment">?</p>
+        </div>
+        {/* back = after the flip: the king */}
+        <div className="flip-face flip-face-back parchment rounded-2xl p-3">
+          <KingPortrait
+            name={king.name}
+            initial={king.initial}
+            imageUrl={king.imageUrl}
+            sizes="208px"
+          />
+          <p className="mt-2 text-center font-heading text-xl font-bold">{king.name}</p>
+        </div>
+      </div>
+    </div>
   );
 }
