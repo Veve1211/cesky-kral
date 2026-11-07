@@ -29,6 +29,7 @@ type SeedKing = {
   dynasty: string;
   shortBio: string;
   order: number;
+  imageUrl: string; // public-domain portrait, see /zdroje
   sourceUrl: string;
   questions: SeedQuestion[];
 };
@@ -43,6 +44,7 @@ const kings: SeedKing[] = [
     shortBio:
       "Král železný a zlatý, jehož říše sahala od Krkonoš až po Jadran.",
     order: 1,
+    imageUrl: "/kings/premysl-otakar-ii.webp",
     sourceUrl: "https://en.wikipedia.org/wiki/Ottokar_II_of_Bohemia",
     questions: [
       {
@@ -92,6 +94,7 @@ const kings: SeedKing[] = [
     dynasty: "Lucemburkové",
     shortBio: "Otec vlasti, který z Prahy udělal jedno z center Evropy.",
     order: 2,
+    imageUrl: "/kings/karel-iv.webp",
     sourceUrl: "https://prague.eu/en/2024/03/13/charles-iv-the-greatest-czech",
     questions: [
       {
@@ -141,6 +144,7 @@ const kings: SeedKing[] = [
     shortBio:
       "Jediná žena, která vládla habsburské monarchii, a velká reformátorka.",
     order: 3,
+    imageUrl: "/kings/marie-terezie.webp",
     sourceUrl:
       "https://ct24.ceskatelevize.cz/clanek/archiv/macecha-a-reformator-221103",
     questions: [
@@ -195,6 +199,9 @@ function validate(data: SeedKing[]) {
     if (orders.has(king.order)) throw new Error(`Duplicate order: ${king.order}`);
     slugs.add(king.slug);
     orders.add(king.order);
+    if (!/^\/kings\/[a-z0-9-]+\.webp$/.test(king.imageUrl)) {
+      throw new Error(`${king.slug}: invalid imageUrl`);
+    }
     if (king.questions.length !== 5) {
       throw new Error(`${king.slug}: expected 5 questions`);
     }
