@@ -81,9 +81,10 @@ Pokud NODE_ENV=production:
 ## Struktura projektu
 - Next.js 16 (App Router, `src/`, Cache Components zapnuté), Tailwind 4, Prisma 7
 - `src/app/` – stránky: `page.tsx` (galerie /), `kral/[slug]/` (hra), `rychlovka/`, `not-found.tsx`, `layout.tsx` (fonty, hlavička), `globals.css` (barvy, animace)
-- `src/components/` – `site-header`, `king-card`, `crest` (erb s iniciálou = placeholder), `question-skeleton`
+- `src/app/actions/quiz.ts` – server action `checkAnswer` (ověření odpovědi na serveru)
+- `src/components/` – `site-header`, `king-card`, `crest` (erb s iniciálou = placeholder), `quiz` (hra + výsledky, klient), `collection-gallery` (galerie podle sbírky, klient)
 - `src/components/ui/` – shadcn komponenty (button, card, progress)
-- `src/lib/` – `utils.ts` (cn), `game-rules.ts` (konstanty hry, hodnosti), `prisma.ts` (klient s adapterem pg), `kings.ts` (dotazy na krále)
+- `src/lib/` – `utils.ts` (cn), `game-rules.ts` (konstanty, `getRank`), `prisma.ts` (klient s adapterem pg), `kings.ts` (dotazy na krále), `questions.ts` (otázky bez správnosti, míchání), `quiz-types.ts`, `collection.ts` (sbírka v localStorage), `slug.ts`, `king-initial.ts`
 - `prisma/schema.prisma` – King, Question, Answer; `prisma/migrations/` – migrace; `prisma/seed.ts` – obsah (idempotentní); `prisma.config.ts` čte `.env.local`
 - `src/generated/prisma` – vygenerovaný klient (gitignored, `npm install` ho vytvoří přes postinstall)
 - `.env.example` – vzor proměnných; `security_warnings.md` – rizika
@@ -96,6 +97,9 @@ Pokud NODE_ENV=production:
 - 2026-11-07: Prisma 7.10.1 (stabilní; tag `latest` na npm je zatím RC verze 8)
 - 2026-11-07: seed při každém deployi; král upsert podle slug, jeho otázky se v transakci smažou (WHERE kingId) a vloží znovu
 - 2026-11-07: nezískaný král v galerii ukazuje jméno a roky, erb je silueta s otazníkem
+- 2026-11-07: správnost odpovědi zná jen server; odpovědi se míchají na serveru při každém načtení
+- 2026-11-07: hodnost podle podílu sbírky: 0 = panoš, < 1/2 = rytíř, ≥ 1/2 = šlechtic, všichni = rádce krále
+- 2026-11-07: localStorage klíč `cesky-kral:collection`, tvar `{ version: 1, kings: string[] }`
 
 ## Údržba tohoto souboru
 - Aktualizuj po každé strukturální změně, novém pravidlu nebo rozhodnutí

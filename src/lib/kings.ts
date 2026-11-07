@@ -1,8 +1,7 @@
 import "server-only";
 
 import { getPrisma } from "@/lib/prisma";
-
-const SLUG_PATTERN = /^[a-z0-9]+(-[a-z0-9]+)*$/;
+import { isValidSlug } from "@/lib/slug";
 
 export type KingSummary = {
   slug: string;
@@ -27,7 +26,7 @@ export async function getKings(): Promise<KingSummary[]> {
 
 export async function getKingBySlug(slug: string) {
   // Reject anything that is not a well-formed slug before hitting the DB.
-  if (slug.length > 100 || !SLUG_PATTERN.test(slug)) return null;
+  if (!isValidSlug(slug)) return null;
 
   return getPrisma().king.findUnique({
     where: { slug },
@@ -42,6 +41,4 @@ export async function getKingBySlug(slug: string) {
   });
 }
 
-export function kingInitial(name: string): string {
-  return name.trim().charAt(0).toUpperCase() || "?";
-}
+export { kingInitial } from "@/lib/king-initial";
