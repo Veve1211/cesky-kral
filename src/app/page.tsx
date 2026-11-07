@@ -1,16 +1,15 @@
+import { Suspense } from "react";
 import Link from "next/link";
+import { connection } from "next/server";
 import { Shield, Zap } from "lucide-react";
 
 import { KingCard } from "@/components/king-card";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
-import { demoKings } from "@/lib/demo-kings";
 import { RANKS } from "@/lib/game-rules";
+import { getKings, kingInitial } from "@/lib/kings";
 
 export default function GalleryPage() {
-  const collected = demoKings.filter((king) => king.collected).length;
-  const total = demoKings.length;
-
   return (
     <div className="flex flex-col gap-10">
       <section className="flex flex-col gap-4 text-center sm:text-left">
@@ -26,7 +25,28 @@ export default function GalleryPage() {
         </p>
       </section>
 
-      {/* Player status */}
+      <Suspense fallback={<GallerySkeleton />}>
+        <Gallery />
+      </Suspense>
+    </div>
+  );
+}
+
+async function Gallery() {
+  // Data comes from the DB on each request (never at build time).
+  await connection();
+  const kings = await getKings();
+
+  // Collected state will come from localStorage in the game step.
+  const cards = kings.map((king) => ({
+    ...king,
+    initial: kingInitial(king.name),
+    collected: false,
+  }));
+  const collected = cards.filter((king) => king.collected).length;
+
+  return (
+    <>
       <section className="flex flex-col gap-4 rounded-2xl border border-gold/40 bg-card p-5 shadow-sm sm:flex-row sm:items-center">
         <div className="flex items-center gap-3">
           <span className="flex size-11 items-center justify-center rounded-full bg-navy text-gold">
@@ -41,10 +61,10 @@ export default function GalleryPage() {
           <p className="text-sm">
             Ve sbírce:{" "}
             <strong>
-              {collected} z {total}
+              {collected} z {cards.length}
             </strong>
           </p>
-          <Progress value={collected} max={total} label="Získaní králové" />
+          <Progress value={collected} max={cards.length} label="Získaní králové" />
         </div>
         <Button asChild variant="accent">
           <Link href="/rychlovka">
@@ -58,14 +78,33 @@ export default function GalleryPage() {
         <h2 id="gallery-heading" className="text-2xl font-bold">
           Galerie
         </h2>
-        <ul className="grid grid-cols-2 gap-4 sm:grid-cols-3">
-          {demoKings.map((king, index) => (
-            <li key={king.slug}>
-              <KingCard king={king} index={index} />
-            </li>
-          ))}
-        </ul>
+        {cards.length === 0 ? (
+          <p className="text-muted-foreground">
+            Zatím tu nejsou žádní panovníci.
+          </p>
+        ) : (
+          <ul className="grid grid-cols-2 gap-4 sm:grid-cols-3">
+            {cards.map((king, index) => (
+              <li key={king.slug}>
+                <KingCard king={king} index={index} />
+              </li>
+            ))}
+          </ul>
+        )}
       </section>
+    </>
+  );
+}
+
+function GallerySkeleton() {
+  return (
+    <div aria-busy="true" aria-label="Načítám galerii" className="flex flex-col gap-10">
+      <div className="h-28 animate-pulse rounded-2xl bg-card" />
+      <div className="grid grid-cols-2 gap-4 sm:grid-cols-3">
+        {Array.from({ length: 3 }, (_, i) => (
+          <div key={i} className="h-64 animate-pulse rounded-2xl bg-navy/80" />
+        ))}
+      </div>
     </div>
   );
 }

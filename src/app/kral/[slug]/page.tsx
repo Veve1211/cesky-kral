@@ -1,34 +1,26 @@
+import { Suspense } from "react";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { connection } from "next/server";
 import { ArrowLeft } from "lucide-react";
 
 import { Crest } from "@/components/crest";
 import { QuestionSkeleton } from "@/components/question-skeleton";
 import { Progress } from "@/components/ui/progress";
-import { demoKings, getDemoKing } from "@/lib/demo-kings";
 import { CORRECT_TO_COLLECT, QUESTIONS_PER_KING } from "@/lib/game-rules";
-
-export function generateStaticParams() {
-  return demoKings.map((king) => ({ slug: king.slug }));
-}
+import { getKingBySlug, kingInitial } from "@/lib/kings";
 
 export async function generateMetadata({
   params,
 }: PageProps<"/kral/[slug]">): Promise<Metadata> {
+  await connection();
   const { slug } = await params;
-  const king = getDemoKing(slug);
+  const king = await getKingBySlug(slug);
   return { title: king ? king.name : "Král nenalezen" };
 }
 
-export default async function KingGamePage({
-  params,
-}: PageProps<"/kral/[slug]">) {
-  const { slug } = await params;
-  // Only known slugs are accepted; anything else returns 404.
-  const king = getDemoKing(slug);
-  if (!king) notFound();
-
+export default function KingGamePage({ params }: PageProps<"/kral/[slug]">) {
   return (
     <div className="mx-auto flex max-w-xl flex-col gap-6">
       <Link
@@ -39,16 +31,9 @@ export default async function KingGamePage({
         Zpět do sbírky
       </Link>
 
-      <header className="flex items-center gap-4">
-        <Crest initial={king.initial} className="w-16 shrink-0" />
-        <div>
-          <p className="text-xs font-semibold uppercase tracking-widest text-accent">
-            Hra o kartu
-          </p>
-          <h1 className="text-3xl font-bold leading-tight">{king.name}</h1>
-          <p className="text-sm text-muted-foreground">{king.subtitle}</p>
-        </div>
-      </header>
+      <Suspense fallback={<div className="h-24 animate-pulse rounded-2xl bg-card" />}>
+        <KingHeader params={params} />
+      </Suspense>
 
       <div className="flex flex-col gap-2">
         <div className="flex justify-between text-sm">
@@ -64,5 +49,28 @@ export default async function KingGamePage({
 
       <QuestionSkeleton />
     </div>
+  );
+}
+
+async function KingHeader({ params }: { params: Promise<{ slug: string }> }) {
+  await connection();
+  const { slug } = await params;
+  const king = await getKingBySlug(slug);
+  if (!king) notFound();
+
+  return (
+    <header className="flex items-start gap-4">
+      <Crest initial={kingInitial(king.name)} className="w-16 shrink-0" />
+      <div className="flex flex-col gap-1">
+        <p className="text-xs font-semibold uppercase tracking-widest text-accent">
+          Hra o kartu
+        </p>
+        <h1 className="text-3xl font-bold leading-tight">{king.name}</h1>
+        <p className="text-sm text-muted-foreground">
+          {king.reignFrom}–{king.reignTo} · {king.dynasty}
+        </p>
+        <p className="text-sm">{king.shortBio}</p>
+      </div>
+    </header>
   );
 }

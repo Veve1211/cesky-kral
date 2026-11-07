@@ -83,16 +83,19 @@ Pokud NODE_ENV=production:
 - `src/app/` – stránky: `page.tsx` (galerie /), `kral/[slug]/` (hra), `rychlovka/`, `not-found.tsx`, `layout.tsx` (fonty, hlavička), `globals.css` (barvy, animace)
 - `src/components/` – `site-header`, `king-card`, `crest` (erb s iniciálou = placeholder), `question-skeleton`
 - `src/components/ui/` – shadcn komponenty (button, card, progress)
-- `src/lib/` – `utils.ts` (cn), `game-rules.ts` (konstanty hry, hodnosti), `demo-kings.ts` (dočasná ukázková data, nahradí DB)
-- `prisma/schema.prisma` – King, Question, Answer; `prisma.config.ts` čte `.env.local`
+- `src/lib/` – `utils.ts` (cn), `game-rules.ts` (konstanty hry, hodnosti), `prisma.ts` (klient s adapterem pg), `kings.ts` (dotazy na krále)
+- `prisma/schema.prisma` – King, Question, Answer; `prisma/migrations/` – migrace; `prisma/seed.ts` – obsah (idempotentní); `prisma.config.ts` čte `.env.local`
 - `src/generated/prisma` – vygenerovaný klient (gitignored, `npm install` ho vytvoří přes postinstall)
 - `.env.example` – vzor proměnných; `security_warnings.md` – rizika
-- Příkazy: `npm run dev`, `npm run build`, `npm run lint`
+- Příkazy: `npm run dev`, `npm run build`, `npm run lint`, `npm run db:migrate`, `npm run db:seed`
+- `npm start` (Railway): `prisma migrate deploy` → `prisma db seed` → `next start`; data se čtou až za běhu (`connection()`), build DB nepotřebuje
 
 ## Rozhodnutí
 - 2026-11-07: postup v localStorage místo účtů, protože jde o ukázkovou verzi bez přihlášení
 - 2026-11-07: shadcn/ui nastaveno ručně (ui.shadcn.com je z cloud prostředí blokované); nové komponenty kopírovat do `src/components/ui/`
 - 2026-11-07: Prisma 7.10.1 (stabilní; tag `latest` na npm je zatím RC verze 8)
+- 2026-11-07: seed při každém deployi; král upsert podle slug, jeho otázky se v transakci smažou (WHERE kingId) a vloží znovu
+- 2026-11-07: nezískaný král v galerii ukazuje jméno a roky, erb je silueta s otazníkem
 
 ## Údržba tohoto souboru
 - Aktualizuj po každé strukturální změně, novém pravidlu nebo rozhodnutí

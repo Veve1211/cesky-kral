@@ -3,16 +3,24 @@ import { Lock, Crown } from "lucide-react";
 
 import { Crest } from "@/components/crest";
 import { cn } from "@/lib/utils";
-import type { DemoKing } from "@/lib/demo-kings";
 
-export function KingCard({ king, index }: { king: DemoKing; index: number }) {
+export type KingCardData = {
+  slug: string;
+  name: string;
+  initial: string;
+  reignFrom: number;
+  reignTo: number;
+  dynasty: string;
+  collected: boolean;
+};
+
+export function KingCard({ king, index }: { king: KingCardData; index: number }) {
   const locked = !king.collected;
 
   return (
     <Link
       href={`/kral/${king.slug}`}
-      className="group block rounded-2xl outline-none focus-visible:ring-4 focus-visible:ring-ring/50"
-      style={{ animationDelay: `${index * 120}ms` }}
+      className="group block h-full rounded-2xl outline-none focus-visible:ring-4 focus-visible:ring-ring/50"
     >
       <article
         className={cn(
@@ -21,8 +29,8 @@ export function KingCard({ king, index }: { king: DemoKing; index: number }) {
             ? "border-navy/40 bg-navy text-primary-foreground"
             : "border-gold bg-card text-card-foreground",
         )}
+        style={{ animationDelay: `${index * 120}ms` }}
       >
-        {/* corner ornament */}
         <span
           aria-hidden
           className={cn(
@@ -40,16 +48,14 @@ export function KingCard({ king, index }: { king: DemoKing; index: number }) {
         />
 
         <div className="text-center">
-          <h3 className="text-lg font-bold leading-tight">
-            {locked ? "Neznámý panovník" : king.name}
-          </h3>
+          <h3 className="text-lg font-bold leading-tight">{king.name}</h3>
           <p
             className={cn(
               "mt-1 text-xs",
               locked ? "text-primary-foreground/60" : "text-muted-foreground",
             )}
           >
-            {locked ? "Odpověz na 4 z 5 otázek" : king.subtitle}
+            {king.reignFrom}–{king.reignTo} · {king.dynasty}
           </p>
         </div>
 
