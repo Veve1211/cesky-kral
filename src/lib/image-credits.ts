@@ -25,6 +25,29 @@ export const imageCredits: ImageCredit[] = [
     localPath: "/kings/premysl-otakar-ii.webp",
   },
   {
+    kingSlug: "vaclav-ii",
+    kingName: "Václav II.",
+    title:
+      "König Wenzel von Böhmen – miniatura z Codexu Manesse (Cod. Pal. germ. 848, fol. 10r), výřez",
+    author: "Mistr Codexu Manesse (Nachtragsmaler I)",
+    year: "1305–1340",
+    license: "Volné dílo (public domain, PD-old-100)",
+    commonsUrl:
+      "https://commons.wikimedia.org/wiki/File:Codex_Manesse_Wenzel_II._von_B%C3%B6hmen.jpg",
+    localPath: "/kings/vaclav-ii.webp",
+  },
+  {
+    kingSlug: "jan-lucembursky",
+    kingName: "Jan Lucemburský",
+    title:
+      "Jezdecká pečeť – fotografie z díla Die Siegel der deutschen Kaiser und Könige",
+    author: "Otto Posse",
+    year: "1909",
+    license: "Volné dílo (public domain, PD-old)",
+    commonsUrl: "https://commons.wikimedia.org/wiki/File:HonzikLucpecetjezdec.jpg",
+    localPath: "/kings/jan-lucembursky.webp",
+  },
+  {
     kingSlug: "karel-iv",
     kingName: "Karel IV.",
     title:

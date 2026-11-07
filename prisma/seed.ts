@@ -127,13 +127,185 @@ const kings: SeedKing[] = [
     ],
   },
   {
+    name: "Václav II.",
+    slug: "vaclav-ii",
+    reignFrom: 1278,
+    reignTo: 1305,
+    dynasty: "Přemyslovci",
+    shortBio:
+      "Král stříbra, který dal Čechám pražský groš a získal polskou korunu.",
+    order: 2,
+    imageUrl: "/kings/vaclav-ii.webp",
+    sourceUrl: "https://en.wikipedia.org/wiki/Wenceslaus_II_of_Bohemia",
+    questions: [
+      {
+        difficulty: 1,
+        text: "Kdo byl otcem Václava II.?",
+        correct: "Přemysl Otakar II.",
+        wrong: ["Karel IV.", "Jan Lucemburský"],
+        explanation:
+          "Byl jediným přeživším synem Přemysla Otakara II.",
+      },
+      {
+        difficulty: 1,
+        text: "Kterou minci začal Václav II. razit?",
+        correct: "Pražský groš",
+        wrong: ["Tolar", "Dukát"],
+        explanation:
+          "Těžbu stříbra udělal královským monopolem a ze stříbra razil pražské groše.",
+      },
+      {
+        difficulty: 1,
+        text: "Kterou další královskou korunu získal Václav II. roku 1300?",
+        correct: "Polskou",
+        wrong: ["Uherskou", "Francouzskou"],
+        explanation:
+          "V roce 1300 se nechal korunovat polským králem.",
+      },
+      {
+        difficulty: 2,
+        text: "Kdo podle pramenů věznil malého Václava, když za něj vládl?",
+        correct: "Ota Braniborský",
+        wrong: ["Rudolf Habsburský", "Záviš z Falkenštejna"],
+        explanation:
+          "Po smrti Přemysla Otakara II. převzal správu země braniborský markrabě Ota V.",
+      },
+      {
+        difficulty: 2,
+        text: "Ve kterém roce se Václav II. vrátil do Čech a začal vládnout bez regenta?",
+        correct: "1283",
+        wrong: ["1278", "1300"],
+        explanation:
+          "Bylo mu tehdy teprve dvanáct let.",
+      },
+      {
+        difficulty: 2,
+        text: "Co vydal Václav II. roku 1300?",
+        correct: "Horní zákoník Ius regale montanorum",
+        wrong: ["Zlatou bulu", "Pragmatickou sankci"],
+        explanation:
+          "Nový královský horní zákoník upravoval těžbu stříbra.",
+      },
+      {
+        difficulty: 3,
+        text: "Proč dal Václav II. roku 1290 popravit Záviše z Falkenštejna?",
+        correct: "Kvůli údajné zradě",
+        wrong: ["Kvůli prohrané bitvě", "Kvůli nesplaceným dluhům"],
+        explanation:
+          "Záviš byl partnerem Václavovy matky. Po jeho popravě začal Václav vládnout samostatně.",
+      },
+      {
+        difficulty: 3,
+        text: "Kdo byla první manželka Václava II.?",
+        correct: "Jitka Habsburská",
+        wrong: ["Eliška Přemyslovna", "Markéta Babenberská"],
+        explanation:
+          "Jitka byla dcerou Rudolfa Habsburského, tedy muže, který porazil Václavova otce. Eliška Přemyslovna byla Václavova dcera.",
+      },
+      {
+        difficulty: 3,
+        text: "Kterou korunu získal Václav II. roku 1301 pro svého syna Václava III.?",
+        correct: "Uherskou",
+        wrong: ["Polskou", "Rakouskou"],
+        explanation:
+          "Václav III. byl korunován uherským králem 27. srpna 1301 v Székesfehérváru.",
+      },
+    ],
+  },
+  {
+    name: "Jan Lucemburský",
+    slug: "jan-lucembursky",
+    reignFrom: 1310,
+    reignTo: 1346,
+    dynasty: "Lucemburkové",
+    shortBio:
+      "Rytíř a cestovatel na českém trůně, který slepý padl v bitvě u Kresčaku.",
+    order: 3,
+    imageUrl: "/kings/jan-lucembursky.webp",
+    sourceUrl: "https://en.wikipedia.org/wiki/John_of_Bohemia",
+    questions: [
+      {
+        difficulty: 1,
+        text: "Ve které bitvě padl Jan Lucemburský?",
+        correct: "U Kresčaku",
+        wrong: ["Na Moravském poli", "Na Bílé hoře"],
+        explanation:
+          "Padl 26. srpna 1346 v bitvě proti anglickému vojsku.",
+      },
+      {
+        difficulty: 1,
+        text: "Jakou přezdívku Jan Lucemburský má?",
+        correct: "Slepý",
+        wrong: ["Železný a zlatý", "Otec vlasti"],
+        explanation:
+          "Posledních zhruba deset let života byl slepý.",
+      },
+      {
+        difficulty: 1,
+        text: "Kdo byl jeho nejstarší syn a nástupce na českém trůně?",
+        correct: "Karel IV.",
+        wrong: ["Václav II.", "Jiří z Poděbrad"],
+        explanation:
+          "Karel se později stal i římským císařem.",
+      },
+      {
+        difficulty: 2,
+        text: "S kým se Jan roku 1310 oženil, a získal tak český trůn?",
+        correct: "S Eliškou Přemyslovnou",
+        wrong: ["S Jitkou Habsburskou", "S Markétou Babenberskou"],
+        explanation:
+          "Sňatek mu zařídil otec, Janovi bylo teprve 14 let.",
+      },
+      {
+        difficulty: 2,
+        text: "Kde se Jan Lucemburský narodil?",
+        correct: "V Lucembursku",
+        wrong: ["V Praze", "V Paříži"],
+        explanation:
+          "Narodil se v Lucembursku a vyrůstal v Paříži.",
+      },
+      {
+        difficulty: 2,
+        text: "Kdo byl otcem Jana Lucemburského?",
+        correct: "Římský císař Jindřich VII.",
+        wrong: ["Rudolf Habsburský", "Přemysl Otakar II."],
+        explanation:
+          "Jan byl nejstarším synem císaře Jindřicha VII.",
+      },
+      {
+        difficulty: 3,
+        text: "Proč Jana mnozí čeští šlechtici považovali za „krále cizince“?",
+        correct: "Většinu času trávil mimo Čechy",
+        wrong: ["Neuměl česky číst", "Pocházel z Polska"],
+        explanation:
+          "Správu Čech přenechal jiným a cestoval, hlavně do Lucemburska a na francouzský dvůr.",
+      },
+      {
+        difficulty: 3,
+        text: "Kde Jan Lucemburský přišel o zrak?",
+        correct: "Na křížové výpravě v Litvě",
+        wrong: ["V bitvě u Kresčaku", "Ve vězení v Paříži"],
+        explanation:
+          "Oslepl kolem roku 1336 kvůli zánětu očí.",
+      },
+      {
+        difficulty: 3,
+        text: "Kde je Jan Lucemburský dnes pohřben?",
+        correct: "V katedrále Notre-Dame v Lucemburku",
+        wrong: ["V katedrále sv. Víta v Praze", "Ve Zbraslavském klášteře"],
+        explanation:
+          "Jeho ostatky byly do lucemburské katedrály přeneseny v roce 1945.",
+      },
+    ],
+  },
+  {
     name: "Karel IV.",
     slug: "karel-iv",
     reignFrom: 1346,
     reignTo: 1378,
     dynasty: "Lucemburkové",
     shortBio: "Otec vlasti, který z Prahy udělal jedno z center Evropy.",
-    order: 2,
+    order: 4,
     imageUrl: "/kings/karel-iv.webp",
     sourceUrl: "https://prague.eu/en/2024/03/13/charles-iv-the-greatest-czech",
     questions: [
@@ -224,7 +396,7 @@ const kings: SeedKing[] = [
     dynasty: "Habsburkové",
     shortBio:
       "Jediná žena, která vládla habsburské monarchii, a velká reformátorka.",
-    order: 3,
+    order: 5,
     imageUrl: "/kings/marie-terezie.webp",
     sourceUrl:
       "https://ct24.ceskatelevize.cz/clanek/archiv/macecha-a-reformator-221103",
@@ -357,40 +529,55 @@ async function main() {
   });
 
   try {
-    for (const king of kings) {
-      const { questions, sourceUrl, ...kingData } = king;
-
-      await prisma.$transaction(async (tx) => {
-        const saved = await tx.king.upsert({
-          where: { slug: king.slug },
-          update: kingData,
-          create: kingData,
+    // One transaction: either everything is seeded or nothing changes.
+    await prisma.$transaction(
+      async (tx) => {
+        // `order` is unique: first move existing seeded kings to temporary
+        // negative values, so re-ordering never collides during upserts.
+        const existing = await tx.king.findMany({
+          where: { slug: { in: kings.map((k) => k.slug) } },
+          select: { id: true },
+          orderBy: { id: "asc" },
         });
-
-        // Scoped to this king only (never an unscoped DELETE).
-        await tx.question.deleteMany({ where: { kingId: saved.id } });
-
-        for (const q of questions) {
-          await tx.question.create({
-            data: {
-              kingId: saved.id,
-              text: q.text,
-              explanation: q.explanation,
-              sourceUrl: q.sourceUrl ?? sourceUrl,
-              difficulty: q.difficulty,
-              answers: {
-                create: [
-                  { text: q.correct, isCorrect: true },
-                  ...q.wrong.map((text) => ({ text, isCorrect: false })),
-                ],
-              },
-            },
-          });
+        for (const [i, row] of existing.entries()) {
+          await tx.king.update({ where: { id: row.id }, data: { order: -(i + 1) } });
         }
-      });
 
-      console.log(`Seeded ${king.name} (${questions.length} questions)`);
-    }
+        for (const king of kings) {
+          const { questions, sourceUrl, ...kingData } = king;
+
+          const saved = await tx.king.upsert({
+            where: { slug: king.slug },
+            update: kingData,
+            create: kingData,
+          });
+
+          // Scoped to this king only (never an unscoped DELETE).
+          await tx.question.deleteMany({ where: { kingId: saved.id } });
+
+          for (const q of questions) {
+            await tx.question.create({
+              data: {
+                kingId: saved.id,
+                text: q.text,
+                explanation: q.explanation,
+                sourceUrl: q.sourceUrl ?? sourceUrl,
+                difficulty: q.difficulty,
+                answers: {
+                  create: [
+                    { text: q.correct, isCorrect: true },
+                    ...q.wrong.map((text) => ({ text, isCorrect: false })),
+                  ],
+                },
+              },
+            });
+          }
+
+          console.log(`Seeded ${king.name} (${questions.length} questions)`);
+        }
+      },
+      { maxWait: 10_000, timeout: 120_000 },
+    );
   } finally {
     await prisma.$disconnect();
   }
