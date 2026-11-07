@@ -1,0 +1,48 @@
+// Data model for Český král.
+// Database is not connected yet (Railway PostgreSQL comes in the next step).
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model King {
+  id        Int        @id @default(autoincrement())
+  name      String
+  slug      String     @unique
+  reignFrom Int
+  reignTo   Int
+  dynasty   String
+  shortBio  String
+  imageUrl  String?
+  order     Int        @unique
+  questions Question[]
+
+  @@index([dynasty])
+}
+
+model Question {
+  id          Int      @id @default(autoincrement())
+  kingId      Int
+  king        King     @relation(fields: [kingId], references: [id], onDelete: Cascade)
+  text        String
+  explanation String
+  sourceUrl   String?
+  answers     Answer[]
+
+  @@index([kingId])
+}
+
+model Answer {
+  id         Int      @id @default(autoincrement())
+  questionId Int
+  question   Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  text       String
+  isCorrect  Boolean  @default(false)
+
+  @@index([questionId])
+}
