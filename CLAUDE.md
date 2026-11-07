@@ -21,7 +21,7 @@
 - UI: Tailwind CSS + shadcn/ui
 - Databáze: PostgreSQL na Railway + Prisma ORM
 - Auth: zatím žádná
-- Hosting: Railway (deploy z GitHubu)
+- Hosting: Railway (deploy z GitHubu, větev dev)
 - Prostředí: Claude Code na webu (claude.ai/code), bez Dockeru
 
 ## Herní logika
@@ -52,7 +52,7 @@
 
 ### Git a commity
 - Pracuj na větvi dev (nebo feature větvi z dev), nikdy přímo na main
-- main = produkce na Railway
+- Railway zatím nasazuje z dev (každý merge do dev = nasazení); main se zatím nepoužívá, PR do main nedělat
 - Před každým commitem a pushem se zeptej uživatele
 - Commit zprávy: anglicky, stručně (feat: add king gallery, fix: answer feedback)
 
@@ -100,6 +100,7 @@ Pokud NODE_ENV=production:
 - 2026-11-07: správnost odpovědi zná jen server; odpovědi se míchají na serveru při každém načtení
 - 2026-11-07: hodnost podle podílu sbírky: 0 = panoš, < 1/2 = rytíř, ≥ 1/2 = šlechtic, všichni = rádce krále
 - 2026-11-07: localStorage klíč `cesky-kral:collection`, tvar `{ version: 1, kings: string[] }`
+- 2026-11-07: Railway nastaven (DATABASE_URL, doména) a nasazuje z větve dev; PR do main zatím nedělat
 
 ## Údržba tohoto souboru
 - Aktualizuj po každé strukturální změně, novém pravidlu nebo rozhodnutí
