@@ -24,10 +24,10 @@ function Progress({
       aria-valuemin={0}
       aria-valuemax={safeMax}
       aria-valuenow={value}
-      className={cn("h-2 w-full overflow-hidden rounded-full bg-primary/10", className)}
+      className={cn("h-2.5 w-full overflow-hidden rounded-full bg-navy/10 ring-1 ring-gold/40", className)}
     >
       <div
-        className="h-full rounded-full bg-accent transition-[width] duration-500"
+        className="gilt h-full rounded-full transition-[width] duration-500"
         style={{ width: `${percent}%` }}
       />
     </div>

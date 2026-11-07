@@ -68,6 +68,11 @@ function subscribe(listener: () => void) {
   };
 }
 
+/** Current collection (outside React). */
+export function readCollection(): readonly string[] {
+  return getSnapshot();
+}
+
 export function useCollection(): readonly string[] {
   return useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
 }

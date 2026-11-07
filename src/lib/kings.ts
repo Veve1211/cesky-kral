@@ -9,6 +9,7 @@ export type KingSummary = {
   reignFrom: number;
   reignTo: number;
   dynasty: string;
+  imageUrl: string | null;
 };
 
 export async function getKings(): Promise<KingSummary[]> {
@@ -20,8 +21,14 @@ export async function getKings(): Promise<KingSummary[]> {
       reignFrom: true,
       reignTo: true,
       dynasty: true,
+      imageUrl: true,
     },
   });
+}
+
+export async function getKingSlugs(): Promise<string[]> {
+  const rows = await getPrisma().king.findMany({ select: { slug: true } });
+  return rows.map((row) => row.slug);
 }
 
 export async function getKingBySlug(slug: string) {
@@ -37,6 +44,7 @@ export async function getKingBySlug(slug: string) {
       reignTo: true,
       dynasty: true,
       shortBio: true,
+      imageUrl: true,
     },
   });
 }

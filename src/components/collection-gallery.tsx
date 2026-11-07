@@ -4,6 +4,8 @@ import Link from "next/link";
 import { Shield, Zap } from "lucide-react";
 
 import { KingCard } from "@/components/king-card";
+import { CardCorners } from "@/components/ornaments";
+import { RoyalCelebration } from "@/components/royal-celebration";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { useCollection } from "@/lib/collection";
@@ -23,44 +25,59 @@ export function CollectionGallery({ kings }: { kings: KingSummary[] }) {
   // Count only kings that exist in the DB (ignores stale slugs).
   const collected = cards.filter((king) => king.collected).length;
   const rank = getRank(collected, cards.length);
+  const complete = cards.length > 0 && collected === cards.length;
 
   return (
     <>
-      <section className="flex flex-col gap-4 rounded-2xl border border-gold/40 bg-card p-5 shadow-sm sm:flex-row sm:items-center">
-        <div className="flex items-center gap-3">
-          <span className="flex size-11 items-center justify-center rounded-full bg-navy text-gold">
-            <Shield className="size-5" aria-hidden />
-          </span>
-          <div>
-            <p className="text-xs text-muted-foreground">Tvoje hodnost</p>
-            <p className="font-heading text-xl font-bold">{rank}</p>
+      {complete ? (
+        <RoyalCelebration total={cards.length}>
+          <Button asChild variant="accent" size="lg" className="mt-2">
+            <Link href="/rychlovka">
+              <Zap aria-hidden />
+              Rychlovka
+            </Link>
+          </Button>
+        </RoyalCelebration>
+      ) : (
+        <section className="parchment relative flex flex-col gap-4 rounded-2xl p-5 sm:flex-row sm:items-center sm:p-6">
+          <CardCorners className="m-1 size-7 text-gold-dark" />
+          <div className="flex items-center gap-3">
+            <span className="gilt flex size-12 items-center justify-center rounded-full p-[3px] shadow">
+              <span className="flex size-full items-center justify-center rounded-full bg-navy text-gold">
+                <Shield className="size-5" aria-hidden />
+              </span>
+            </span>
+            <div>
+              <p className="text-xs text-muted-foreground">Tvoje hodnost</p>
+              <p className="font-heading text-2xl leading-tight font-bold">{rank}</p>
+            </div>
           </div>
-        </div>
-        <div className="flex flex-1 flex-col gap-2">
-          <p className="text-sm">
-            Ve sbírce:{" "}
-            <strong>
-              {collected} z {cards.length}
-            </strong>
-          </p>
-          <Progress value={collected} max={cards.length} label="Získaní králové" />
-        </div>
-        <Button asChild variant="accent">
-          <Link href="/rychlovka">
-            <Zap aria-hidden />
-            Rychlovka
-          </Link>
-        </Button>
-      </section>
+          <div className="flex flex-1 flex-col gap-2">
+            <p className="text-sm">
+              Ve sbírce:{" "}
+              <strong>
+                {collected} z {cards.length}
+              </strong>
+            </p>
+            <Progress value={collected} max={cards.length} label="Získaní králové" />
+          </div>
+          <Button asChild variant="accent">
+            <Link href="/rychlovka">
+              <Zap aria-hidden />
+              Rychlovka
+            </Link>
+          </Button>
+        </section>
+      )}
 
-      <section aria-labelledby="gallery-heading" className="flex flex-col gap-4">
-        <h2 id="gallery-heading" className="text-2xl font-bold">
-          Galerie
+      <section aria-labelledby="gallery-heading" className="flex flex-col gap-5">
+        <h2 id="gallery-heading" className="text-center text-4xl font-bold sm:text-left">
+          Galerie panovníků
         </h2>
         {cards.length === 0 ? (
           <p className="text-muted-foreground">Zatím tu nejsou žádní panovníci.</p>
         ) : (
-          <ul className="grid grid-cols-2 gap-4 sm:grid-cols-3">
+          <ul className="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-5">
             {cards.map((king, index) => (
               <li key={king.slug}>
                 <KingCard king={king} index={index} />

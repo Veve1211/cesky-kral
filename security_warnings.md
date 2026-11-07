@@ -5,7 +5,8 @@ Living list of known risks. Update with every feature.
 - **Route param `/kral/[slug]`**: slug is only used to look up a known king; unknown values return the 404 page. When the DB is connected, query by slug via Prisma (parameterized) – never build raw SQL from it. Note: with streaming (Cache Components) the 404 page is rendered but the HTTP status can be 200.
 - **XSS**: all text is rendered through React (auto-escaped). Never use `dangerouslySetInnerHTML` for seed content (questions, explanations).
 - **Secrets**: `DATABASE_URL` lives only in `.env.local` (git-ignored, `.env*` in .gitignore). `.env.example` contains placeholders only.
-- **sourceUrl / imageUrl** (future): validate they are `https://` URLs before rendering as links/images; add `rel="noopener noreferrer"` to external links.
+- **imageUrl**: only local paths matching `/kings/<slug>.webp` are rendered (`safeKingImage`); anything else from the DB falls back to the crest. No remote image hosts are allowed in `next.config`.
+- **External links** (sources, /zdroje): `target="_blank" rel="noopener noreferrer"`, hard-coded or `https://`-validated URLs only.
 - **localStorage progress** (future): data is user-controlled – parse defensively (try/catch, validate shape), never trust it for anything server-side.
 - **Seed on every deploy**: `prisma/seed.ts` runs on each `npm start`. It only deletes questions scoped by `kingId` of seeded kings (no unscoped DELETE). Content is validated (slug format, 5 questions, https sources) before any write.
 - **Slug lookup**: `getKingBySlug` rejects non-slug input (regex, max length) before querying; Prisma queries are parameterized.
@@ -14,3 +15,5 @@ Living list of known risks. Update with every feature.
 - **Known limitation – cheating**: anyone can call `checkAnswer` repeatedly (no rate limit, no session), and the collection lives in localStorage, so a player can edit it directly. Acceptable for a no-account demo; would need sessions + server-side progress for anything competitive.
 - **localStorage parsing**: `collection.ts` wraps all access in try/catch, limits raw size (50 kB), checks `version`, keeps only valid slugs, dedupes and caps the list. Corrupted data falls back to an empty collection.
 - **External source links**: rendered only for `https://` URLs with `target="_blank" rel="noopener noreferrer"`.
+- **Open Graph `metadataBase`**: taken from `RAILWAY_PUBLIC_DOMAIN` only if it matches a hostname pattern; otherwise localhost (no user input involved).
+- **Image licenses**: only public-domain images from Wikimedia Commons, each verified on its file page and listed on /zdroje before use.

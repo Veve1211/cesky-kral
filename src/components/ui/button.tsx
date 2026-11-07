@@ -12,9 +12,9 @@ const buttonVariants = cva(
         default:
           "bg-primary text-primary-foreground shadow-sm hover:bg-primary/90",
         accent:
-          "bg-accent text-accent-foreground shadow-sm hover:bg-accent/90",
+          "gilt text-navy font-bold shadow-md ring-1 ring-gold-dark/40 hover:bg-right hover:shadow-lg transition-[background-position,box-shadow] duration-500",
         outline:
-          "border-2 border-primary/15 bg-card text-foreground shadow-xs hover:border-accent hover:bg-accent/10",
+          "border-2 border-gold/50 bg-parchment text-foreground shadow-xs hover:border-gold hover:bg-[#f8f0d8]",
         ghost: "hover:bg-primary/5",
         link: "text-primary underline-offset-4 hover:underline",
       },

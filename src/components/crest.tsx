@@ -35,9 +35,9 @@ export function Crest({
         x="60"
         y="85"
         textAnchor="middle"
-        fontFamily="var(--font-playfair), serif"
+        fontFamily="var(--font-uncial), serif"
         fontSize="56"
-        fontWeight="700"
+        fontWeight="400"
         fill={locked ? "#3a4767" : "var(--brand-gold)"}
       >
         {locked ? "?" : initial}
