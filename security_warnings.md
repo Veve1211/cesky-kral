@@ -9,4 +9,8 @@ Living list of known risks. Update with every feature.
 - **localStorage progress** (future): data is user-controlled – parse defensively (try/catch, validate shape), never trust it for anything server-side.
 - **Seed on every deploy**: `prisma/seed.ts` runs on each `npm start`. It only deletes questions scoped by `kingId` of seeded kings (no unscoped DELETE). Content is validated (slug format, 5 questions, https sources) before any write.
 - **Slug lookup**: `getKingBySlug` rejects non-slug input (regex, max length) before querying; Prisma queries are parameterized.
-- **Answer order**: seed stores the correct answer first – the game must shuffle answers and must not send `isCorrect` to the client before the player answers.
+- **Answer correctness**: questions sent to the browser contain only answer `id` + `text` (no `isCorrect`, no explanation). Answers are shuffled on the server (crypto `randomInt`). Correctness is checked by the `checkAnswer` server action.
+- **`checkAnswer` input**: both ids must be positive safe integers ≤ INT max, and the answer must belong to the question; otherwise a generic error is returned. Only `correct`, `correctAnswerId`, `explanation` and an `https://` source are returned.
+- **Known limitation – cheating**: anyone can call `checkAnswer` repeatedly (no rate limit, no session), and the collection lives in localStorage, so a player can edit it directly. Acceptable for a no-account demo; would need sessions + server-side progress for anything competitive.
+- **localStorage parsing**: `collection.ts` wraps all access in try/catch, limits raw size (50 kB), checks `version`, keeps only valid slugs, dedupes and caps the list. Corrupted data falls back to an empty collection.
+- **External source links**: rendered only for `https://` URLs with `target="_blank" rel="noopener noreferrer"`.

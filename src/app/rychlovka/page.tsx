@@ -1,9 +1,11 @@
+import { Suspense } from "react";
 import type { Metadata } from "next";
-import { Timer, Zap } from "lucide-react";
+import { connection } from "next/server";
+import { Zap } from "lucide-react";
 
-import { QuestionSkeleton } from "@/components/question-skeleton";
-import { Progress } from "@/components/ui/progress";
+import { Quiz } from "@/components/quiz";
 import { QUICK_ROUND_QUESTIONS } from "@/lib/game-rules";
+import { getRandomQuestions } from "@/lib/questions";
 
 export const metadata: Metadata = {
   title: "Rychlovka",
@@ -19,24 +21,21 @@ export default function QuickRoundPage() {
         <h1 className="text-3xl font-bold">Rychlovka</h1>
         <p className="text-parchment/80">
           {QUICK_ROUND_QUESTIONS} náhodných otázek napříč všemi králi. Kolik jich
-          dáš?
+          dáš? Do sbírky se nepočítá, jde jen o skóre.
         </p>
       </header>
 
-      <div className="flex flex-col gap-2">
-        <div className="flex justify-between text-sm">
-          <span>
-            Otázka <strong>1</strong> z {QUICK_ROUND_QUESTIONS}
-          </span>
-          <span className="flex items-center gap-1 text-muted-foreground">
-            <Timer className="size-4" aria-hidden />
-            Skóre 0
-          </span>
-        </div>
-        <Progress value={0} max={QUICK_ROUND_QUESTIONS} label="Postup v rychlovce" />
-      </div>
-
-      <QuestionSkeleton />
+      <Suspense
+        fallback={<div className="h-80 animate-pulse rounded-2xl bg-card" />}
+      >
+        <QuickRound />
+      </Suspense>
     </div>
   );
+}
+
+async function QuickRound() {
+  await connection();
+  const questions = await getRandomQuestions(QUICK_ROUND_QUESTIONS);
+  return <Quiz mode="quick" questions={questions} />;
 }
