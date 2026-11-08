@@ -169,9 +169,21 @@ function KingCardFace({
               {king.title}
             </p>
             <h3 className="text-xl leading-tight font-bold sm:text-2xl">{king.name}</h3>
+            {/* Years stay hidden until the king is collected, so the gallery
+                can't be used as a cheat sheet for "Kdo vládl dřív?". */}
             {reign && (
-              <p className={cn("text-xs", locked ? "text-parchment/70" : "text-muted-foreground")}>
-                {reign}
+              <p
+                data-testid="king-card-reign"
+                className={cn("text-xs tabular-nums", locked ? "text-parchment/70" : "text-muted-foreground")}
+              >
+                {locked ? (
+                  <>
+                    <span aria-hidden>???? – ????</span>
+                    <span className="sr-only">roky jsou skryté</span>
+                  </>
+                ) : (
+                  reign
+                )}
               </p>
             )}
           </div>

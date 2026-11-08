@@ -87,7 +87,7 @@ Pokud NODE_ENV=production:
 - Nadpisy: Grenze Gotisch, iniciály/erby: Uncial Antiqua, text: Inter (všechna ověřená na ř, ě, ů, ť, ď)
 - Styl: iluminovaný rukopis – pergamen z CSS gradientů, zlacené rámy (`.gilt`), vlastní SVG ornamenty, zlatá iniciála; animace: otočení karty po výhře, zelené pulznutí / zatřesení, zlatá karta (`.golden-frame` + `.golden-sheet` + `.golden-sheen`), slavnostní obrazovka „Český král / Česká královna“; respektuje prefers-reduced-motion
 - Mobile first
-- Nezískaný král: tmavá silueta obrázku (nebo erbu) se zlatým otazníkem
+- Nezískaný král: tmavá silueta obrázku (nebo erbu) se zlatým otazníkem; roky vlády skryté jako „???? – ????“
 - Obrázky králů: jen public domain z Wikimedia Commons, `public/kings/<slug>.webp` (max 800 px), kredity v `src/lib/image-credits.ts` → stránka /zdroje
 
 ## Struktura projektu
@@ -142,6 +142,7 @@ Pokud NODE_ENV=production:
 
 - 2026-11-08: Kdo vládl dřív? – karty do prohlížeče bez roků, roky vrací až server action po odpovědi; remíza v roce = správně obojí
 - 2026-11-08: E2E testy Playwright; data seedu přesunuta do `prisma/seed-data.ts` (beze změny obsahu), aby je testy mohly importovat; mobil testován v Chromiu (jeden prohlížeč stačí)
+- 2026-11-08: galerie ukazuje roky vlády jen u získaných panovníků (jinak „???? – ????“), aby nešlo opisovat do Kdo vládl dřív?; test `e2e/hidden-reign.spec.ts`
 
 ## Údržba tohoto souboru
 - Aktualizuj po každé strukturální změně, novém pravidlu nebo rozhodnutí
