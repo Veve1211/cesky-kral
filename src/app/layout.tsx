@@ -27,6 +27,7 @@ const uncial = Uncial_Antiqua({
 });
 
 const SITE_NAME = "Český král";
+const SITE_YEAR = 2026;
 const SITE_DESCRIPTION =
   "Odpovídej na otázky o českých panovnících a sbírej je jako sběratelské karty z erbovní knihy.";
 
@@ -40,7 +41,7 @@ function siteUrl(): URL {
 export const metadata: Metadata = {
   metadataBase: siteUrl(),
   title: {
-    default: `${SITE_NAME} – kvíz o českých panovnících`,
+    default: `${SITE_NAME} – Sbírej české panovníky`,
     template: `%s | ${SITE_NAME}`,
   },
   description: SITE_DESCRIPTION,
@@ -76,11 +77,11 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <footer className="flex flex-col items-center gap-2 px-4 pt-4 pb-8 text-center text-xs text-muted-foreground">
           <OrnamentDivider className="max-w-[12rem]" />
           <p>
-            <span className="font-heading text-sm">Český král</span> · ukázkový
-            projekt ·{" "}
+            <span className="font-heading text-sm">Český král</span> ·{" "}
             <Link href="/zdroje" className="underline underline-offset-4 hover:text-foreground">
               Zdroje obrázků a písem
-            </Link>
+            </Link>{" "}
+            · {SITE_YEAR}
           </p>
         </footer>
       </body>

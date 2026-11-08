@@ -18,3 +18,5 @@ Living list of known risks. Update with every feature.
 - **Open Graph `metadataBase`**: taken from `RAILWAY_PUBLIC_DOMAIN` only if it matches a hostname pattern; otherwise localhost (no user input involved).
 - **Image licenses**: only public-domain images from Wikimedia Commons, each verified on its file page and listed on /zdroje before use.
 - **Question difficulty**: DB CHECK constraint (1–3), seed validates exactly 3+3+3 questions per king and no duplicate texts; server maps any unexpected value to a safe default (`toDifficulty`).
+- **King title / legend**: DB CHECK limits `title` to kníže/kněžna/král/královna; app maps unknown values to „král“ (`toKingTitle`). Seed requires years for non-legends and both-or-none for legends.
+- **Image licenses**: a file with an unclear license template (e.g. `PD-CzechGov` on a modern photo of a seal) is NOT used – the crest stays instead.

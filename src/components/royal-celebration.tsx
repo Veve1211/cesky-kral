@@ -46,12 +46,13 @@ export function RoyalCelebration({
           Všech {total} panovníků ve sbírce
         </p>
         <h2 id="celebration-heading" className="text-4xl font-bold sm:text-5xl">
-          Jsi <span className="gilt-text animate-shimmer">{RANKS[3]}</span>
+          <span className="block text-2xl text-parchment/90 sm:text-3xl">Jsi</span>{" "}
+          <span className="gilt-text animate-shimmer">{RANKS[3]}</span>
         </h2>
         <OrnamentDivider />
         <p className="max-w-md text-parchment/85">
-          Sbírka je kompletní a král tě povolává ke svému dvoru. Zkus ještě
-          rychlovku a ukaž, že rada krále má vždycky pravdu.
+          Erbovní kniha je kompletní a koruna je tvoje. Vládni moudře a ukaž
+          v rychlovce, že panovník zná dějiny své země.
         </p>
         {children}
       </div>

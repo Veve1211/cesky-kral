@@ -10,6 +10,7 @@ export type QuizQuestion = {
   text: string;
   difficulty: 1 | 2 | 3;
   kingName: string;
+  isLegend: boolean;
   answers: QuizAnswer[];
 };
 

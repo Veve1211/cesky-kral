@@ -14,8 +14,11 @@ model King {
   id        Int        @id @default(autoincrement())
   name      String
   slug      String     @unique
-  reignFrom Int
-  reignTo   Int
+  reignFrom Int? // null for legendary figures
+  reignTo   Int?
+  /// kníže / kněžna / král / královna (CHECK constraint in migration)
+  title     String     @default("král")
+  isLegend  Boolean    @default(false)
   dynasty   String
   shortBio  String
   imageUrl  String?

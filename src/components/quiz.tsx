@@ -9,6 +9,7 @@ import { checkAnswer } from "@/app/actions/quiz";
 import { DifficultyBadge } from "@/components/difficulty-badge";
 import { KingPortrait } from "@/components/king-portrait";
 import { KnightOath } from "@/components/knight-oath";
+import { LegendBadge } from "@/components/legend-badge";
 import { CardCorners, OrnamentDivider } from "@/components/ornaments";
 import { RoyalCelebration } from "@/components/royal-celebration";
 import { Button } from "@/components/ui/button";
@@ -154,8 +155,9 @@ export function Quiz(props: QuizProps) {
         <CardCorners className="m-1 size-8 text-gold-dark" />
         <CardHeader>
           <div className="flex items-center justify-between gap-3">
-            <p className="text-xs font-semibold tracking-[0.2em] text-gold-dark uppercase">
+            <p className="flex flex-wrap items-center gap-2 text-xs font-semibold tracking-[0.2em] text-gold-dark uppercase">
               {props.mode === "quick" ? question.kingName : `Otázka ${index + 1}`}
+              {props.mode === "quick" && question.isLegend && <LegendBadge />}
             </p>
             <DifficultyBadge difficulty={question.difficulty} className="mr-4" />
           </div>

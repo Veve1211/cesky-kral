@@ -3,7 +3,7 @@ import { join } from "node:path";
 import { ImageResponse } from "next/og";
 
 // Open Graph preview (generated at build time).
-export const alt = "Český král – kvíz o českých panovnících";
+export const alt = "Český král – Sbírej české panovníky";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
@@ -76,7 +76,7 @@ export default async function OpenGraphImage() {
               maxWidth: 900,
             }}
           >
-            Kvíz o českých panovnících. Odpovídej a sbírej krále jako karty.
+            Sbírej české panovníky. Odpovídej na otázky a získej jejich karty.
           </div>
         </div>
       </div>
