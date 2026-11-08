@@ -2,6 +2,7 @@ import { Suspense } from "react";
 import { connection } from "next/server";
 
 import { CollectionGallery } from "@/components/collection-gallery";
+import { DailyHomeButton } from "@/components/daily-home-button";
 import { IlluminatedInitial } from "@/components/illuminated-initial";
 import { CardCorners, OrnamentDivider } from "@/components/ornaments";
 import { ReignTimeline } from "@/components/reign-timeline";
@@ -20,6 +21,7 @@ export default function HomePage() {
           Erbovní kniha <span className="gilt-text gilt-text-ink animate-shimmer">českých panovníků</span>
         </h1>
         <OrnamentDivider />
+        <DailyHomeButton />
       </section>
 
       {/* Static shell above renders instantly; everything below streams in with one DB query. */}

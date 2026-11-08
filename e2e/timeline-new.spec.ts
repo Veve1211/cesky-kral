@@ -91,6 +91,8 @@ test("poškozený záznam o zhlédnutí stránku neshodí, štítek se jen uká�
     await page.evaluate(([key, value]) => window.localStorage.setItem(key, value), [SEEN_KEY, raw]);
     await open(page, "/");
     await expect(stop(page, rudolf.name).getByTestId("new-badge")).toBeVisible();
+    // Let this visit finish saving "seen" before the next corrupted value goes in.
+    await waitUntilSeen(page, rudolf.slug);
   }
   expect(errors).toEqual([]);
 });
