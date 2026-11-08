@@ -7,9 +7,11 @@ import { ArrowLeft } from "lucide-react";
 
 import { IlluminatedInitial } from "@/components/illuminated-initial";
 import { KingPortrait } from "@/components/king-portrait";
+import { LegendBadge } from "@/components/legend-badge";
 import { CardCorners, OrnamentDivider } from "@/components/ornaments";
 import { Quiz } from "@/components/quiz";
 import { CORRECT_TO_COLLECT } from "@/lib/game-rules";
+import { formatReign, LEGEND_NOTE } from "@/lib/king-display";
 import { getKingBySlug, getKingSlugs, kingInitial } from "@/lib/kings";
 import { getKingQuestions } from "@/lib/questions";
 
@@ -74,10 +76,20 @@ async function KingGame({ params }: { params: Promise<{ slug: string }> }) {
           <p className="text-xs font-semibold tracking-[0.2em] text-gold-dark uppercase">
             Hra o kartu · {CORRECT_TO_COLLECT} z 5 správně
           </p>
+          <div className="my-1 h-px w-12 bg-gold/60" aria-hidden />
+          <p className="text-xs font-semibold tracking-[0.2em] text-gold-dark uppercase">
+            {king.title}
+          </p>
           <h1 className="text-4xl leading-tight font-bold sm:text-5xl">{king.name}</h1>
           <p className="text-sm text-muted-foreground">
-            {king.reignFrom}–{king.reignTo} · {king.dynasty}
+            {[formatReign(king), king.dynasty].filter(Boolean).join(" · ")}
           </p>
+          {king.isLegend && (
+            <div className="mt-2 flex flex-col items-center gap-2">
+              <LegendBadge />
+              <p className="text-sm font-medium text-ink/80 italic">{LEGEND_NOTE}</p>
+            </div>
+          )}
         </div>
         <OrnamentDivider />
         {bio && (

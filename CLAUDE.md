@@ -4,7 +4,7 @@
 
 ## Projekt
 - Název: Český král
-- Popis: webová kvízová hra o českých dějinách. Hráč odpovídá na otázky o panovnících a sbírá je jako sběratelské karty.
+- Popis: webová kvízová hra o českých dějinách. Hráč odpovídá na otázky o panovnících a sbírá je jako sběratelské karty. Podtitul: „Sbírej české panovníky“.
 - Cíl: ukázkový projekt do portfolia, celý stack od databáze po nasazení
 - Inspirace principu: trefujse.cz (krátká kola, 3 odpovědi, okamžitá zpětná vazba). Nekopíruj vzhled ani texty.
 - Cílová skupina: veřejnost, hlavně na mobilu
@@ -32,11 +32,13 @@
 - Po odpovědi hned ukaž správně/špatně + jednu větu vysvětlení.
 - 4 a více správně z 5 = král se přidá do sbírky.
 - Rychlovka: 10 náhodných otázek napříč králi, seřazených od lehkých po těžké.
-- Hodnosti podle počtu získaných králů: panoš → rytíř → šlechtic → rádce krále.
+- Hodnosti podle podílu získaných panovníků: panoš → rytíř → šlechtic → Český král / Česká královna (všichni).
+- Pověstné postavy (`isLegend`): štítek „Pověst“ na kartě i ve hře, ve hře věta „Otázky jsou o pověsti, ne o doložené historii.“, roky se nezobrazují.
+- Na kartě se zobrazuje titul (kníže / kněžna / král / královna).
 - Postup hráče se ukládá v prohlížeči (localStorage), bez účtů.
 
 ## Datový model
-- King: name, slug, reignFrom, reignTo, dynasty, shortBio, imageUrl, order
+- King: name, slug, reignFrom?, reignTo? (prázdné u pověstí), title (kníže/kněžna/král/královna, CHECK v DB), isLegend, dynasty, shortBio, imageUrl?, order
 - Question: kingId, text, explanation, sourceUrl, difficulty (1 lehká, 2 střední, 3 těžká; CHECK 1–3 v DB)
 - Answer: questionId, text, isCorrect
 - Obsah se nahrává přes Prisma seed (prisma/seed.ts).
@@ -77,7 +79,7 @@ Pokud NODE_ENV=production:
 - Akcent: #c9a227 (zlatá)
 - Pozadí karet: #f5efe0 (pergamen)
 - Nadpisy: Grenze Gotisch, iniciály/erby: Uncial Antiqua, text: Inter (všechna ověřená na ř, ě, ů, ť, ď)
-- Styl: iluminovaný rukopis – pergamen z CSS gradientů, zlacené rámy (`.gilt`), vlastní SVG ornamenty, zlatá iniciála; animace: otočení karty po výhře, zelené pulznutí / zatřesení, slavnostní obrazovka Rádce krále; respektuje prefers-reduced-motion
+- Styl: iluminovaný rukopis – pergamen z CSS gradientů, zlacené rámy (`.gilt`), vlastní SVG ornamenty, zlatá iniciála; animace: otočení karty po výhře, zelené pulznutí / zatřesení, slavnostní obrazovka „Český král / Česká královna“; respektuje prefers-reduced-motion
 - Mobile first
 - Nezískaný král: tmavá silueta obrázku (nebo erbu) se zlatým otazníkem
 - Obrázky králů: jen public domain z Wikimedia Commons, `public/kings/<slug>.webp` (max 800 px), kredity v `src/lib/image-credits.ts` → stránka /zdroje
@@ -86,9 +88,9 @@ Pokud NODE_ENV=production:
 - Next.js 16 (App Router, `src/`, Cache Components zapnuté), Tailwind 4, Prisma 7
 - `src/app/` – stránky: `page.tsx` (galerie /), `kral/[slug]/` (hra), `rychlovka/`, `zdroje/` (licence obrázků a písem), `not-found.tsx`, `layout.tsx` (fonty, hlavička, metadata), `opengraph-image.tsx` (náhled pro sdílení), `globals.css` (barvy, pergamen, animace)
 - `src/app/actions/quiz.ts` – server action `checkAnswer` (ověření odpovědi na serveru)
-- `src/components/` – `site-header`, `king-card`, `king-portrait` (zlatý rám, silueta), `crest` (erb s iniciálou = placeholder), `ornaments` (rohy, oddělovač, koruna), `illuminated-initial`, `royal-celebration`, `difficulty-badge` (korunky), `knight-oath` (rytířský slib), `quiz` (hra + výsledky + otočení karty, klient), `collection-gallery` (klient)
+- `src/components/` – `site-header`, `king-card`, `king-portrait` (zlatý rám, silueta), `crest` (erb s iniciálou = placeholder), `ornaments` (rohy, oddělovač, koruna), `illuminated-initial`, `royal-celebration`, `legend-badge` (Pověst), `difficulty-badge` (korunky), `knight-oath` (rytířský slib), `quiz` (hra + výsledky + otočení karty, klient), `collection-gallery` (klient)
 - `src/components/ui/` – shadcn komponenty (button, card, progress)
-- `src/lib/` – `utils.ts` (cn), `game-rules.ts` (konstanty, `getRank`), `prisma.ts` (klient s adapterem pg), `kings.ts` (dotazy na krále), `questions.ts` (otázky bez správnosti, míchání), `quiz-types.ts`, `collection.ts` (sbírka v localStorage), `slug.ts`, `king-initial.ts`, `king-image.ts` (povolené cesty obrázků), `image-credits.ts`
+- `src/lib/` – `utils.ts` (cn), `game-rules.ts` (konstanty, `getRank`), `prisma.ts` (klient s adapterem pg), `kings.ts` (dotazy na krále), `questions.ts` (otázky bez správnosti, míchání), `quiz-types.ts`, `collection.ts` (sbírka v localStorage), `slug.ts`, `king-initial.ts`, `king-image.ts` (povolené cesty obrázků), `king-display.ts` (titul, roky, text o pověsti), `image-credits.ts`
 - `assets/fonts/` – TTF písma pro generování OG obrázku (+ OFL licence)
 - `prisma/schema.prisma` – King, Question, Answer; `prisma/migrations/` – migrace; `prisma/seed.ts` – obsah (idempotentní); `prisma.config.ts` čte `.env.local`
 - `src/generated/prisma` – vygenerovaný klient (gitignored, `npm install` ho vytvoří přes postinstall)
@@ -103,14 +105,17 @@ Pokud NODE_ENV=production:
 - 2026-11-07: seed při každém deployi v jedné transakci; nejdřív posune `order` existujících králů na dočasné záporné hodnoty (unikátní order), pak upsert podle slug; otázky krále se smažou (WHERE kingId) a vloží znovu
 - 2026-11-07: nezískaný král v galerii ukazuje jméno a roky, erb je silueta s otazníkem
 - 2026-11-07: správnost odpovědi zná jen server; odpovědi se míchají na serveru při každém načtení
-- 2026-11-07: hodnost podle podílu sbírky: 0 = panoš, < 1/2 = rytíř, ≥ 1/2 = šlechtic, všichni = rádce krále
+- 2026-11-07: hodnost podle podílu sbírky: 0 = panoš, < 1/2 = rytíř, ≥ 1/2 = šlechtic, všichni = Český král / Česká královna (dříve Rádce krále)
 - 2026-11-07: localStorage klíč `cesky-kral:collection`, tvar `{ version: 1, kings: string[] }`
 - 2026-11-07: Railway nastaven (DATABASE_URL, doména) a nasazuje z větve dev; PR do main zatím nedělat
 - 2026-11-07: vzhled iluminovaného rukopisu; Playfair nahrazen Grenze Gotisch (Almendra nemá ť/ď, Unifraktur nemá české znaky)
 - 2026-11-07: cloud prostředí `cesky-kral` povoluje Wikimedia Commons (Default ho blokuje); Commons omezuje počet stažení – stahovat pomalu, se slušným User-Agent
-- 2026-11-07: panovníci podle doby (order): Přemysl Otakar II., Václav II., Jan Lucemburský, Karel IV., Marie Terezie
+- 2026-11-07: panovníci podle doby (order 1–11): Libuše, Svatý Václav, Přemysl Otakar II., Václav II., Jan Lucemburský, Karel IV., Jiří z Poděbrad, Rudolf II., Marie Terezie, Josef II., Karel I.
+- 2026-11-07: migrace `king_title_legend` (title + isLegend, roky nepovinné) – nedestruktivní
+- 2026-11-07: patička bez „ukázkový projekt“: jen Český král, odkaz na /zdroje a rok (`SITE_YEAR`)
 - 2026-11-07: obtížnost otázek (migrace `question_difficulty`, sloupec s výchozí 1, nedestruktivní); 9 otázek na krále
 - 2026-11-07: obrázky: Přemysl Otakar II. = jezdecká pečeť 1273 (kresba K. von Sava 1864, PD-old; Mucha má Unclear-PD-US), Karel IV. = výřez z votivního obrazu Jana Očka, Marie Terezie = kresba Meytens; Václav II. = Codex Manesse fol. 10r (PD-old-100), Jan Lucemburský = jezdecká pečeť, foto O. Posse 1909 (PD-old); všechny PD ověřené na Commons
+- 2026-11-07: obrázky dávky 3+4: Libuše = obraz K. V. Mašek 1893, sv. Václav = Gumpoldova legenda (Wolfenbüttel, fol. 18v, před 1006), Jiří = dřevořez M. Kuthen 1539, Rudolf II. = Hans von Aachen 1606–08, Josef II. = A. von Maron, Karel I. = foto E. Förster 1917 (LoC); vyřazeno: pečeť Jiřího (PD-CzechGov nejisté), foto Maškova obrazu (CC BY)
 
 ## Údržba tohoto souboru
 - Aktualizuj po každé strukturální změně, novém pravidlu nebo rozhodnutí

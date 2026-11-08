@@ -21,7 +21,7 @@ const questionSelect = {
   id: true,
   text: true,
   difficulty: true,
-  king: { select: { name: true } },
+  king: { select: { name: true, isLegend: true } },
   answers: { select: { id: true, text: true }, orderBy: { id: "asc" } },
 } as const;
 
@@ -29,7 +29,7 @@ type QuestionRow = {
   id: number;
   text: string;
   difficulty: number;
-  king: { name: string };
+  king: { name: string; isLegend: boolean };
   answers: { id: number; text: string }[];
 };
 
@@ -39,6 +39,7 @@ function toQuizQuestion(row: QuestionRow): QuizQuestion {
     text: row.text,
     difficulty: toDifficulty(row.difficulty),
     kingName: row.king.name,
+    isLegend: row.king.isLegend,
     answers: shuffle(row.answers),
   };
 }

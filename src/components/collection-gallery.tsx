@@ -79,7 +79,10 @@ export function CollectionGallery({ kings }: { kings: KingSummary[] }) {
         ) : (
           <ul className="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-5">
             {cards.map((king, index) => (
-              <li key={king.slug}>
+              <li
+                key={king.slug}
+                className="last:odd:col-span-2 last:odd:mx-auto last:odd:w-[calc(50%-0.375rem)] sm:last:odd:col-span-1 sm:last:odd:mx-0 sm:last:odd:w-auto"
+              >
                 <KingCard king={king} index={index} />
               </li>
             ))}
