@@ -8,6 +8,7 @@ import { ArrowLeft } from "lucide-react";
 import { GoldenHeaderFrame, GoldenRoundButton } from "@/components/golden-round-button";
 import { IlluminatedInitial } from "@/components/illuminated-initial";
 import { KingPortrait } from "@/components/king-portrait";
+import { KingReignLine } from "@/components/king-reign-line";
 import { LegendBadge } from "@/components/legend-badge";
 import { CardCorners, OrnamentDivider } from "@/components/ornaments";
 import { Quiz } from "@/components/quiz";
@@ -82,9 +83,7 @@ async function KingGame({ params }: { params: Promise<{ slug: string }> }) {
             {king.title}
           </p>
           <h1 className="text-4xl leading-tight font-bold sm:text-5xl">{king.name}</h1>
-          <p className="text-sm text-muted-foreground">
-            {[formatReign(king), king.dynasty].filter(Boolean).join(" · ")}
-          </p>
+          <KingReignLine slug={king.slug} reign={formatReign(king)} dynasty={king.dynasty} />
           {king.isLegend && (
             <div className="mt-2 flex flex-col items-center gap-2">
               <LegendBadge />

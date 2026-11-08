@@ -87,14 +87,14 @@ Pokud NODE_ENV=production:
 - Nadpisy: Grenze Gotisch, iniciály/erby: Uncial Antiqua, text: Inter (všechna ověřená na ř, ě, ů, ť, ď)
 - Styl: iluminovaný rukopis – pergamen z CSS gradientů, zlacené rámy (`.gilt`), vlastní SVG ornamenty, zlatá iniciála; animace: otočení karty po výhře, zelené pulznutí / zatřesení, zlatá karta (`.golden-frame` + `.golden-sheet` + `.golden-sheen`), slavnostní obrazovka „Český král / Česká královna“; respektuje prefers-reduced-motion
 - Mobile first
-- Nezískaný král: tmavá silueta obrázku (nebo erbu) se zlatým otazníkem; roky vlády skryté jako „???? – ????“
+- Nezískaný král: tmavá silueta obrázku (nebo erbu) se zlatým otazníkem; roky vlády skryté jako „???? – ????“ (galerie i /kral); Řeka času ukazuje jen získané
 - Obrázky králů: jen public domain z Wikimedia Commons, `public/kings/<slug>.webp` (max 800 px), kredity v `src/lib/image-credits.ts` → stránka /zdroje
 
 ## Struktura projektu
 - Next.js 16 (App Router, `src/`, Cache Components zapnuté), Tailwind 4, Prisma 7
 - `src/app/` – stránky: `page.tsx` (galerie /), `kral/[slug]/` (hra), `kral/[slug]/zlate-kolo/` (zlaté kolo), `rychlovka/`, `kdo-driv/` (Kdo vládl dřív?), `sbirka/` (Moje sbírka), `zdroje/` (licence obrázků a písem), `not-found.tsx`, `layout.tsx` (fonty, hlavička, metadata), `opengraph-image.tsx` (náhled pro sdílení), `globals.css` (barvy, pergamen, animace)
 - `src/app/actions/quiz.ts` – server action `checkAnswer` (ověření odpovědi na serveru); `actions/who-first.ts` – `checkWhoFirst`
-- `src/components/` – `site-header`, `site-nav` (navigace, aktivní odkaz; klient v Suspense), `king-card`, `king-portrait` (zlatý rám, silueta), `crest` (erb s iniciálou = placeholder), `ornaments` (rohy, oddělovač, koruna), `illuminated-initial`, `royal-celebration`, `legend-badge` (Pověst), `difficulty-badge` (korunky), `knight-oath` (rytířský slib), `quiz` (hra + výsledky + otočení karty, klient), `collection-gallery` (galerie /, klient), `collection-summary` (`useCollectionSummary`, `CollectionStatus`, `GoldenCount`, `KingGrid` – sdílí galerie i /sbirka), `my-collection` (/sbirka, klient), `chronicle-dialog` (kronika, klient), `golden-badge` (Zlatá karta), `golden-round-button` (tlačítko zlatého kola + zlatý rám hlavičky panovníka, klient), `reign-timeline` (Řeka času, klient), `who-first-game` (Kdo vládl dřív?, `full` / `teaser`, klient)
+- `src/components/` – `site-header`, `site-nav` (navigace, aktivní odkaz; klient v Suspense), `king-card`, `king-portrait` (zlatý rám, silueta), `crest` (erb s iniciálou = placeholder), `ornaments` (rohy, oddělovač, koruna), `illuminated-initial`, `royal-celebration`, `legend-badge` (Pověst), `difficulty-badge` (korunky), `knight-oath` (rytířský slib), `quiz` (hra + výsledky + otočení karty, klient), `collection-gallery` (galerie /, klient), `collection-summary` (`useCollectionSummary`, `CollectionStatus`, `GoldenCount`, `KingGrid` – sdílí galerie i /sbirka), `my-collection` (/sbirka, klient), `chronicle-dialog` (kronika, klient), `golden-badge` (Zlatá karta), `golden-round-button` (tlačítko zlatého kola + zlatý rám hlavičky panovníka, klient), `reign-timeline` (Řeka času jen se získanými + „a ještě X neznámých panovníků“, klient), `king-reign-line` (roky na /kral podle sbírky, klient), `who-first-game` (Kdo vládl dřív?, `full` / `teaser`, klient)
 - `src/components/ui/` – shadcn komponenty (button, card, progress, dialog)
 - `src/lib/` – `utils.ts` (cn), `game-rules.ts` (konstanty, `getRank`), `prisma.ts` (klient s adapterem pg), `kings.ts` (dotazy na krále), `questions.ts` (otázky bez správnosti, míchání, `getGoldenQuestions`), `quiz-types.ts`, `collection.ts` (sbírka + zlaté karty v localStorage, verze 2, `useCollectionReady`), `slug.ts`, `king-initial.ts`, `king-image.ts` (povolené cesty obrázků), `king-display.ts` (titul, roky, text o pověsti), `chronicle.ts` (typ + bezpečné čtení kroniky a oddílů), `who-first.ts` (typy, `pickPair`), `who-first-best.ts` (nejlepší série v localStorage), `image-credits.ts`
 - `assets/fonts/` – TTF písma pro generování OG obrázku (+ OFL licence)
@@ -142,7 +142,8 @@ Pokud NODE_ENV=production:
 
 - 2026-11-08: Kdo vládl dřív? – karty do prohlížeče bez roků, roky vrací až server action po odpovědi; remíza v roce = správně obojí
 - 2026-11-08: E2E testy Playwright; data seedu přesunuta do `prisma/seed-data.ts` (beze změny obsahu), aby je testy mohly importovat; mobil testován v Chromiu (jeden prohlížeč stačí)
-- 2026-11-08: galerie ukazuje roky vlády jen u získaných panovníků (jinak „???? – ????“), aby nešlo opisovat do Kdo vládl dřív?; test `e2e/hidden-reign.spec.ts`
+- 2026-11-08: galerie ukazuje roky vlády jen u získaných panovníků (jinak „???? – ????“), aby nešlo opisovat do Kdo vládl dřív?; totéž /kral a Řeka času (nezískaní jen jako počet, bez jmen, odkazů a pořadí); test `e2e/hidden-reign.spec.ts`
+- 2026-11-08: roky všech panovníků zůstávají v datech stránky (zdrojový kód) – vědomě: hra není ochrana proti podvádění, roky jsou veřejně dostupné
 
 ## Údržba tohoto souboru
 - Aktualizuj po každé strukturální změně, novém pravidlu nebo rozhodnutí

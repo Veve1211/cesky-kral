@@ -32,8 +32,9 @@ function byReign(kings: KingSummary[]): KingSummary[] {
  * "Řeka času" – the rulers in the order they reigned.
  * `full` (Moje sbírka): vertical on mobile, horizontal from `lg`.
  * `compact` (home page): one horizontal strip that scrolls on its own.
- * Collected: small portrait + name + years (click = chronicle);
- * missing: a dot with a question mark (click = play for the card).
+ * Only collected kings are shown (portrait + name + years, click = chronicle).
+ * The rest is one line "a ještě X neznámých panovníků" – no names, links or
+ * order, so the river can't be used to answer "Kdo vládl dřív?".
  */
 export function ReignTimeline({ kings, variant }: { kings: KingSummary[]; variant: Variant }) {
   const collection = useCollection();
@@ -43,6 +44,9 @@ export function ReignTimeline({ kings, variant }: { kings: KingSummary[]; varian
 
   if (kings.length === 0) return null;
 
+  const known = byReign(kings).filter((king) => owned.has(king.slug));
+  const unknownCount = kings.length - known.length;
+
   return (
     <section aria-labelledby={`timeline-${variant}`} className="flex min-w-0 flex-col gap-2">
       <div className={cn("flex flex-col", compact ? "items-center gap-0.5 text-center sm:items-start sm:text-left" : "items-center gap-1 text-center sm:items-start sm:text-left")}>
@@ -50,7 +54,9 @@ export function ReignTimeline({ kings, variant }: { kings: KingSummary[]; varian
           Řeka času
         </h2>
         <p className="text-xs text-muted-foreground sm:text-sm">
-          {compact ? (
+          {known.length === 0 ? (
+            "Získej panovníka a objeví se tu."
+          ) : compact ? (
             <>
               <span className="lg:hidden">Posuň do strany. </span>Klepni na panovníka.
             </>
@@ -68,58 +74,77 @@ export function ReignTimeline({ kings, variant }: { kings: KingSummary[]; varian
             : "px-4 py-5 sm:px-6",
         )}
         // A scrollable region must be reachable from the keyboard.
-        tabIndex={compact ? 0 : undefined}
+        tabIndex={compact && known.length > 0 ? 0 : undefined}
         role={compact ? "region" : undefined}
         aria-label={compact ? "Řeka času, posuvný pruh" : undefined}
       >
-        <ol
-          className={cn(
-            "relative flex",
-            compact
-              ? "w-max min-w-full flex-row px-3 pt-3 pb-2.5"
-              : "flex-col gap-3 lg:flex-row lg:gap-0",
-          )}
-        >
-          {/* the gilded river */}
-          <span
-            aria-hidden
+        {known.length > 0 && (
+          <ol
             className={cn(
-              "gilt absolute rounded-full",
+              "relative flex",
               compact
-                ? "inset-x-6 top-[32px] h-[3px]"
-                : "top-4 bottom-4 left-[26.5px] w-[3px] lg:inset-x-8 lg:top-[26.5px] lg:bottom-auto lg:h-[3px] lg:w-auto",
+                ? "w-max min-w-full flex-row px-3 pt-3 pb-2.5"
+                : "flex-col gap-3 lg:flex-row lg:gap-0",
             )}
-          />
-          {byReign(kings).map((king) => (
-            <li
-              key={king.slug}
+          >
+            {/* the gilded river */}
+            <span
+              aria-hidden
               className={cn(
-                "relative",
-                compact ? "w-[78px] shrink-0" : "lg:min-w-0 lg:flex-1",
+                "gilt absolute rounded-full",
+                compact
+                  ? "inset-x-6 top-[32px] h-[3px]"
+                  : "top-4 bottom-4 left-[26.5px] w-[3px] lg:inset-x-8 lg:top-[26.5px] lg:bottom-auto lg:h-[3px] lg:w-auto",
               )}
-            >
-              <TimelineStop
-                king={king}
-                collected={owned.has(king.slug)}
-                golden={owned.has(king.slug) && golden.has(king.slug)}
-                compact={compact}
-              />
-            </li>
-          ))}
-        </ol>
+            />
+            {known.map((king) => (
+              <li
+                key={king.slug}
+                className={cn(
+                  "relative",
+                  compact ? "w-[78px] shrink-0" : "lg:min-w-0 lg:flex-1",
+                )}
+              >
+                <TimelineStop king={king} golden={golden.has(king.slug)} compact={compact} />
+              </li>
+            ))}
+          </ol>
+        )}
+        {unknownCount > 0 && (
+          <p
+            className={cn(
+              "flex items-center gap-2 text-sm text-muted-foreground italic",
+              compact ? "px-4 pb-3" : "",
+              compact && known.length === 0 && "pt-3",
+              !compact && known.length > 0 && "mt-4",
+            )}
+          >
+            <MissingDot compact={compact} />
+            <span data-testid="timeline-unknown">{unknownLabel(unknownCount, known.length > 0)}</span>
+          </p>
+        )}
       </div>
     </section>
   );
 }
 
+/** "a ještě 3 neznámí panovníci" (Czech plural forms; no "a ještě" when nobody is known). */
+function unknownLabel(count: number, afterKnown: boolean): string {
+  const noun =
+    count === 1
+      ? "neznámý panovník"
+      : count >= 2 && count <= 4
+        ? "neznámí panovníci"
+        : "neznámých panovníků";
+  return `${afterKnown ? "a ještě " : ""}${count} ${noun}`;
+}
+
 function TimelineStop({
   king,
-  collected,
   golden,
   compact,
 }: {
   king: KingSummary;
-  collected: boolean;
   golden: boolean;
   compact: boolean;
 }) {
@@ -140,47 +165,29 @@ function TimelineStop({
           compact ? "h-11 w-full" : "h-14 w-14 lg:w-full",
         )}
       >
-        {collected ? (
-          <Portrait king={king} golden={golden} compact={compact} />
-        ) : (
-          <MissingDot compact={compact} />
-        )}
+        <Portrait king={king} golden={golden} compact={compact} />
       </span>
       <span className={cn("flex min-w-0 flex-col", compact ? "items-center" : "items-start lg:items-center")}>
-        {collected && (
-          <span
-            className={cn(
-              "font-heading leading-tight font-bold text-balance group-hover:underline",
-              compact ? "text-[13px]" : "text-lg lg:text-sm",
-            )}
-          >
-            {king.name}
-          </span>
-        )}
+        <span
+          className={cn(
+            "font-heading leading-tight font-bold text-balance group-hover:underline",
+            compact ? "text-[13px]" : "text-lg lg:text-sm",
+          )}
+        >
+          {king.name}
+        </span>
         {king.isLegend ? (
           <LegendBadge className={cn("mt-0.5", compact && "px-1.5 text-[9px]")} />
         ) : (
-          collected &&
           reign && (
             <span className={cn("text-muted-foreground tabular-nums", compact ? "text-[10px]" : "text-xs")}>
               {reign}
             </span>
           )
         )}
-        {!collected && !compact && (
-          <span className="text-xs text-muted-foreground lg:hidden">Hrát o kartu</span>
-        )}
       </span>
     </>
   );
-
-  if (!collected) {
-    return (
-      <Link href={`/kral/${king.slug}`} aria-label={`${label} – hrát o kartu`} className={className}>
-        {body}
-      </Link>
-    );
-  }
 
   const status = golden ? "zlatá karta" : "ve sbírce";
 
@@ -245,8 +252,9 @@ function Ring({ golden, compact, children }: { golden: boolean; compact: boolean
 function MissingDot({ compact }: { compact: boolean }) {
   return (
     <span
+      aria-hidden
       className={cn(
-        "flex items-center justify-center rounded-full bg-navy font-heading font-bold text-gold shadow ring-2 ring-gold transition-transform duration-300 group-hover:scale-110",
+        "flex shrink-0 items-center justify-center rounded-full bg-navy font-heading font-bold not-italic text-gold shadow ring-2 ring-gold",
         compact ? "size-7 text-base" : "size-8 text-lg",
       )}
     >
