@@ -116,7 +116,10 @@ Pokud NODE_ENV=production:
 
 - Přístupnost kvízu: po změně otázky a výsledku fokus na nadpis (s pořadím/skóre pro čtečky), bez dalšího kroku v tabulátoru; regrese `e2e/quiz-accessibility.spec.ts`. Velké nadpisy na pergamenu používají `gilt-text gilt-text-ink` (WCAG AA ≥ 3 : 1), světlé zlato zůstává na tmavém pozadí.
 
+- Stabilita a 404: `e2e/loading-and-not-found.spec.ts` kontroluje pozdní načtení písem na úvodu, ve sbírce a ve hře; GET/HEAD 404 obou herních URL a HTTP 200 pro všech 12 panovníků i zlatá kola.
+
 ## Rozhodnutí
+- 2026-11-08: všechna tři písma se dál přednačítají; `display: optional` brání pozdní výměně písma a poskakování stránky. Na pomalé síti může v daném zobrazení zůstat náhradní písmo. `src/proxy.ts` před streamováním ověřuje existenci panovníka pro skutečné HTTP 404; běžné stránky dál streamují. Zbývající vývojová zranitelnost a důvod neprovedení rizikového upgradu jsou v `security_warnings.md`.
 - 2026-11-07: postup v localStorage místo účtů, protože jde o ukázkovou verzi bez přihlášení
 - 2026-11-07: shadcn/ui nastaveno ručně (ui.shadcn.com je z cloud prostředí blokované); nové komponenty kopírovat do `src/components/ui/`
 - 2026-11-07: Prisma 7.10.1 (stabilní; tag `latest` na npm je zatím RC verze 8)
