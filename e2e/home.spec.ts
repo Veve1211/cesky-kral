@@ -15,7 +15,9 @@ test("úvodní stránka: galerie se všemi panovníky, Řeka času a Kdo vládl 
 
   const timeline = page.getByRole("region", { name: "Řeka času", exact: true });
   await expect(timeline.getByRole("heading", { name: "Řeka času" })).toBeVisible();
-  await expect(timeline.getByRole("listitem")).toHaveCount(kings.length);
+  // Empty collection: no stops on the river, just the count of unknown rulers.
+  await expect(timeline.getByRole("listitem")).toHaveCount(0);
+  await expect(timeline.getByTestId("timeline-unknown")).toHaveText(`${kings.length} neznámých panovníků`);
 
   const whoFirst = page.getByRole("region", { name: "Kdo vládl dřív?" });
   await expect(whoFirst.getByRole("group", { name: "Kdo začal vládnout dřív?" }).getByRole("button")).toHaveCount(2);
