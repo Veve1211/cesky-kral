@@ -1,9 +1,10 @@
-# End-to-end tests (Playwright) for every pull request into dev.
+# End-to-end tests (Playwright) for every pull request into dev (staging)
+# and main (production).
 name: E2E tests
 
 on:
   pull_request:
-    branches: [dev]
+    branches: [dev, main]
   workflow_dispatch:
 
 permissions:
