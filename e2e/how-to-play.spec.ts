@@ -10,6 +10,8 @@ test("Jak hrát: odkaz v menu, pět kroků, časté otázky a tlačítko Hrát",
   const nav = page.getByRole("navigation", { name: "Hlavní navigace" });
   const link = nav.getByRole("link", { name: "Jak hrát" });
   await expect(link).toBeVisible();
+  // The label is shown as text, not only as an icon.
+  await expect(link.getByText("Jak hrát", { exact: true })).toBeVisible();
   await link.click();
   await expect(page).toHaveURL("/jak-hrat");
   await expect(page.getByRole("heading", { level: 1 })).toHaveText("Jak hrát");

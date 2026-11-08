@@ -7,10 +7,12 @@ import { SiteNav, SiteNavLinks } from "@/components/site-nav";
 export function SiteHeader() {
   return (
     <header className="sticky top-0 z-20 bg-navy/95 text-parchment shadow-md backdrop-blur">
-      <div className="mx-auto flex h-14 max-w-5xl items-center justify-between gap-1 px-3 min-[360px]:gap-2 min-[360px]:px-4">
-        <Link href="/" className="flex min-w-0 items-center gap-1.5 min-[360px]:gap-2">
-          <CrownMark className="h-4 w-6 shrink-0 text-gold min-[360px]:h-5 min-[360px]:w-7" />
-          <span className="truncate font-heading text-xl leading-none font-bold tracking-wide min-[360px]:text-2xl">
+      {/* One line when logo and menu fit; otherwise the menu wraps onto a
+          second line, so the logo stays whole and every label readable. */}
+      <div className="mx-auto flex min-h-14 max-w-5xl flex-wrap items-center justify-between gap-x-1 px-3 py-1 min-[390px]:gap-x-2 min-[390px]:px-4">
+        <Link href="/" className="flex min-h-12 items-center gap-1.5 min-[390px]:gap-2">
+          <CrownMark className="h-4 w-6 shrink-0 text-gold min-[390px]:h-5 min-[390px]:w-7" />
+          <span className="font-heading text-xl leading-none font-bold tracking-wide whitespace-nowrap min-[390px]:text-2xl">
             Český král
           </span>
         </Link>
