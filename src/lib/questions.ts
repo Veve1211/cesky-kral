@@ -1,7 +1,7 @@
 import "server-only";
 import { randomInt } from "node:crypto";
 
-import { ROUND_PLAN, toDifficulty } from "@/lib/game-rules";
+import { GOLDEN_DIFFICULTY, ROUND_PLAN, toDifficulty } from "@/lib/game-rules";
 import { getPrisma } from "@/lib/prisma";
 import { isValidSlug } from "@/lib/slug";
 import type { QuizQuestion } from "@/lib/quiz-types";
@@ -60,6 +60,19 @@ export async function getKingQuestions(slug: string): Promise<QuizQuestion[]> {
       .slice(0, count)
       .map(toQuizQuestion),
   );
+}
+
+/**
+ * Golden round: every hard question (difficulty 3) of the king,
+ * in random order.
+ */
+export async function getGoldenQuestions(slug: string): Promise<QuizQuestion[]> {
+  if (!isValidSlug(slug)) return [];
+  const rows = await getPrisma().question.findMany({
+    where: { king: { slug }, difficulty: GOLDEN_DIFFICULTY },
+    select: questionSelect,
+  });
+  return shuffle(rows).map(toQuizQuestion);
 }
 
 export async function getRandomQuestions(count: number): Promise<QuizQuestion[]> {

@@ -5,6 +5,7 @@ import { notFound } from "next/navigation";
 import { connection } from "next/server";
 import { ArrowLeft } from "lucide-react";
 
+import { GoldenHeaderFrame, GoldenRoundButton } from "@/components/golden-round-button";
 import { IlluminatedInitial } from "@/components/illuminated-initial";
 import { KingPortrait } from "@/components/king-portrait";
 import { LegendBadge } from "@/components/legend-badge";
@@ -61,7 +62,7 @@ async function KingGame({ params }: { params: Promise<{ slug: string }> }) {
 
   return (
     <>
-      <header className="parchment relative flex flex-col items-center gap-4 rounded-2xl p-5 text-center sm:p-6">
+      <GoldenHeaderFrame slug={king.slug}>
         <CardCorners className="m-1 size-8 text-gold-dark" />
         <div className="w-32 sm:w-36">
           <KingPortrait
@@ -99,7 +100,8 @@ async function KingGame({ params }: { params: Promise<{ slug: string }> }) {
             {bio.slice(1)}
           </p>
         )}
-      </header>
+        <GoldenRoundButton slug={king.slug} />
+      </GoldenHeaderFrame>
 
       <Quiz
         mode="king"

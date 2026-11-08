@@ -31,6 +31,7 @@
 - Na začátku hry o krále i rychlovky zdobný štítek „⚔️ Rytířský slib: Odlož AI i internet. Králové vše vidí. 👁️“.
 - Po odpovědi hned ukaž správně/špatně + jednu větu vysvětlení.
 - 4 a více správně z 5 = král se přidá do sbírky.
+- Zlaté kolo (mistrovská úroveň, `/kral/[slug]/zlate-kolo`): jen pro panovníka ve sbírce; všechny jeho těžké otázky v náhodném pořadí; všechny správně = zlatá karta (zlatý třpytivý rám všude). Tlačítko „✨ Zlaté kolo“ na kartě, v Moje sbírka i na stránce panovníka.
 - Rychlovka: 10 náhodných otázek napříč králi, seřazených od lehkých po těžké.
 - Hodnosti podle podílu získaných panovníků: panoš → rytíř → šlechtic → Český král / Česká královna (všichni).
 - Pověstné postavy (`isLegend`): štítek „Pověst“ na kartě i ve hře, ve hře věta „Otázky jsou o pověsti, ne o doložené historii.“, roky se nezobrazují.
@@ -79,18 +80,18 @@ Pokud NODE_ENV=production:
 - Akcent: #c9a227 (zlatá)
 - Pozadí karet: #f5efe0 (pergamen)
 - Nadpisy: Grenze Gotisch, iniciály/erby: Uncial Antiqua, text: Inter (všechna ověřená na ř, ě, ů, ť, ď)
-- Styl: iluminovaný rukopis – pergamen z CSS gradientů, zlacené rámy (`.gilt`), vlastní SVG ornamenty, zlatá iniciála; animace: otočení karty po výhře, zelené pulznutí / zatřesení, slavnostní obrazovka „Český král / Česká královna“; respektuje prefers-reduced-motion
+- Styl: iluminovaný rukopis – pergamen z CSS gradientů, zlacené rámy (`.gilt`), vlastní SVG ornamenty, zlatá iniciála; animace: otočení karty po výhře, zelené pulznutí / zatřesení, zlatá karta (`.golden-frame` + `.golden-sheet` + `.golden-sheen`), slavnostní obrazovka „Český král / Česká královna“; respektuje prefers-reduced-motion
 - Mobile first
 - Nezískaný král: tmavá silueta obrázku (nebo erbu) se zlatým otazníkem
 - Obrázky králů: jen public domain z Wikimedia Commons, `public/kings/<slug>.webp` (max 800 px), kredity v `src/lib/image-credits.ts` → stránka /zdroje
 
 ## Struktura projektu
 - Next.js 16 (App Router, `src/`, Cache Components zapnuté), Tailwind 4, Prisma 7
-- `src/app/` – stránky: `page.tsx` (galerie /), `kral/[slug]/` (hra), `rychlovka/`, `zdroje/` (licence obrázků a písem), `not-found.tsx`, `layout.tsx` (fonty, hlavička, metadata), `opengraph-image.tsx` (náhled pro sdílení), `globals.css` (barvy, pergamen, animace)
+- `src/app/` – stránky: `page.tsx` (galerie /), `kral/[slug]/` (hra), `kral/[slug]/zlate-kolo/`, `sbirka/` (Moje sbírka), `rychlovka/`, `zdroje/` (licence obrázků a písem), `not-found.tsx`, `layout.tsx` (fonty, hlavička, metadata), `opengraph-image.tsx` (náhled pro sdílení), `globals.css` (barvy, pergamen, animace)
 - `src/app/actions/quiz.ts` – server action `checkAnswer` (ověření odpovědi na serveru)
-- `src/components/` – `site-header`, `king-card`, `king-portrait` (zlatý rám, silueta), `crest` (erb s iniciálou = placeholder), `ornaments` (rohy, oddělovač, koruna), `illuminated-initial`, `royal-celebration`, `legend-badge` (Pověst), `difficulty-badge` (korunky), `knight-oath` (rytířský slib), `quiz` (hra + výsledky + otočení karty, klient), `collection-gallery` (klient)
+- `src/components/` – `site-header`, `king-card`, `king-portrait` (zlatý rám, silueta), `crest` (erb s iniciálou = placeholder), `ornaments` (rohy, oddělovač, koruna), `illuminated-initial`, `royal-celebration`, `legend-badge` (Pověst), `difficulty-badge` (korunky), `knight-oath` (rytířský slib), `quiz` (hra + výsledky + otočení karty, klient), `collection-gallery` (klient, `useKingCards`, `GoldenCount`), `my-collection` (klient), `golden-badge`, `golden-round-button` (tlačítko + zlatý rám hlavičky, klient)
 - `src/components/ui/` – shadcn komponenty (button, card, progress)
-- `src/lib/` – `utils.ts` (cn), `game-rules.ts` (konstanty, `getRank`), `prisma.ts` (klient s adapterem pg), `kings.ts` (dotazy na krále), `questions.ts` (otázky bez správnosti, míchání), `quiz-types.ts`, `collection.ts` (sbírka v localStorage), `slug.ts`, `king-initial.ts`, `king-image.ts` (povolené cesty obrázků), `king-display.ts` (titul, roky, text o pověsti), `image-credits.ts`
+- `src/lib/` – `utils.ts` (cn), `game-rules.ts` (konstanty, `getRank`), `prisma.ts` (klient s adapterem pg), `kings.ts` (dotazy na krále), `questions.ts` (otázky bez správnosti, míchání), `quiz-types.ts`, `collection.ts` (sbírka + zlaté karty v localStorage, `useIsClient`), `slug.ts`, `king-initial.ts`, `king-image.ts` (povolené cesty obrázků), `king-display.ts` (titul, roky, text o pověsti), `image-credits.ts`
 - `assets/fonts/` – TTF písma pro generování OG obrázku (+ OFL licence)
 - `prisma/schema.prisma` – King, Question, Answer; `prisma/migrations/` – migrace; `prisma/seed.ts` – obsah (idempotentní); `prisma.config.ts` čte `.env.local`
 - `src/generated/prisma` – vygenerovaný klient (gitignored, `npm install` ho vytvoří přes postinstall)
@@ -107,6 +108,9 @@ Pokud NODE_ENV=production:
 - 2026-11-07: správnost odpovědi zná jen server; odpovědi se míchají na serveru při každém načtení
 - 2026-11-07: hodnost podle podílu sbírky: 0 = panoš, < 1/2 = rytíř, ≥ 1/2 = šlechtic, všichni = Český král / Česká královna (dříve Rádce krále)
 - 2026-11-07: localStorage klíč `cesky-kral:collection`, tvar `{ version: 1, kings: string[] }`
+- 2026-11-08: localStorage v2 `{ version: 2, kings, golden }`; v1 se při načtení převede (golden = []), nečitelná data se nepřepisují; golden ⊆ kings
+- 2026-11-08: zlaté kolo – zámek „jen ve sbírce“ je na klientovi (sbírka je v localStorage); správnost dál jen server
+- 2026-11-08: hlavička: Galerie (/), Sbírka (/sbirka), Rychlovka; počet „Zlatých: Y z N“ podle počtu panovníků v DB
 - 2026-11-07: Railway nastaven (DATABASE_URL, doména) a nasazuje z větve dev; PR do main zatím nedělat
 - 2026-11-07: vzhled iluminovaného rukopisu; Playfair nahrazen Grenze Gotisch (Almendra nemá ť/ď, Unifraktur nemá české znaky)
 - 2026-11-07: cloud prostředí `cesky-kral` povoluje Wikimedia Commons (Default ho blokuje); Commons omezuje počet stažení – stahovat pomalu, se slušným User-Agent

@@ -3,10 +3,11 @@
 import { useEffect, useState, useTransition } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { ArrowRight, Check, ExternalLink, RotateCcw, X } from "lucide-react";
+import { ArrowRight, Check, ExternalLink, Lock, RotateCcw, X } from "lucide-react";
 
 import { checkAnswer } from "@/app/actions/quiz";
 import { DifficultyBadge } from "@/components/difficulty-badge";
+import { GoldenBadge } from "@/components/golden-badge";
 import { KingPortrait } from "@/components/king-portrait";
 import { KnightOath } from "@/components/knight-oath";
 import { LegendBadge } from "@/components/legend-badge";
@@ -15,25 +16,34 @@ import { RoyalCelebration } from "@/components/royal-celebration";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
-import { addToCollection, readCollection } from "@/lib/collection";
+import {
+  addGoldenCard,
+  addToCollection,
+  readCollection,
+  useCollection,
+  useIsClient,
+} from "@/lib/collection";
 import { CORRECT_TO_COLLECT } from "@/lib/game-rules";
 import type { AnswerResult, QuizQuestion } from "@/lib/quiz-types";
 import { cn } from "@/lib/utils";
 
 type Feedback = Extract<AnswerResult, { ok: true }>;
 
+type QuizKing = {
+  slug: string;
+  name: string;
+  initial: string;
+  imageUrl: string | null;
+};
+
 type QuizProps =
   | {
       mode: "king";
       questions: QuizQuestion[];
       allKingSlugs: string[];
-      king: {
-        slug: string;
-        name: string;
-        initial: string;
-        imageUrl: string | null;
-      };
+      king: QuizKing;
     }
+  | { mode: "golden"; questions: QuizQuestion[]; king: QuizKing }
   | { mode: "quick"; questions: QuizQuestion[] };
 
 export function Quiz(props: QuizProps) {
@@ -49,6 +59,8 @@ export function Quiz(props: QuizProps) {
   const [collected, setCollected] = useState(false);
   const [completedAll, setCompletedAll] = useState(false);
   const [isPending, startTransition] = useTransition();
+  const isClient = useIsClient();
+  const { kings: ownedKings } = useCollection();
 
   const total = questions.length;
   const question = questions[index];
@@ -84,10 +96,13 @@ export function Quiz(props: QuizProps) {
       return;
     }
     // `score` already includes the last answer here.
+    if (props.mode === "golden" && score === total) {
+      setCollected(addGoldenCard(props.king.slug));
+    }
     if (props.mode === "king" && score >= CORRECT_TO_COLLECT) {
       addToCollection(props.king.slug);
       setCollected(true);
-      const owned = new Set(readCollection());
+      const owned = new Set(readCollection().kings);
       setCompletedAll(
         props.allKingSlugs.length > 0 &&
           props.allKingSlugs.every((slug) => owned.has(slug)),
@@ -116,6 +131,16 @@ export function Quiz(props: QuizProps) {
         </CardContent>
       </Card>
     );
+  }
+
+  // The golden round is only for kings already in the collection.
+  if (props.mode === "golden" && !finished) {
+    if (!isClient) {
+      return <div aria-busy="true" className="parchment h-80 animate-pulse rounded-2xl" />;
+    }
+    if (!ownedKings.includes(props.king.slug)) {
+      return <GoldenLocked king={props.king} />;
+    }
   }
 
   if (finished) {
@@ -266,6 +291,39 @@ function Results(
 ) {
   const { score, total, onRestart } = props;
 
+  if (props.mode === "golden") {
+    return props.collected ? (
+      <GoldenWin king={props.king} score={score} total={total} />
+    ) : (
+      <Card className="animate-card-reveal items-center text-center">
+        <CardCorners className="m-1 size-8 text-gold-dark" />
+        <CardContent className="flex flex-col items-center gap-4">
+          <p className="text-xs font-semibold tracking-[0.2em] text-gold-dark uppercase">
+            Konec zlatého kola
+          </p>
+          <p className="font-heading text-7xl font-bold">
+            {score}
+            <span className="text-3xl text-muted-foreground"> z {total}</span>
+          </p>
+          <OrnamentDivider />
+          <p className="text-muted-foreground">
+            Na zlatou kartu musí být správně všechny odpovědi. Karta zůstává
+            ve sbírce, jen zatím bez zlata.
+          </p>
+          <div className="flex flex-wrap justify-center gap-3">
+            <Button onClick={onRestart} size="lg" variant="accent">
+              <RotateCcw aria-hidden />
+              Zkus to znovu
+            </Button>
+            <Button asChild variant="outline" size="lg">
+              <Link href="/sbirka">Moje sbírka</Link>
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
+
   if (props.mode === "king" && props.collected) {
     return (
       <div className="flex flex-col gap-6">
@@ -373,5 +431,124 @@ function CardFlipReveal({
         </div>
       </div>
     </div>
+  );
+}
+
+/** Shown when someone opens the golden round of a king they do not own. */
+function GoldenLocked({ king }: { king: QuizKing }) {
+  return (
+    <Card className="animate-card-reveal items-center text-center">
+      <CardCorners className="m-1 size-8 text-gold-dark" />
+      <CardContent className="flex flex-col items-center gap-4">
+        <span className="flex size-14 items-center justify-center rounded-full bg-navy text-gold">
+          <Lock className="size-6" aria-hidden />
+        </span>
+        <h2 className="text-3xl font-bold">Zlaté kolo je zamčené</h2>
+        <OrnamentDivider />
+        <p className="text-muted-foreground">
+          Zlaté kolo se odemkne, až bude {king.name} ve tvé sbírce. Nejdřív
+          vyhraj běžnou hru o kartu.
+        </p>
+        <Button asChild variant="accent" size="lg">
+          <Link href={`/kral/${king.slug}`}>Hrát o kartu</Link>
+        </Button>
+      </CardContent>
+    </Card>
+  );
+}
+
+const GOLD_SPARKLES = [
+  { top: "8%", left: "8%", delay: "0s" },
+  { top: "14%", left: "88%", delay: "0.5s" },
+  { top: "62%", left: "4%", delay: "1.1s" },
+  { top: "74%", left: "92%", delay: "0.2s" },
+  { top: "38%", left: "95%", delay: "1.5s" },
+  { top: "32%", left: "2%", delay: "0.8s" },
+  { top: "90%", left: "50%", delay: "1.8s" },
+];
+
+/** Festive win screen: the ordinary card turns into a golden one. */
+function GoldenWin({
+  king,
+  score,
+  total,
+}: {
+  king: QuizKing;
+  score: number;
+  total: number;
+}) {
+  const [flipped, setFlipped] = useState(false);
+
+  useEffect(() => {
+    const timer = window.setTimeout(() => setFlipped(true), 350);
+    return () => window.clearTimeout(timer);
+  }, []);
+
+  return (
+    <section
+      aria-labelledby="golden-win-heading"
+      className="animate-card-reveal relative flex flex-col items-center gap-4 overflow-hidden rounded-2xl bg-navy px-6 py-10 text-center text-parchment shadow-xl ring-2 ring-gold"
+    >
+      <div className="pointer-events-none absolute inset-2 rounded-xl border border-gold/50" />
+      <CardCorners className="m-1 size-10 text-gold" />
+      {GOLD_SPARKLES.map((sparkle, i) => (
+        <span
+          key={i}
+          aria-hidden
+          className="animate-sparkle absolute size-3 rotate-45 bg-gold-light"
+          style={{ top: sparkle.top, left: sparkle.left, animationDelay: sparkle.delay }}
+        />
+      ))}
+
+      <p className="relative text-xs font-semibold tracking-[0.3em] text-gold uppercase">
+        Skóre {score} z {total} · bez chyby
+      </p>
+
+      <div className="flip-scene relative w-44 sm:w-52" aria-live="polite">
+        <div className="flip-card" data-flipped={flipped}>
+          {/* front: the ordinary card */}
+          <div className="flip-face parchment rounded-2xl p-3 text-navy">
+            <KingPortrait
+              name={king.name}
+              initial={king.initial}
+              imageUrl={king.imageUrl}
+              sizes="208px"
+            />
+            <p className="mt-2 font-heading text-xl font-bold">{king.name}</p>
+          </div>
+          {/* back: the golden card */}
+          <div className="flip-face flip-face-back">
+            <div className="golden-frame h-full rounded-2xl">
+              <div className="golden-sheet golden-sheen h-full rounded-[12px] p-3 text-navy">
+                <KingPortrait
+                  name={king.name}
+                  initial={king.initial}
+                  imageUrl={king.imageUrl}
+                  sizes="208px"
+                />
+                <p className="mt-2 font-heading text-xl font-bold">{king.name}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <GoldenBadge className="relative" />
+      <h2 id="golden-win-heading" className="relative text-4xl font-bold sm:text-5xl">
+        <span className="gilt-text animate-shimmer">Zlatá karta je tvoje!</span>
+      </h2>
+      <OrnamentDivider />
+      <p className="relative max-w-md text-parchment/85">
+        Všechny těžké otázky správně. {king.name} teď ve sbírce září zlatem.
+      </p>
+      <div className="relative flex flex-wrap justify-center gap-3">
+        <Button asChild variant="accent" size="lg">
+          <Link href="/sbirka">Moje sbírka</Link>
+        </Button>
+        <Button asChild variant="outline" size="lg">
+          <Link href="/">Galerie</Link>
+        </Button>
+      </div>
+    </section>
   );
 }

@@ -19,6 +19,9 @@ export const DIFFICULTY_LABELS: Record<Difficulty, string> = {
 export function toDifficulty(value: number): Difficulty {
   return value === 3 ? 3 : value === 2 ? 2 : 1;
 }
+// Golden round: all hard questions of a collected king, all must be correct.
+export const GOLDEN_DIFFICULTY: Difficulty = 3;
+
 export const ANSWERS_PER_QUESTION = 3;
 export const CORRECT_TO_COLLECT = 4;
 export const QUICK_ROUND_QUESTIONS = 10;

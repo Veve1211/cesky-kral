@@ -243,6 +243,86 @@
     color: transparent;
   }
 
+  /* Golden card: gilded, shimmering frame around a warm gold sheet */
+  .golden-frame {
+    background-image: var(--gilt);
+    background-size: 200% 200%;
+    padding: 4px;
+    animation:
+      golden-shimmer 3.5s ease-in-out infinite,
+      golden-glow 3s ease-in-out infinite;
+  }
+  @keyframes golden-shimmer {
+    0%,
+    100% {
+      background-position: 0% 50%;
+    }
+    50% {
+      background-position: 100% 50%;
+    }
+  }
+  /* Soft breathing glow around a golden card */
+  @keyframes golden-glow {
+    0%,
+    100% {
+      box-shadow:
+        0 0 0 1px rgb(138 109 20 / 0.6),
+        0 8px 22px -8px rgb(201 162 39 / 0.55);
+    }
+    50% {
+      box-shadow:
+        0 0 0 1px rgb(138 109 20 / 0.6),
+        0 10px 30px -6px rgb(232 207 116 / 0.9);
+    }
+  }
+
+  .golden-sheet {
+    background-color: #f8ecc4;
+    background-image:
+      radial-gradient(ellipse at 50% 0%, rgb(255 255 255 / 0.65), transparent 60%),
+      radial-gradient(ellipse at 50% 100%, rgb(201 162 39 / 0.28), transparent 70%),
+      repeating-linear-gradient(
+        92deg,
+        rgb(138 109 20 / 0.03) 0 1px,
+        transparent 1px 6px
+      );
+    box-shadow:
+      inset 0 0 0 1px rgb(138 109 20 / 0.55),
+      inset 0 0 0 5px #f8ecc4,
+      inset 0 0 0 6px rgb(201 162 39 / 0.6),
+      inset 0 0 40px rgb(201 162 39 / 0.25);
+  }
+  /* Gentle diagonal light sweeping over the card */
+  .golden-sheen {
+    position: relative;
+    overflow: hidden;
+  }
+  .golden-sheen::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    pointer-events: none;
+    background-image: linear-gradient(
+      115deg,
+      transparent 44%,
+      rgb(255 250 225 / 0.32) 50%,
+      transparent 56%
+    );
+    background-size: 300% 100%;
+    background-repeat: no-repeat;
+    animation: golden-sheen 5s ease-in-out infinite;
+  }
+  @keyframes golden-sheen {
+    0% {
+      background-position: 120% 0;
+    }
+    45%,
+    100% {
+      background-position: -20% 0;
+    }
+  }
+
   /* 3D card flip (used for the reveal after winning) */
   .flip-scene {
     perspective: 1200px;
@@ -267,6 +347,10 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
+  /* no moving light on golden cards, the gold itself stays */
+  .golden-sheen::after {
+    display: none;
+  }
   *,
   *::before,
   *::after {

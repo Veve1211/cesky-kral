@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { Shield, Zap } from "lucide-react";
 
-import { KingCard } from "@/components/king-card";
+import { KingCard, type KingCardData } from "@/components/king-card";
 import { CardCorners } from "@/components/ornaments";
 import { RoyalCelebration } from "@/components/royal-celebration";
 import { Button } from "@/components/ui/button";
@@ -14,16 +14,10 @@ import { kingInitial } from "@/lib/king-initial";
 import type { KingSummary } from "@/lib/kings";
 
 export function CollectionGallery({ kings }: { kings: KingSummary[] }) {
-  const collection = useCollection();
-  const owned = new Set(collection);
-
-  const cards = kings.map((king) => ({
-    ...king,
-    initial: kingInitial(king.name),
-    collected: owned.has(king.slug),
-  }));
+  const cards = useKingCards(kings);
   // Count only kings that exist in the DB (ignores stale slugs).
   const collected = cards.filter((king) => king.collected).length;
+  const golden = cards.filter((king) => king.golden).length;
   const rank = getRank(collected, cards.length);
   const complete = cards.length > 0 && collected === cards.length;
 
@@ -31,6 +25,7 @@ export function CollectionGallery({ kings }: { kings: KingSummary[] }) {
     <>
       {complete ? (
         <RoyalCelebration total={cards.length}>
+          <GoldenCount golden={golden} total={cards.length} />
           <Button asChild variant="accent" size="lg" className="mt-2">
             <Link href="/rychlovka">
               <Zap aria-hidden />
@@ -60,6 +55,7 @@ export function CollectionGallery({ kings }: { kings: KingSummary[] }) {
               </strong>
             </p>
             <Progress value={collected} max={cards.length} label="Získaní králové" />
+            <GoldenCount golden={golden} total={cards.length} />
           </div>
           <Button asChild variant="accent">
             <Link href="/rychlovka">
@@ -90,5 +86,30 @@ export function CollectionGallery({ kings }: { kings: KingSummary[] }) {
         )}
       </section>
     </>
+  );
+}
+
+/** Gallery cards with the player's collected / golden state. */
+export function useKingCards(kings: KingSummary[]): KingCardData[] {
+  const { kings: ownedSlugs, golden: goldenSlugs } = useCollection();
+  const owned = new Set(ownedSlugs);
+  const golden = new Set(goldenSlugs);
+  return kings.map((king) => ({
+    ...king,
+    initial: kingInitial(king.name),
+    collected: owned.has(king.slug),
+    golden: owned.has(king.slug) && golden.has(king.slug),
+  }));
+}
+
+export function GoldenCount({ golden, total }: { golden: number; total: number }) {
+  return (
+    <p className="text-sm">
+      <span aria-hidden>✨ </span>
+      Zlatých:{" "}
+      <strong>
+        {golden} z {total}
+      </strong>
+    </p>
   );
 }
