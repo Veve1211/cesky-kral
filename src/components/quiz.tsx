@@ -51,14 +51,23 @@ type QuizProps =
         };
     }
   | { mode: "golden"; questions: QuizQuestion[]; king: QuizKing }
-  | { mode: "quick"; questions: QuizQuestion[] };
+  | { mode: "quick"; questions: QuizQuestion[] }
+  | {
+      /** Daily challenge: resumable, every answer is reported, results are shown by the caller. */
+      mode: "daily";
+      questions: QuizQuestion[];
+      startIndex: number;
+      startScore: number;
+      onAnswered: (index: number, correct: boolean) => void;
+      onFinished: () => void;
+    };
 
 export function Quiz(props: QuizProps) {
   const { questions } = props;
   const router = useRouter();
 
-  const [index, setIndex] = useState(0);
-  const [score, setScore] = useState(0);
+  const [index, setIndex] = useState(props.mode === "daily" ? props.startIndex : 0);
+  const [score, setScore] = useState(props.mode === "daily" ? props.startScore : 0);
   const [selectedId, setSelectedId] = useState<number | null>(null);
   const [feedback, setFeedback] = useState<Feedback | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -98,6 +107,7 @@ export function Quiz(props: QuizProps) {
         }
         setFeedback(result);
         if (result.correct) setScore((s) => s + 1);
+        if (props.mode === "daily") props.onAnswered(index, result.correct);
       } catch {
         setError("Nepodařilo se ověřit odpověď. Zkus to znovu.");
         setSelectedId(null);
@@ -124,6 +134,10 @@ export function Quiz(props: QuizProps) {
       setIndex(index + 1);
       setSelectedId(null);
       setFeedback(null);
+      return;
+    }
+    if (props.mode === "daily") {
+      props.onFinished();
       return;
     }
     // `score` already includes the last answer here.
@@ -209,8 +223,8 @@ export function Quiz(props: QuizProps) {
         <CardHeader>
           <div className="flex items-center justify-between gap-3">
             <p className="flex flex-wrap items-center gap-2 text-xs font-semibold tracking-[0.2em] text-gold-dark uppercase">
-              {props.mode === "quick" ? question.kingName : `Otázka ${index + 1}`}
-              {props.mode === "quick" && question.isLegend && <LegendBadge />}
+              {props.mode === "quick" || props.mode === "daily" ? question.kingName : `Otázka ${index + 1}`}
+              {(props.mode === "quick" || props.mode === "daily") && question.isLegend && <LegendBadge />}
             </p>
             <DifficultyBadge difficulty={question.difficulty} className="mr-4" />
           </div>
