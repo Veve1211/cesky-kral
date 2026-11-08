@@ -1,0 +1,80 @@
+# End-to-end tests (Playwright) for every pull request into dev.
+name: E2E tests
+
+on:
+  pull_request:
+    branches: [dev]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: e2e-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  e2e:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: kral
+          POSTGRES_PASSWORD: kral
+          POSTGRES_DB: cesky_kral_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U kral -d cesky_kral_test"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+
+    env:
+      # Throwaway database that only lives inside this job.
+      E2E_DATABASE_URL: postgresql://kral:kral@localhost:5432/cesky_kral_test
+      DATABASE_URL: postgresql://kral:kral@localhost:5432/cesky_kral_test
+      NEXT_TELEMETRY_DISABLED: "1"
+
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Chromium for Playwright
+        run: npx playwright install --with-deps chromium
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Build
+        run: npm run build
+
+      - name: Migrate and seed the test database
+        run: |
+          npx prisma migrate deploy
+          npx prisma db seed
+
+      - name: Run E2E tests
+        run: npm run test:e2e
+        env:
+          E2E_SKIP_BUILD: "1"
+
+      - name: Upload Playwright report
+        if: failure()
+        uses: actions/upload-artifact@v7
+        with:
+          name: playwright-report
+          path: |
+            playwright-report/
+            test-results/
+          retention-days: 14
