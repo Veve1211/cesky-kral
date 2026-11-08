@@ -10,6 +10,7 @@ import {
   useCollectionSummary,
 } from "@/components/collection-summary";
 import { CardCorners } from "@/components/ornaments";
+import { ReignTimeline } from "@/components/reign-timeline";
 import { RoyalCelebration } from "@/components/royal-celebration";
 import { Button } from "@/components/ui/button";
 import { useCollectionReady } from "@/lib/collection";
@@ -40,6 +41,8 @@ export function MyCollection({ kings }: { kings: KingSummary[] }) {
       ) : (
         <CollectionStatus rank={rank} collected={collected} golden={golden} total={total} />
       )}
+
+      <ReignTimeline variant="full" kings={kings} />
 
       {owned.length === 0 ? (
         <section className="parchment relative flex flex-col items-center gap-4 rounded-2xl px-6 py-10 text-center">

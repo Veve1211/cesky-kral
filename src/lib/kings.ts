@@ -4,6 +4,7 @@ import { toChronicle, type Chronicle } from "@/lib/chronicle";
 import { getPrisma } from "@/lib/prisma";
 import { toKingTitle, type KingTitle } from "@/lib/king-display";
 import { isValidSlug } from "@/lib/slug";
+import type { WhoFirstKing } from "@/lib/who-first";
 
 export type KingSummary = {
   slug: string;
@@ -46,6 +47,23 @@ export async function getKings(): Promise<KingSummary[]> {
       chronicle: toChronicle({ chronicleIntro, chronicleFacts, chronicleSources, chronicleSections }),
     }),
   );
+}
+
+/** Kings playable in "Kdo vládl dřív?" (no legends, known start year), without years. */
+export function toWhoFirstKings(kings: KingSummary[]): WhoFirstKing[] {
+  return kings
+    .filter((king) => !king.isLegend && king.reignFrom !== null)
+    .map(({ slug, name, title, imageUrl }) => ({ slug, name, title, imageUrl }));
+}
+
+/** Lean query for the /kdo-driv page (no chronicle, no years). */
+export async function getWhoFirstKings(): Promise<WhoFirstKing[]> {
+  const rows = await getPrisma().king.findMany({
+    where: { isLegend: false, reignFrom: { not: null } },
+    orderBy: { order: "asc" },
+    select: { slug: true, name: true, title: true, imageUrl: true },
+  });
+  return rows.map((row) => ({ ...row, title: toKingTitle(row.title) }));
 }
 
 export async function getKingSlugs(): Promise<string[]> {
