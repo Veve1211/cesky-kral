@@ -111,13 +111,15 @@ Pokud NODE_ENV=production:
 - 2026-11-07: Railway nastaven (DATABASE_URL, doména) a nasazuje z větve dev; PR do main zatím nedělat
 - 2026-11-07: vzhled iluminovaného rukopisu; Playfair nahrazen Grenze Gotisch (Almendra nemá ť/ď, Unifraktur nemá české znaky)
 - 2026-11-07: cloud prostředí `cesky-kral` povoluje Wikimedia Commons (Default ho blokuje); Commons omezuje počet stažení – stahovat pomalu, se slušným User-Agent
-- 2026-11-07: panovníci podle doby (order 1–11): Libuše, Svatý Václav, Přemysl Otakar II., Václav II., Jan Lucemburský, Karel IV., Jiří z Poděbrad, Rudolf II., Marie Terezie, Josef II., Karel I.
+- 2026-11-08: panovníci podle doby (order 1–12): Libuše, Svatý Václav, Přemysl Otakar I., Přemysl Otakar II., Václav II., Jan Lucemburský, Karel IV., Jiří z Poděbrad, Rudolf II., Marie Terezie, Josef II., Karel I.
 - 2026-11-07: migrace `king_title_legend` (title + isLegend, roky nepovinné) – nedestruktivní
 - 2026-11-07: patička bez „ukázkový projekt“: jen Český král, odkaz na /zdroje a rok (`SITE_YEAR`)
 - 2026-11-07: obtížnost otázek (migrace `question_difficulty`, sloupec s výchozí 1, nedestruktivní); 9 otázek na krále
 - 2026-11-07: obrázky: Přemysl Otakar II. = jezdecká pečeť 1273 (kresba K. von Sava 1864, PD-old; Mucha má Unclear-PD-US), Karel IV. = výřez z votivního obrazu Jana Očka, Marie Terezie = kresba Meytens; Václav II. = Codex Manesse fol. 10r (PD-old-100), Jan Lucemburský = jezdecká pečeť, foto O. Posse 1909 (PD-old); všechny PD ověřené na Commons
 - 2026-11-07: obrázky dávky 3+4: Libuše = obraz K. V. Mašek 1893, sv. Václav = Gumpoldova legenda (Wolfenbüttel, fol. 18v, před 1006), Jiří = dřevořez M. Kuthen 1539, Rudolf II. = Hans von Aachen 1606–08, Josef II. = A. von Maron, Karel I. = foto E. Förster 1917 (LoC); vyřazeno: pečeť Jiřího (PD-CzechGov nejisté), foto Maškova obrazu (CC BY)
-- 2026-11-08: kronika panovníka (migrace `king_chronicle`, nedestruktivní, výchozí prázdné hodnoty); fakta navazují na „Věděli jste, že…“ a zobrazují se doslova; zdroje jen https; kronika Přemysla Otakara I. připravena, čeká na krále z dávky 5
+- 2026-11-08: kronika panovníka (migrace `king_chronicle`, nedestruktivní, výchozí prázdné hodnoty); fakta navazují na „Věděli jste, že…“ a zobrazují se doslova; zdroje jen https; kronika i u Přemysla Otakara I. (dávka 5)
+
+- 2026-11-08: obrázek Přemysla Otakara I. = jezdecká pečeť 1192–93, kresba A. Sedláček (PD-old); 12 karet = plná mřížka (2 sloupce mobil, 3 od `sm`)
 
 ## Údržba tohoto souboru
 - Aktualizuj po každé strukturální změně, novém pravidlu nebo rozhodnutí

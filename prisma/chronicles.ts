@@ -45,7 +45,6 @@ export const chronicles: Record<string, SeedChronicle> = {
       },
     ],
   },
-  // King is added in batch 5 (not in the seed yet) – chronicle waits for it.
   "premysl-otakar-i": {
     intro:
       "Narodil se kolem roku 1155 jako syn knížete Vladislava II. Roku 1197 donutil svého bratra, aby se vzdal Čech a spokojil se s Moravou, a o rok později se prohlásil králem. Jeho největším úspěchem byla Zlatá bula sicilská, která udělala z českého královského titulu dědičný. Zemřel 15. prosince 1230 v Praze.",
