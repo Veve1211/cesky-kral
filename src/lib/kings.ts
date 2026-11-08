@@ -21,6 +21,7 @@ const chronicleSelect = {
   chronicleIntro: true,
   chronicleFacts: true,
   chronicleSources: true,
+  chronicleSections: true,
 } as const;
 
 export async function getKings(): Promise<KingSummary[]> {
@@ -39,10 +40,10 @@ export async function getKings(): Promise<KingSummary[]> {
     },
   });
   return rows.map(
-    ({ chronicleIntro, chronicleFacts, chronicleSources, ...row }) => ({
+    ({ chronicleIntro, chronicleFacts, chronicleSources, chronicleSections, ...row }) => ({
       ...row,
       title: toKingTitle(row.title),
-      chronicle: toChronicle({ chronicleIntro, chronicleFacts, chronicleSources }),
+      chronicle: toChronicle({ chronicleIntro, chronicleFacts, chronicleSources, chronicleSections }),
     }),
   );
 }
@@ -72,11 +73,11 @@ export async function getKingBySlug(slug: string) {
     },
   });
   if (!row) return null;
-  const { chronicleIntro, chronicleFacts, chronicleSources, ...king } = row;
+  const { chronicleIntro, chronicleFacts, chronicleSources, chronicleSections, ...king } = row;
   return {
     ...king,
     title: toKingTitle(king.title),
-    chronicle: toChronicle({ chronicleIntro, chronicleFacts, chronicleSources }),
+    chronicle: toChronicle({ chronicleIntro, chronicleFacts, chronicleSources, chronicleSections }),
   };
 }
 

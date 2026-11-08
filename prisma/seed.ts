@@ -1169,6 +1169,11 @@ function validate(data: SeedKing[]) {
 function validateChronicles(data: Record<string, SeedChronicle>) {
   for (const [slug, chronicle] of Object.entries(data)) {
     if (!chronicle.intro.trim()) throw new Error(`${slug}: chronicle intro is empty`);
+    for (const section of chronicle.sections) {
+      if (!section.heading.trim() || !section.text.trim()) {
+        throw new Error(`${slug}: chronicle section without heading or text`);
+      }
+    }
     if (chronicle.facts.some((fact) => !fact.trim())) {
       throw new Error(`${slug}: empty chronicle fact`);
     }
@@ -1188,6 +1193,7 @@ function chronicleData(slug: string) {
     chronicleIntro: chronicle?.intro ?? "",
     chronicleFacts: chronicle?.facts ?? [],
     chronicleSources: chronicle?.sources ?? [],
+    chronicleSections: chronicle?.sections ?? [],
   };
 }
 
