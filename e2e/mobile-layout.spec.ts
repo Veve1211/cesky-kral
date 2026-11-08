@@ -2,7 +2,7 @@ import { expect, test } from "@playwright/test";
 
 import { open, setCollection } from "./helpers/game";
 
-const PAGES = ["/", "/sbirka", "/kral/karel-iv", "/kral/libuse", "/kral/karel-iv/zlate-kolo", "/rychlovka", "/kdo-driv", "/zdroje"];
+const PAGES = ["/", "/sbirka", "/kral/karel-iv", "/kral/libuse", "/kral/karel-iv/zlate-kolo", "/rychlovka", "/kdo-driv", "/zdroje", "/jak-hrat", "/vyzva"];
 
 test.describe("mobil 375 px", () => {
   test.use({ viewport: { width: 375, height: 812 } });

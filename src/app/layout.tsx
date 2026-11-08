@@ -82,6 +82,10 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           <OrnamentDivider className="max-w-[12rem]" />
           <p>
             <span className="font-heading text-sm">Český král</span> ·{" "}
+            <Link href="/jak-hrat" className="underline underline-offset-4 hover:text-foreground">
+              Jak hrát
+            </Link>{" "}
+            ·{" "}
             <Link href="/zdroje" className="underline underline-offset-4 hover:text-foreground">
               Zdroje obrázků a písem
             </Link>{" "}
