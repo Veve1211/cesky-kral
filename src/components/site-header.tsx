@@ -1,7 +1,8 @@
+import { Suspense } from "react";
 import Link from "next/link";
-import { Zap } from "lucide-react";
 
 import { CrownMark } from "@/components/ornaments";
+import { SiteNav, SiteNavLinks } from "@/components/site-nav";
 
 export function SiteHeader() {
   return (
@@ -13,21 +14,10 @@ export function SiteHeader() {
             Český král
           </span>
         </Link>
-        <nav className="flex shrink-0 items-center gap-1 text-sm font-medium">
-          <Link
-            href="/"
-            className="rounded-lg px-2.5 py-2 transition-colors hover:bg-white/10"
-          >
-            Sbírka
-          </Link>
-          <Link
-            href="/rychlovka"
-            className="flex items-center gap-1 rounded-lg px-2.5 py-2 text-gold transition-colors hover:bg-white/10"
-          >
-            <Zap className="size-4" aria-hidden />
-            Rychlovka
-          </Link>
-        </nav>
+        {/* The current path is known only per request – stream the active state in. */}
+        <Suspense fallback={<SiteNavLinks pathname={null} />}>
+          <SiteNav />
+        </Suspense>
       </div>
       {/* gilded rule under the header */}
       <div className="gilt h-[3px]" aria-hidden />

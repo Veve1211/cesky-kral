@@ -36,7 +36,7 @@ export default function KingGamePage({ params }: PageProps<"/kral/[slug]">) {
         className="flex w-fit items-center gap-1 text-sm text-muted-foreground transition-colors hover:text-foreground"
       >
         <ArrowLeft className="size-4" aria-hidden />
-        Zpět do sbírky
+        Zpět do galerie
       </Link>
 
       <Suspense fallback={<GameSkeleton />}>

@@ -36,6 +36,7 @@
 - Pověstné postavy (`isLegend`): štítek „Pověst“ na kartě i ve hře, ve hře věta „Otázky jsou o pověsti, ne o doložené historii.“, roky se nezobrazují.
 - Na kartě se zobrazuje titul (kníže / kněžna / král / královna).
 - Postup hráče se ukládá v prohlížeči (localStorage), bez účtů.
+- /sbirka „Moje sbírka“: hodnost + „Ve sbírce: X z N“, získaní (klik = kronika), „Ještě chybí“ (siluety, Hrát o kartu); prázdný stav s tlačítkem na prvního panovníka. Hlavička: Sbírka → /sbirka, Rychlovka → /rychlovka, aktivní odkaz `aria-current="page"`; logo → /.
 - Kronika panovníka: po otočení vyhrané karty tlačítko „📜 Přečíst kroniku“; v galerii klik na získanou kartu otevře kroniku (dialog, na mobilu přes celou obrazovku), nezískaná karta: „Kronika se odemkne, až panovníka získáš.“ Bez kroniky = nic se nezobrazí.
 
 ## Datový model
@@ -87,11 +88,11 @@ Pokud NODE_ENV=production:
 
 ## Struktura projektu
 - Next.js 16 (App Router, `src/`, Cache Components zapnuté), Tailwind 4, Prisma 7
-- `src/app/` – stránky: `page.tsx` (galerie /), `kral/[slug]/` (hra), `rychlovka/`, `zdroje/` (licence obrázků a písem), `not-found.tsx`, `layout.tsx` (fonty, hlavička, metadata), `opengraph-image.tsx` (náhled pro sdílení), `globals.css` (barvy, pergamen, animace)
+- `src/app/` – stránky: `page.tsx` (galerie /), `kral/[slug]/` (hra), `rychlovka/`, `sbirka/` (Moje sbírka), `zdroje/` (licence obrázků a písem), `not-found.tsx`, `layout.tsx` (fonty, hlavička, metadata), `opengraph-image.tsx` (náhled pro sdílení), `globals.css` (barvy, pergamen, animace)
 - `src/app/actions/quiz.ts` – server action `checkAnswer` (ověření odpovědi na serveru)
-- `src/components/` – `site-header`, `king-card`, `king-portrait` (zlatý rám, silueta), `crest` (erb s iniciálou = placeholder), `ornaments` (rohy, oddělovač, koruna), `illuminated-initial`, `royal-celebration`, `legend-badge` (Pověst), `difficulty-badge` (korunky), `knight-oath` (rytířský slib), `quiz` (hra + výsledky + otočení karty, klient), `collection-gallery` (klient), `chronicle-dialog` (kronika, klient)
+- `src/components/` – `site-header`, `site-nav` (navigace, aktivní odkaz; klient v Suspense), `king-card`, `king-portrait` (zlatý rám, silueta), `crest` (erb s iniciálou = placeholder), `ornaments` (rohy, oddělovač, koruna), `illuminated-initial`, `royal-celebration`, `legend-badge` (Pověst), `difficulty-badge` (korunky), `knight-oath` (rytířský slib), `quiz` (hra + výsledky + otočení karty, klient), `collection-gallery` (galerie /, klient), `collection-summary` (`useCollectionSummary`, `CollectionStatus`, `KingGrid` – sdílí galerie i /sbirka), `my-collection` (/sbirka, klient), `chronicle-dialog` (kronika, klient)
 - `src/components/ui/` – shadcn komponenty (button, card, progress, dialog)
-- `src/lib/` – `utils.ts` (cn), `game-rules.ts` (konstanty, `getRank`), `prisma.ts` (klient s adapterem pg), `kings.ts` (dotazy na krále), `questions.ts` (otázky bez správnosti, míchání), `quiz-types.ts`, `collection.ts` (sbírka v localStorage), `slug.ts`, `king-initial.ts`, `king-image.ts` (povolené cesty obrázků), `king-display.ts` (titul, roky, text o pověsti), `chronicle.ts` (typ + bezpečné čtení kroniky), `image-credits.ts`
+- `src/lib/` – `utils.ts` (cn), `game-rules.ts` (konstanty, `getRank`), `prisma.ts` (klient s adapterem pg), `kings.ts` (dotazy na krále), `questions.ts` (otázky bez správnosti, míchání), `quiz-types.ts`, `collection.ts` (sbírka v localStorage, `useCollectionReady`), `slug.ts`, `king-initial.ts`, `king-image.ts` (povolené cesty obrázků), `king-display.ts` (titul, roky, text o pověsti), `chronicle.ts` (typ + bezpečné čtení kroniky), `image-credits.ts`
 - `assets/fonts/` – TTF písma pro generování OG obrázku (+ OFL licence)
 - `prisma/schema.prisma` – King, Question, Answer; `prisma/migrations/` – migrace; `prisma/seed.ts` – obsah (idempotentní); `prisma.config.ts` čte `.env.local`
 - `src/generated/prisma` – vygenerovaný klient (gitignored, `npm install` ho vytvoří přes postinstall)
@@ -120,6 +121,8 @@ Pokud NODE_ENV=production:
 - 2026-11-08: kronika panovníka (migrace `king_chronicle`, nedestruktivní, výchozí prázdné hodnoty); fakta navazují na „Věděli jste, že…“ a zobrazují se doslova; zdroje jen https; kronika i u Přemysla Otakara I. (dávka 5)
 
 - 2026-11-08: obrázek Přemysla Otakara I. = jezdecká pečeť 1192–93, kresba A. Sedláček (PD-old); 12 karet = plná mřížka (2 sloupce mobil, 3 od `sm`)
+
+- 2026-11-08: stránka /sbirka; „Do sbírky“ po hře vede na /sbirka, „Zpět do galerie“ na /; usePathname v hlavičce musí být v Suspense (Cache Components)
 
 ## Údržba tohoto souboru
 - Aktualizuj po každé strukturální změně, novém pravidlu nebo rozhodnutí
