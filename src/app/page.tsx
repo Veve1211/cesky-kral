@@ -17,7 +17,7 @@ export default function HomePage() {
           Sbírej české panovníky
         </p>
         <h1 className="text-[2.6rem] leading-[1.05] font-bold min-[400px]:text-5xl sm:text-7xl">
-          Erbovní kniha <span className="gilt-text animate-shimmer">českých panovníků</span>
+          Erbovní kniha <span className="gilt-text gilt-text-ink animate-shimmer">českých panovníků</span>
         </h1>
         <OrnamentDivider />
       </section>

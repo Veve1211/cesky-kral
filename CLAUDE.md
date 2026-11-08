@@ -114,6 +114,8 @@ Pokud NODE_ENV=production:
 
 - Historický obsah: ověřené opravy a zdroje v `docs/historical-content.md`; regrese `e2e/historical-content.spec.ts` hlídá fakta, zdroje a všech 108 otázek.
 
+- Přístupnost kvízu: po změně otázky a výsledku fokus na nadpis (s pořadím/skóre pro čtečky), bez dalšího kroku v tabulátoru; regrese `e2e/quiz-accessibility.spec.ts`. Velké nadpisy na pergamenu používají `gilt-text gilt-text-ink` (WCAG AA ≥ 3 : 1), světlé zlato zůstává na tmavém pozadí.
+
 ## Rozhodnutí
 - 2026-11-07: postup v localStorage místo účtů, protože jde o ukázkovou verzi bez přihlášení
 - 2026-11-07: shadcn/ui nastaveno ručně (ui.shadcn.com je z cloud prostředí blokované); nové komponenty kopírovat do `src/components/ui/`
