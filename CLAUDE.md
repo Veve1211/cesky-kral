@@ -98,11 +98,19 @@ Pokud NODE_ENV=production:
 - `src/components/ui/` – shadcn komponenty (button, card, progress, dialog)
 - `src/lib/` – `utils.ts` (cn), `game-rules.ts` (konstanty, `getRank`), `prisma.ts` (klient s adapterem pg), `kings.ts` (dotazy na krále), `questions.ts` (otázky bez správnosti, míchání, `getGoldenQuestions`), `quiz-types.ts`, `collection.ts` (sbírka + zlaté karty v localStorage, verze 2, `useCollectionReady`), `slug.ts`, `king-initial.ts`, `king-image.ts` (povolené cesty obrázků), `king-display.ts` (titul, roky, text o pověsti), `chronicle.ts` (typ + bezpečné čtení kroniky a oddílů), `who-first.ts` (typy, `pickPair`), `who-first-best.ts` (nejlepší série v localStorage), `image-credits.ts`
 - `assets/fonts/` – TTF písma pro generování OG obrázku (+ OFL licence)
-- `prisma/schema.prisma` – King, Question, Answer; `prisma/migrations/` – migrace; `prisma/seed.ts` – obsah (idempotentní); `prisma.config.ts` čte `.env.local`
+- `prisma/schema.prisma` – King, Question, Answer; `prisma/migrations/` – migrace; `prisma/seed-data.ts` – obsah (bez vedlejších efektů, importují ho i testy); `prisma/seed.ts` – zápis do DB (idempotentní); `prisma.config.ts` čte `.env.local`
 - `src/generated/prisma` – vygenerovaný klient (gitignored, `npm install` ho vytvoří přes postinstall)
 - `.env.example` – vzor proměnných; `security_warnings.md` – rizika
-- Příkazy: `npm run dev`, `npm run build`, `npm run lint`, `npm run db:migrate`, `npm run db:seed`
+- Příkazy: `npm run dev`, `npm run build`, `npm run lint`, `npm run db:migrate`, `npm run db:seed`, `npm run test:e2e`
 - `npm start` (Railway): `prisma migrate deploy` → `prisma db seed` → `next start`; data se čtou až za běhu (`connection()`), build DB nepotřebuje
+
+## Testy
+- Playwright E2E: `playwright.config.ts`, testy v `e2e/*.spec.ts`, pomocníci `e2e/helpers/` (`seed-answers.ts` = správné odpovědi ze seedu, `game.ts` = hraní kola, localStorage, čekání na hydrataci)
+- Projekty `desktop` (Desktop Chrome) a `mobile` (iPhone 13 v Chromiu); běží proti `next start` na portu 3100
+- Testovací DB z `E2E_DATABASE_URL` (v `.env.local`), název musí obsahovat `test`; `e2e/global-setup.ts` udělá migrace + seed
+- V cloud prostředí: lokální Postgres (`service postgresql start`), Chromium z `/opt/pw-browsers` (config ho najde sám)
+- CI: `.github/workflows/e2e.yml` u každého PR do dev (Postgres service, lint, build, seed, testy; při chybě artefakt `playwright-report`)
+- Novou funkci pokryj testem; při změně textů v UI uprav i testy
 
 ## Rozhodnutí
 - 2026-11-07: postup v localStorage místo účtů, protože jde o ukázkovou verzi bez přihlášení
@@ -133,6 +141,7 @@ Pokud NODE_ENV=production:
 - 2026-11-08: oddíly kroniky (migrace `king_chronicle_sections`, nedestruktivní, výchozí []); `intro` v `chronicles.ts` zůstává jako záloha
 
 - 2026-11-08: Kdo vládl dřív? – karty do prohlížeče bez roků, roky vrací až server action po odpovědi; remíza v roce = správně obojí
+- 2026-11-08: E2E testy Playwright; data seedu přesunuta do `prisma/seed-data.ts` (beze změny obsahu), aby je testy mohly importovat; mobil testován v Chromiu (jeden prohlížeč stačí)
 
 ## Údržba tohoto souboru
 - Aktualizuj po každé strukturální změně, novém pravidlu nebo rozhodnutí
