@@ -21,7 +21,7 @@
 - UI: Tailwind CSS + shadcn/ui
 - Databáze: PostgreSQL na Railway + Prisma ORM
 - Auth: zatím žádná
-- Hosting: Railway (deploy z GitHubu, větev dev)
+- Hosting: Railway, dvě prostředí s vlastní databází: `staging` = větev dev (testovací web), `production` = větev main (ostrý web)
 - Prostředí: Claude Code na webu (claude.ai/code), bez Dockeru
 
 ## Herní logika
@@ -62,8 +62,9 @@
 - Kód (proměnné, komentáře, commity): anglicky
 
 ### Git a commity
-- Pracuj na větvi dev (nebo feature větvi z dev), nikdy přímo na main
-- Railway zatím nasazuje z dev (každý merge do dev = nasazení); main se zatím nepoužívá, PR do main nedělat
+- Pracuj ve feature větvi z dev, nikdy přímo na dev ani main
+- Postup: práce → PR do dev (testy) → merge = nasazení na testovací web → kontrola tam → PR dev → main (testy) → merge = vydání na ostrý web
+- PR dev → main jen na výslovný pokyn uživatele; nikdy nemerguj sám
 - Před každým commitem a pushem se zeptej uživatele
 - Commit zprávy: anglicky, stručně (feat: add king gallery, fix: answer feedback)
 
@@ -102,14 +103,14 @@ Pokud NODE_ENV=production:
 - `src/generated/prisma` – vygenerovaný klient (gitignored, `npm install` ho vytvoří přes postinstall)
 - `.env.example` – vzor proměnných; `security_warnings.md` – rizika
 - Příkazy: `npm run dev`, `npm run build`, `npm run lint`, `npm run db:migrate`, `npm run db:seed`, `npm run test:e2e`
-- `npm start` (Railway): `prisma migrate deploy` → `prisma db seed` → `next start`; data se čtou až za běhu (`connection()`), build DB nepotřebuje
+- `npm start` (Railway, obě prostředí): `prisma migrate deploy` → `prisma db seed` → `next start` při každém nasazení i restartu; nová prázdná DB se tím sama naplní (ručně nic); data se čtou až za běhu (`connection()`), build DB nepotřebuje
 
 ## Testy
 - Playwright E2E: `playwright.config.ts`, testy v `e2e/*.spec.ts`, pomocníci `e2e/helpers/` (`seed-answers.ts` = správné odpovědi ze seedu, `game.ts` = hraní kola, localStorage, čekání na hydrataci)
 - Projekty `desktop` (Desktop Chrome) a `mobile` (iPhone 13 v Chromiu); běží proti `next start` na portu 3100
 - Testovací DB z `E2E_DATABASE_URL` (v `.env.local`), název musí obsahovat `test`; `e2e/global-setup.ts` udělá migrace + seed
 - V cloud prostředí: lokální Postgres (`service postgresql start`), Chromium z `/opt/pw-browsers` (config ho najde sám)
-- CI: `.github/workflows/e2e.yml` u každého PR do dev (Postgres service, lint, build, seed, testy; při chybě artefakt `playwright-report`)
+- CI: `.github/workflows/e2e.yml` u každého PR do dev i main (Postgres service, lint, build, seed, testy; při chybě artefakt `playwright-report`)
 - Novou funkci pokryj testem; při změně textů v UI uprav i testy
 
 - Historický obsah: ověřené opravy a zdroje v `docs/historical-content.md`; regrese `e2e/historical-content.spec.ts` hlídá fakta, zdroje a všech 108 otázek.
@@ -151,6 +152,8 @@ Pokud NODE_ENV=production:
 - 2026-11-08: E2E testy Playwright; data seedu přesunuta do `prisma/seed-data.ts` (beze změny obsahu), aby je testy mohly importovat; mobil testován v Chromiu (jeden prohlížeč stačí)
 - 2026-11-08: galerie ukazuje roky vlády jen u získaných panovníků (jinak „???? – ????“), aby nešlo opisovat do Kdo vládl dřív?; totéž /kral a Řeka času (nezískaní jen jako počet, bez jmen, odkazů a pořadí); test `e2e/hidden-reign.spec.ts`
 - 2026-11-08: roky všech panovníků zůstávají v datech stránky (zdrojový kód) – vědomě: hra není ochrana proti podvádění, roky jsou veřejně dostupné
+
+- 2026-11-08: dvě prostředí na Railway (staging z dev, production z main, každé s vlastní DB); migrace + seed dál v `npm start` (ověřeno: prázdná DB se naplní, opakovaný seed bez duplicit); railway.json nepřidán (dokumentaci Railway nešlo z cloudu ověřit)
 
 ## Údržba tohoto souboru
 - Aktualizuj po každé strukturální změně, novém pravidlu nebo rozhodnutí

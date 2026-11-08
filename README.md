@@ -33,6 +33,6 @@ Užitečné varianty:
 - jen mobil: `npm run test:e2e -- --project=mobile`
 - bez nového buildu (už sestaveno): `E2E_SKIP_BUILD=1 npm run test:e2e`
 
-Na GitHubu se testy spouštějí automaticky u každého pull requestu do `dev`
+Na GitHubu se testy spouštějí automaticky u každého pull requestu do `dev` i do `main`
 (`.github/workflows/e2e.yml`). Když něco selže, report je ke stažení v záložce
 **Actions** jako artefakt `playwright-report`.
