@@ -1,18 +1,20 @@
 "use client";
 
-import type { ReactNode } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { RotateCcw } from "lucide-react";
 
 import { ChronicleDialog } from "@/components/chronicle-dialog";
 import { LegendBadge } from "@/components/legend-badge";
+import { NewBadge } from "@/components/new-badge";
 import { Button } from "@/components/ui/button";
-import { useCollection } from "@/lib/collection";
+import { useCollection, useCollectionReady } from "@/lib/collection";
 import { formatReign } from "@/lib/king-display";
 import { safeKingImage } from "@/lib/king-image";
 import { kingInitial } from "@/lib/king-initial";
 import type { KingSummary } from "@/lib/kings";
+import { markNewestSeen, newestCollected, readSeenNewest } from "@/lib/timeline-new";
 import { cn } from "@/lib/utils";
 
 type Variant = "full" | "compact";
@@ -35,12 +37,15 @@ function byReign(kings: KingSummary[]): KingSummary[] {
  * Only collected kings are shown (portrait + name + years, click = chronicle).
  * The rest is one line "a ještě X neznámých panovníků" – no names, links or
  * order, so the river can't be used to answer "Kdo vládl dřív?".
+ * The most recently collected king carries a "Nový" badge until the player
+ * has seen it here once (see `useNewBadge`).
  */
 export function ReignTimeline({ kings, variant }: { kings: KingSummary[]; variant: Variant }) {
   const collection = useCollection();
   const owned = new Set(collection.kings);
   const golden = new Set(collection.golden);
   const compact = variant === "compact";
+  const { newSlug, newStopRef, scrollerRef } = useNewBadge(kings, collection.kings, compact);
 
   if (kings.length === 0) return null;
 
@@ -67,6 +72,7 @@ export function ReignTimeline({ kings, variant }: { kings: KingSummary[]; varian
       </div>
 
       <div
+        ref={scrollerRef}
         className={cn(
           "parchment relative rounded-2xl",
           compact
@@ -100,12 +106,18 @@ export function ReignTimeline({ kings, variant }: { kings: KingSummary[]; varian
             {known.map((king) => (
               <li
                 key={king.slug}
+                ref={king.slug === newSlug ? newStopRef : undefined}
                 className={cn(
                   "relative",
                   compact ? "w-[78px] shrink-0" : "lg:min-w-0 lg:flex-1",
                 )}
               >
-                <TimelineStop king={king} golden={golden.has(king.slug)} compact={compact} />
+                <TimelineStop
+                  king={king}
+                  golden={golden.has(king.slug)}
+                  isNew={king.slug === newSlug}
+                  compact={compact}
+                />
               </li>
             ))}
           </ol>
@@ -128,6 +140,54 @@ export function ReignTimeline({ kings, variant }: { kings: KingSummary[]; varian
   );
 }
 
+/**
+ * "Nový" badge for the most recently collected king.
+ * The seen state is read once on mount, so the badge stays for this whole
+ * visit; once the king's stop has been on screen it is remembered and the
+ * badge is gone next time (on / and /sbirka alike).
+ */
+function useNewBadge(kings: KingSummary[], collected: readonly string[], compact: boolean) {
+  const ready = useCollectionReady();
+  // undefined = not read yet (server render / hydration).
+  const [seenAtMount] = useState<string | null | undefined>(() =>
+    typeof window === "undefined" ? undefined : readSeenNewest(),
+  );
+  const newest = newestCollected(collected, new Set(kings.map((king) => king.slug)));
+  const newSlug = ready && seenAtMount !== undefined && newest !== seenAtMount ? newest : null;
+
+  const newStopRef = useRef<HTMLLIElement>(null);
+  const scrollerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const stop = newStopRef.current;
+    if (!newSlug || !stop) return;
+
+    // In the scrolling strip, bring the new king into view (only the strip moves).
+    const scroller = scrollerRef.current;
+    if (compact && scroller) {
+      scroller.scrollLeft = stop.offsetLeft - (scroller.clientWidth - stop.offsetWidth) / 2;
+    }
+
+    if (typeof IntersectionObserver === "undefined") {
+      markNewestSeen(newSlug);
+      return;
+    }
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries.some((entry) => entry.isIntersecting)) {
+          markNewestSeen(newSlug);
+          observer.disconnect();
+        }
+      },
+      { threshold: 0.6 },
+    );
+    observer.observe(stop);
+    return () => observer.disconnect();
+  }, [newSlug, compact]);
+
+  return { newSlug, newStopRef, scrollerRef };
+}
+
 /** "a ještě 3 neznámí panovníci" (Czech plural forms, including an empty collection). */
 function unknownLabel(count: number): string {
   const noun =
@@ -142,10 +202,13 @@ function unknownLabel(count: number): string {
 function TimelineStop({
   king,
   golden,
+  isNew,
   compact,
 }: {
   king: KingSummary;
   golden: boolean;
+  /** Most recently collected and not seen here yet. */
+  isNew: boolean;
   compact: boolean;
 }) {
   const label = `${king.title} ${king.name}${king.isLegend ? " (pověst)" : ""}`;
@@ -161,11 +224,12 @@ function TimelineStop({
     <>
       <span
         className={cn(
-          "flex shrink-0 items-center justify-center",
+          "relative flex shrink-0 items-center justify-center",
           compact ? "h-11 w-full" : "h-14 w-14 lg:w-full",
         )}
       >
         <Portrait king={king} golden={golden} compact={compact} />
+        {isNew && <NewBadge className="absolute -bottom-1.5 left-1/2 z-10 -translate-x-1/2" />}
       </span>
       <span className={cn("flex min-w-0 flex-col", compact ? "items-center" : "items-start lg:items-center")}>
         <span
@@ -189,7 +253,7 @@ function TimelineStop({
     </>
   );
 
-  const status = golden ? "zlatá karta" : "ve sbírce";
+  const status = `${isNew ? "nově získaný, " : ""}${golden ? "zlatá karta" : "ve sbírce"}`;
 
   if (!king.chronicle) {
     return (
