@@ -120,7 +120,7 @@ export function ReignTimeline({ kings, variant }: { kings: KingSummary[]; varian
             )}
           >
             <MissingDot compact={compact} />
-            <span data-testid="timeline-unknown">{unknownLabel(unknownCount, known.length > 0)}</span>
+            <span data-testid="timeline-unknown">{unknownLabel(unknownCount)}</span>
           </p>
         )}
       </div>
@@ -128,15 +128,15 @@ export function ReignTimeline({ kings, variant }: { kings: KingSummary[]; varian
   );
 }
 
-/** "a ještě 3 neznámí panovníci" (Czech plural forms; no "a ještě" when nobody is known). */
-function unknownLabel(count: number, afterKnown: boolean): string {
+/** "a ještě 3 neznámí panovníci" (Czech plural forms, including an empty collection). */
+function unknownLabel(count: number): string {
   const noun =
     count === 1
       ? "neznámý panovník"
       : count >= 2 && count <= 4
         ? "neznámí panovníci"
         : "neznámých panovníků";
-  return `${afterKnown ? "a ještě " : ""}${count} ${noun}`;
+  return `a ještě ${count} ${noun}`;
 }
 
 function TimelineStop({
