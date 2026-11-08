@@ -5,6 +5,7 @@ import { Swords, Zap } from "lucide-react";
 
 import {
   CollectionStatus,
+  GoldenCount,
   KingGrid,
   useCollectionSummary,
 } from "@/components/collection-summary";
@@ -17,7 +18,7 @@ import type { KingSummary } from "@/lib/kings";
 /** "Moje sbírka" – the player's collected kings and the ones still missing. */
 export function MyCollection({ kings }: { kings: KingSummary[] }) {
   const ready = useCollectionReady();
-  const { cards, collected, total, rank, complete } = useCollectionSummary(kings);
+  const { cards, collected, golden, total, rank, complete } = useCollectionSummary(kings);
 
   // localStorage is only readable after hydration – show a placeholder until then.
   if (!ready) return <MyCollectionSkeleton />;
@@ -33,9 +34,11 @@ export function MyCollection({ kings }: { kings: KingSummary[] }) {
   return (
     <>
       {complete ? (
-        <RoyalCelebration total={total} />
+        <RoyalCelebration total={total}>
+          <GoldenCount golden={golden} total={total} />
+        </RoyalCelebration>
       ) : (
-        <CollectionStatus rank={rank} collected={collected} total={total} />
+        <CollectionStatus rank={rank} collected={collected} golden={golden} total={total} />
       )}
 
       {owned.length === 0 ? (

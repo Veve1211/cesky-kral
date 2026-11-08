@@ -14,6 +14,8 @@ import type { KingSummary } from "@/lib/kings";
 export type CollectionSummary = {
   cards: KingCardData[];
   collected: number;
+  /** Golden cards among the kings in the DB. */
+  golden: number;
   total: number;
   rank: Rank;
   complete: boolean;
@@ -21,17 +23,21 @@ export type CollectionSummary = {
 
 /** Merges kings from the DB with the player's collection (localStorage). */
 export function useCollectionSummary(kings: KingSummary[]): CollectionSummary {
-  const owned = new Set(useCollection());
+  const collection = useCollection();
+  const owned = new Set(collection.kings);
+  const goldenSlugs = new Set(collection.golden);
   const cards = kings.map((king) => ({
     ...king,
     initial: kingInitial(king.name),
     collected: owned.has(king.slug),
+    golden: owned.has(king.slug) && goldenSlugs.has(king.slug),
   }));
   // Count only kings that exist in the DB (ignores stale slugs).
   const collected = cards.filter((king) => king.collected).length;
   return {
     cards,
     collected,
+    golden: cards.filter((king) => king.golden).length,
     total: cards.length,
     rank: getRank(collected, cards.length),
     complete: cards.length > 0 && collected === cards.length,
@@ -42,11 +48,13 @@ export function useCollectionSummary(kings: KingSummary[]): CollectionSummary {
 export function CollectionStatus({
   rank,
   collected,
+  golden,
   total,
   action,
 }: {
   rank: Rank;
   collected: number;
+  golden: number;
   total: number;
   action?: ReactNode;
 }) {
@@ -75,9 +83,23 @@ export function CollectionStatus({
           </strong>
         </p>
         <Progress value={collected} max={total} label="Získaní panovníci" />
+        <GoldenCount golden={golden} total={total} />
       </div>
       {action}
     </section>
+  );
+}
+
+/** "✨ Zlatých: Y z N" – golden cards won in the golden round. */
+export function GoldenCount({ golden, total }: { golden: number; total: number }) {
+  return (
+    <p className="text-sm">
+      <span aria-hidden>✨ </span>
+      Zlatých:{" "}
+      <strong>
+        {golden} z {total}
+      </strong>
+    </p>
   );
 }
 

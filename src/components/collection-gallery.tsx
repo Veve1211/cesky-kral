@@ -5,6 +5,7 @@ import { Zap } from "lucide-react";
 
 import {
   CollectionStatus,
+  GoldenCount,
   KingGrid,
   useCollectionSummary,
 } from "@/components/collection-summary";
@@ -13,12 +14,13 @@ import { Button } from "@/components/ui/button";
 import type { KingSummary } from "@/lib/kings";
 
 export function CollectionGallery({ kings }: { kings: KingSummary[] }) {
-  const { cards, collected, total, rank, complete } = useCollectionSummary(kings);
+  const { cards, collected, golden, total, rank, complete } = useCollectionSummary(kings);
 
   return (
     <>
       {complete ? (
         <RoyalCelebration total={total}>
+          <GoldenCount golden={golden} total={total} />
           <Button asChild variant="accent" size="lg" className="mt-2">
             <Link href="/rychlovka">
               <Zap aria-hidden />
@@ -30,6 +32,7 @@ export function CollectionGallery({ kings }: { kings: KingSummary[] }) {
         <CollectionStatus
           rank={rank}
           collected={collected}
+          golden={golden}
           total={total}
           action={
             <Button asChild variant="accent">
