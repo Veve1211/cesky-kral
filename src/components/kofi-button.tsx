@@ -39,7 +39,8 @@ export function KofiButton({
       data-testid={`kofi-${variant}`}
       className={cn(BASE, linkClass)}
     >
-      <span aria-hidden className="leading-none">
+      {/* Fixed box: the coin emoji is as wide as the system's emoji font makes it. */}
+      <span aria-hidden className="inline-flex size-5 shrink-0 items-center justify-center overflow-hidden leading-none">
         🪙
       </span>
       <span className={hideLabelBelowMd ? "max-md:sr-only" : undefined}>{label}</span>

@@ -10,7 +10,7 @@ export function SiteHeader() {
     <header className="sticky top-0 z-20 bg-navy/95 text-parchment shadow-md backdrop-blur">
       {/* One line when logo and menu fit; otherwise the menu wraps onto a
           second line, so the logo stays whole and every label readable. */}
-      <div className="mx-auto flex min-h-14 max-w-5xl flex-wrap items-center justify-between gap-x-1 px-3 py-1 min-[460px]:gap-x-2 min-[460px]:px-4">
+      <div className="mx-auto flex min-h-14 max-w-5xl flex-wrap items-center justify-between gap-x-1 px-2.5 py-1 min-[460px]:gap-x-2 min-[460px]:px-4">
         <Link href="/" className="flex min-h-12 items-center gap-1.5 min-[460px]:gap-2">
           <CrownMark className="h-4 w-6 shrink-0 text-gold min-[460px]:h-5 min-[460px]:w-7" />
           <span className="font-heading text-xl leading-none font-bold tracking-wide whitespace-nowrap min-[460px]:text-2xl">

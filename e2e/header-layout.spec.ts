@@ -34,17 +34,27 @@ async function headerState(page: Page) {
 test.describe("hlavička na úzkých displejích", () => {
   test.skip(({ isMobile }) => isMobile, "Viewports are set per test; one project is enough.");
 
-  for (const width of WIDTHS) {
-    const oneLine = width >= 360;
-    test(`${width} px: logo celé, „Jak hrát“ čitelné${oneLine ? ", jeden řádek" : ""}`, async ({ page }) => {
-      await page.setViewportSize({ width, height: 700 });
-      await open(page, "/jak-hrat");
-      const state = await headerState(page);
-      expect(state).toMatchObject({ logoWhole: true, linksInside: true, howToTextVisible: true, noPageScroll: true });
-      await expect(page.getByTestId("kofi-header")).toBeVisible();
-      // Normal text size: logo and menu share one line (56 px bar + 3 px gilded rule).
-      if (oneLine) expect(state.headerHeight).toBeLessThanOrEqual(60);
-    });
+  // Fonts use `display: optional`: on a slow connection (or a busy CI machine)
+  // the page keeps the wider fallback fonts, so check both cases.
+  for (const fonts of ["webová písma", "náhradní písma"] as const) {
+    for (const width of WIDTHS) {
+      const oneLine = width >= 360;
+      test(`${width} px, ${fonts}: logo celé, „Jak hrát“ čitelné${oneLine ? ", jeden řádek" : ""}`, async ({ page }) => {
+        if (fonts === "náhradní písma") await page.route(/\.(woff2?|ttf)(\?|$)/, (route) => route.abort());
+        await page.setViewportSize({ width, height: 700 });
+        await open(page, "/jak-hrat");
+        if (fonts === "webová písma") {
+          // Make sure the web fonts are really in use (cached → applied at once).
+          await page.evaluate(() => document.fonts.ready);
+          await open(page, "/jak-hrat");
+        }
+        const state = await headerState(page);
+        expect(state).toMatchObject({ logoWhole: true, linksInside: true, howToTextVisible: true, noPageScroll: true });
+        await expect(page.getByTestId("kofi-header")).toBeVisible();
+        // Normal text size: logo and menu share one line (56 px bar + 3 px gilded rule).
+        if (oneLine) expect(state.headerHeight).toBeLessThanOrEqual(60);
+      });
+    }
   }
 
   for (const width of [320, 375]) {

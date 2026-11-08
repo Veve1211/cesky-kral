@@ -46,8 +46,10 @@ export function SiteNavLinks({ pathname }: { pathname: string | null }) {
             className={cn(
               "relative flex min-h-10 items-center gap-1 rounded-lg px-2 py-2 min-[460px]:px-2.5 whitespace-nowrap transition-colors hover:bg-white/10",
               className,
-              // Tighter padding on phones, so logo and menu share one line.
-              "max-[459px]:px-1.5",
+              // Tighter padding on phones, so logo and menu share one line even
+              // before the web fonts load (fallback fonts are wider). Icon-only
+              // links stay at least 24 px wide (WCAG 2.5.8 target size).
+              labelClass === "" ? "max-[459px]:px-1.5" : "max-[459px]:px-1",
               // Active page: lighter background and a gilded underline.
               "aria-[current=page]:bg-white/15 aria-[current=page]:after:absolute aria-[current=page]:after:inset-x-2 aria-[current=page]:after:bottom-1 aria-[current=page]:after:h-0.5 aria-[current=page]:after:rounded-full aria-[current=page]:after:bg-gold",
             )}
