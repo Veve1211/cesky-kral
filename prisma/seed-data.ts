@@ -405,7 +405,8 @@ export const kings: SeedKing[] = [
         correct: "Přemysl Otakar II.",
         wrong: ["Karel IV.", "Jan Lucemburský"],
         explanation:
-          "Byl jediným přeživším synem Přemysla Otakara II.",
+          "Byl jediným přeživším manželským synem Přemysla Otakara II.; jeho nevlastní bratr Mikuláš Opavský byl nemanželským synem téhož krále.",
+        sourceUrl: "https://www.opava-city.cz/cz/mesto-urad/o-meste/osobnosti/vladci/mikulas-vevoda-opavsky.html",
       },
       {
         difficulty: 1,
@@ -501,7 +502,8 @@ export const kings: SeedKing[] = [
         correct: "Slepý",
         wrong: ["Železný a zlatý", "Otec vlasti"],
         explanation:
-          "Posledních zhruba deset let života byl slepý.",
+          "Zrak ztrácel postupně a v závěru života už byl zcela slepý.",
+        sourceUrl: "https://dvojka.rozhlas.cz/120-schuzka-soukroma-podobizna-ceskeho-krale-jana-lucemburskeho-7939911",
       },
       {
         difficulty: 1,
@@ -545,11 +547,12 @@ export const kings: SeedKing[] = [
       },
       {
         difficulty: 3,
-        text: "Kde Jan Lucemburský přišel o zrak?",
+        text: "Při které výpravě se Janovi Lucemburskému výrazně zhoršil zrak?",
         correct: "Na křížové výpravě v Litvě",
         wrong: ["V bitvě u Kresčaku", "Ve vězení v Paříži"],
         explanation:
-          "Oslepl kolem roku 1336 kvůli zánětu očí.",
+          "Zrak ztrácel postupně. Při výpravě do Litvy se mu výrazně zhoršil a později oslepl úplně.",
+        sourceUrl: "https://dvojka.rozhlas.cz/120-schuzka-soukroma-podobizna-ceskeho-krale-jana-lucemburskeho-7939911",
       },
       {
         difficulty: 3,
@@ -572,7 +575,7 @@ export const kings: SeedKing[] = [
     title: "král",
     isLegend: false,
     imageUrl: "/kings/karel-iv.webp",
-    sourceUrl: "https://prague.eu/en/2024/03/13/charles-iv-the-greatest-czech",
+    sourceUrl: "https://archiv.radio.cz/cz/static/karel-iv/vita-caroli",
     questions: [
       {
         difficulty: 2,
@@ -596,6 +599,7 @@ export const kings: SeedKing[] = [
         correct: "Univerzitu v Praze",
         wrong: ["Národní divadlo", "Pražský hrad"],
         explanation: "Pražská univerzita je nejstarší ve střední Evropě.",
+        sourceUrl: "https://archiv.radio.cz/cz/static/karel-iv/praha",
       },
       {
         difficulty: 2,
@@ -604,6 +608,7 @@ export const kings: SeedKing[] = [
         wrong: ["Malá Strana", "Staré Město"],
         explanation:
           "Založení Nového Města je považováno za jeho nejvýznamnější stavební čin.",
+        sourceUrl: "https://archiv.radio.cz/cz/static/karel-iv/praha",
       },
       {
         difficulty: 2,
@@ -753,7 +758,7 @@ export const kings: SeedKing[] = [
       "Císař, který z Prahy udělal středisko umění, vědy a alchymie.",
     order: 9,
     imageUrl: "/kings/rudolf-ii.webp",
-    sourceUrl: "https://ipfs.ssi.eecc.de/ipns/en.wikipedia-on-ipfs.org/wiki/Rudolf_II%2C_Holy_Roman_Emperor",
+    sourceUrl: "https://lib.cas.cz/casopis-informace/rudolf-ii/",
     questions: [
       {
         difficulty: 1,
@@ -787,6 +792,7 @@ export const kings: SeedKing[] = [
         wrong: ["Karlovy tabulky", "Pražské tabulky"],
         explanation:
           "Začal je Tycho Brahe, po jeho smrti je dokončil Kepler.",
+        sourceUrl: "https://biography.hiu.cas.cz/wiki/BRAHE_Tycho_14.12.1546-24.10.1601",
       },
       {
         difficulty: 2,
@@ -879,11 +885,11 @@ export const kings: SeedKing[] = [
       },
       {
         difficulty: 2,
-        text: "Co Marie Terezie zavedla patentem z roku 1774?",
-        correct: "Povinnou školní docházku",
+        text: "Co zavedl Všeobecný školní řád Marie Terezie z roku 1774?",
+        correct: "Všeobecnou vzdělávací povinnost",
         wrong: ["Zrušení nevolnictví", "Toleranční patent"],
         explanation:
-          "Školní povinnost platila pro děti od 6 do 12 let, nevolnictví a toleranci zavedl až Josef II.",
+          "Vzdělávací povinnost pro děti od 6 do 12 let bylo možné plnit ve škole i domácím vyučováním. Nevolnictví zrušil a toleranční patent vydal až Josef II. v roce 1781.",
       },
       {
         difficulty: 1,
@@ -914,11 +920,11 @@ export const kings: SeedKing[] = [
       },
       {
         difficulty: 3,
-        text: "Jak dlouho podle patentu z roku 1774 trvala povinná školní docházka?",
+        text: "Pro jak staré děti platila vzdělávací povinnost podle školního řádu z roku 1774?",
         correct: "Od 6 do 12 let věku",
         wrong: ["Od 10 do 15 let věku", "Od 3 do 6 let věku"],
         explanation:
-          "Povinnost šlo splnit i soukromým vyučováním, které si mohly dovolit hlavně bohatší rodiny.",
+          "Vzdělávací povinnost neznamenala bezvýjimečnou docházku do školy: bylo možné zajistit i domácí vyučování, dostupné hlavně zámožným rodinám.",
         sourceUrl: "https://ct24.ceskatelevize.cz/clanek/archiv/macecha-a-reformator-221103",
       },
     ],
@@ -952,7 +958,7 @@ export const kings: SeedKing[] = [
         wrong: ["Povinnou školní docházku", "Šlechtické tituly"],
         explanation:
           "Poddaní se mohli sami ženit, stěhovat se a volit si povolání.",
-        sourceUrl: "https://en.wikipedia.org/wiki/Serfdom_Patent_(1781)",
+        sourceUrl: "https://www.nacr.cz/labyrint/labyrintem-dejin-ceskych-zemi/mezi-absolutismem-a-obcanskou-revoluci/rok-1781",
       },
       {
         difficulty: 1,

@@ -140,11 +140,11 @@ export const chronicles: Record<string, SeedChronicle> = {
   },
   "vaclav-ii": {
     intro:
-      "Narodil se roku 1271 jako jediný přeživší syn Přemysla Otakara II. Když otec padl na Moravském poli, bylo mu sedm let a zemi spravoval braniborský markrabě Ota, který ho podle pramenů věznil. Do Čech se vrátil v roce 1283 a od roku 1290 vládl samostatně. Zemřel 21. června 1305, bylo mu teprve 33 let.",
+      "Narodil se roku 1271 jako jediný přeživší manželský syn Přemysla Otakara II. Když otec padl na Moravském poli, bylo mu sedm let a zemi spravoval braniborský markrabě Ota, který ho podle pramenů věznil. Do Čech se vrátil v roce 1283 a od roku 1290 vládl samostatně. Zemřel 21. června 1305, bylo mu teprve 33 let.",
     sections: [
       {
         heading: "Mládí",
-        text: "Narodil se roku 1271. Po otcově smrti spravoval zemi braniborský markrabě Ota, který malého Václava podle pramenů věznil. Do Čech se vrátil v roce 1283 a velký vliv na něj měl Záviš z Falkenštejna, partner jeho matky. V roce 1290 dal Záviše kvůli údajné zradě popravit a začal vládnout samostatně.",
+        text: "Narodil se roku 1271. Byl jediný přeživší manželský syn Přemysla Otakara II.; jeho nevlastní bratr Mikuláš Opavský byl nemanželským synem téhož krále. Po otcově smrti spravoval zemi braniborský markrabě Ota, který malého Václava podle pramenů věznil. Do Čech se vrátil v roce 1283 a velký vliv na něj měl Záviš z Falkenštejna, partner jeho matky. V roce 1290 dal Záviše kvůli údajné zradě popravit a začal vládnout samostatně.",
       },
       {
         heading: "Vláda",
@@ -164,6 +164,7 @@ export const chronicles: Record<string, SeedChronicle> = {
     ],
     sources: [
       { label: "Wikipedie", url: "https://en.wikipedia.org/wiki/Wenceslaus_II_of_Bohemia" },
+      { label: "Statutární město Opava – Mikuláš I.", url: "https://www.opava-city.cz/cz/mesto-urad/o-meste/osobnosti/vladci/mikulas-vevoda-opavsky.html" },
     ],
   },
   "jan-lucembursky": {
@@ -176,7 +177,7 @@ export const chronicles: Record<string, SeedChronicle> = {
       },
       {
         heading: "Vláda",
-        text: "Často cestoval a správu Čech přenechával jiným, proto ho mnozí šlechtici považovali za krále cizince. Přesto k českému království připojil Chebsko a oblasti Budyšína a Zhořelce. Kolem roku 1336 na křížové výpravě v Litvě oslepl.",
+        text: "Často cestoval a správu Čech přenechával jiným, proto ho mnozí šlechtici považovali za krále cizince. Přesto k českému království připojil Chebsko a oblasti Budyšína a Zhořelce. Zrak ztrácel postupně: při výpravě do Litvy se mu výrazně zhoršil a později oslepl úplně.",
       },
       {
         heading: "Konec a odkaz",
@@ -184,13 +185,16 @@ export const chronicles: Record<string, SeedChronicle> = {
       },
     ],
     facts: [
-      "oslepl kolem roku 1336 na křížové výpravě v Litvě a posledních zhruba deset let života neviděl?",
+      "zrak ztrácel postupně a v bitvě u Kresčaku už bojoval zcela slepý?",
       "i slepý se postavil do čela vojska v bitvě u Kresčaku proti Angličanům?",
       "k českému království připojil Chebsko a oblasti Budyšína a Zhořelce?",
       "jeho ostatky jsou od roku 1945 uložené v katedrále Notre-Dame v Lucemburku?",
       "jeho nejstarší syn Karel se stal nejslavnějším českým panovníkem?",
     ],
-    sources: [{ label: "Wikipedie", url: "https://en.wikipedia.org/wiki/John_of_Bohemia" }],
+    sources: [
+      { label: "Wikipedie", url: "https://en.wikipedia.org/wiki/John_of_Bohemia" },
+      { label: "Český rozhlas – Janova ztráta zraku", url: "https://dvojka.rozhlas.cz/120-schuzka-soukroma-podobizna-ceskeho-krale-jana-lucemburskeho-7939911" },
+    ],
   },
   "karel-iv": {
     intro:
@@ -221,7 +225,8 @@ export const chronicles: Record<string, SeedChronicle> = {
         label: "Wikipedie",
         url: "https://en.wikipedia.org/wiki/Charles_IV,_Holy_Roman_Emperor",
       },
-      { label: "Prague.eu", url: "https://prague.eu/en/2024/03/13/charles-iv-the-greatest-czech" },
+      { label: "Český rozhlas – život Karla IV.", url: "https://archiv.radio.cz/cz/static/karel-iv/vita-caroli" },
+      { label: "Český rozhlas – Karlova Praha", url: "https://archiv.radio.cz/cz/static/karel-iv/praha" },
       {
         label: "Novinky",
         url: "https://www.novinky.cz/clanek/veda-skoly-pred-660-lety-polozil-karel-iv-zakladni-kamen-mostu-ktery-z-prahy-udelal-velemesto-40039120",
@@ -282,10 +287,11 @@ export const chronicles: Record<string, SeedChronicle> = {
     ],
     sources: [
       {
-        label: "Wikipedie",
-        url: "https://ipfs.ssi.eecc.de/ipns/en.wikipedia-on-ipfs.org/wiki/Rudolf_II%2C_Holy_Roman_Emperor",
+        label: "Knihovna Akademie věd ČR – Rudolf II.",
+        url: "https://lib.cas.cz/casopis-informace/rudolf-ii/",
       },
       { label: "Radio Prague", url: "https://english.radio.cz/node/8796981" },
+      { label: "Historický ústav AV ČR – Tycho Brahe a Rudolfinské tabulky", url: "https://biography.hiu.cas.cz/wiki/BRAHE_Tycho_14.12.1546-24.10.1601" },
     ],
   },
   "marie-terezie": {
@@ -298,7 +304,7 @@ export const chronicles: Record<string, SeedChronicle> = {
       },
       {
         heading: "Vláda",
-        text: "Na trůn nastoupila v roce 1740 a hned na začátku jí pruský král Fridrich II. zabral většinu Slezska. Českou královnou byla korunována 12. května 1743 v katedrále svatého Víta v Praze. Prosadila řadu reforem a v roce 1774 zavedla povinnou školní docházku pro děti od 6 do 12 let. Od roku 1765 s ní vládl její syn Josef II.",
+        text: "Na trůn nastoupila v roce 1740 a hned na začátku jí pruský král Fridrich II. zabral většinu Slezska. Českou královnou byla korunována 12. května 1743 v katedrále svatého Víta v Praze. Prosadila řadu reforem a Všeobecným školním řádem z roku 1774 zavedla vzdělávací povinnost pro děti od 6 do 12 let. Nešlo o bezvýjimečnou docházku do školy: povinnost bylo možné plnit i domácím vyučováním, dostupným hlavně zámožným rodinám. Od roku 1765 s ní vládl její syn Josef II.",
       },
       {
         heading: "Konec a odkaz",
@@ -308,12 +314,13 @@ export const chronicles: Record<string, SeedChronicle> = {
     facts: [
       "během devatenácti let porodila šestnáct dětí?",
       "jejím manželem byl František Štěpán Lotrinský?",
-      "v roce 1774 zavedla povinnou školní docházku pro děti od 6 do 12 let?",
-      "povinnost šlo splnit i soukromým vyučováním, které si mohly dovolit hlavně bohatší rodiny?",
+      "Všeobecný školní řád z roku 1774 stanovil vzdělávací povinnost pro děti od 6 do 12 let?",
+      "vzdělávací povinnost šlo splnit i domácím vyučováním, které si mohly dovolit hlavně zámožné rodiny?",
       "od roku 1765 s ní vládl její syn Josef II.?",
     ],
     sources: [
       { label: "Wikipedie", url: "https://en.wikipedia.org/wiki/Maria_Theresa" },
+      { label: "Národní pedagogické muzeum – školní řád z roku 1774", url: "https://npmk.gov.cz/novinky/muzeum-npmk/skolni-rad-po-250-letech" },
       {
         label: "ČT24",
         url: "https://ct24.ceskatelevize.cz/clanek/archiv/macecha-a-reformator-221103",
@@ -330,7 +337,7 @@ export const chronicles: Record<string, SeedChronicle> = {
       },
       {
         heading: "Vláda",
-        text: "Po matčině smrti v roce 1780 vládl sám a jako osvícený panovník prosazoval rychlé reformy. Toleranční patent z 13. října 1781 povolil luterány, kalvinisty a pravoslavné a nevolnický patent z 1. listopadu 1781 dovolil poddaným svobodně se ženit, stěhovat a volit si povolání. Zrušil přes 500 z 1 188 klášterů a svatováclavskou korunu nechal převézt do Vídně.",
+        text: "Po matčině smrti v roce 1780 vládl sám a jako osvícený panovník prosazoval rychlé reformy. Tolerančním patentem z 13. října 1781 povolil luterány, kalvinisty a pravoslavné a patentem z 1. listopadu 1781 zrušil nevolnictví. Poddaní se mohli svobodně ženit, stěhovat a volit si povolání. Zrušil přes 500 z 1 188 klášterů a svatováclavskou korunu nechal převézt do Vídně.",
       },
       {
         heading: "Konec a odkaz",
@@ -338,7 +345,7 @@ export const chronicles: Record<string, SeedChronicle> = {
       },
     ],
     facts: [
-      "nevolnický patent z 1. listopadu 1781 dovolil poddaným svobodně se ženit, stěhovat a volit si povolání, ale robotu nezrušil?",
+      "Josef II. patentem z 1. listopadu 1781 zrušil nevolnictví a poddaným dovolil svobodně se ženit, stěhovat a volit si povolání, ale robotu nezrušil?",
       "toleranční patent z 13. října 1781 povolil luterány, kalvinisty a pravoslavné?",
       "nekatolické modlitebny se nesměly podobat kostelům?",
       "zrušil přes 500 z 1 188 klášterů?",
@@ -347,6 +354,7 @@ export const chronicles: Record<string, SeedChronicle> = {
     sources: [
       { label: "Wikipedie", url: "https://en.wikipedia.org/wiki/Josephinism" },
       { label: "Wikipedie", url: "https://en.wikipedia.org/wiki/Serfdom_Patent_(1781)" },
+      { label: "Národní archiv – patent o zrušení nevolnictví", url: "https://www.nacr.cz/labyrint/labyrintem-dejin-ceskych-zemi/mezi-absolutismem-a-obcanskou-revoluci/rok-1781" },
       { label: "Wikipedie", url: "https://en.wikipedia.org/wiki/Patent_of_Toleration" },
     ],
   },

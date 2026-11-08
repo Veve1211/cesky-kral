@@ -112,6 +112,8 @@ Pokud NODE_ENV=production:
 - CI: `.github/workflows/e2e.yml` u každého PR do dev (Postgres service, lint, build, seed, testy; při chybě artefakt `playwright-report`)
 - Novou funkci pokryj testem; při změně textů v UI uprav i testy
 
+- Historický obsah: ověřené opravy a zdroje v `docs/historical-content.md`; regrese `e2e/historical-content.spec.ts` hlídá fakta, zdroje a všech 108 otázek.
+
 ## Rozhodnutí
 - 2026-11-07: postup v localStorage místo účtů, protože jde o ukázkovou verzi bez přihlášení
 - 2026-11-07: shadcn/ui nastaveno ručně (ui.shadcn.com je z cloud prostředí blokované); nové komponenty kopírovat do `src/components/ui/`
