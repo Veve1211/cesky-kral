@@ -38,6 +38,9 @@
 - Na kartě se zobrazuje titul (kníže / kněžna / král / královna).
 - Postup hráče se ukládá v prohlížeči (localStorage), bez účtů.
 - /sbirka „Moje sbírka“: hodnost + „Ve sbírce: X z N“ + „✨ Zlatých: Y z N“, získaní (klik = kronika), „Ještě chybí“ (siluety, Hrát o kartu); prázdný stav s tlačítkem na prvního panovníka. Hlavička: „Moje sbírka“ → /sbirka, Rychlovka → /rychlovka (pod `sm` jen ikona ⚡ s aria-label), aktivní odkaz `aria-current="page"`; logo → /.
+- Kdo vládl dřív? (`/kdo-driv`): dvě náhodné karty (bez pověstí), roky skryté; klik na toho, kdo začal vládnout dřív (`reignFrom`), ověří server action `checkWhoFirst`. Správně = pulznutí, roky, série +1 🔥, Další; špatně = zatřesení, roky, konec, skóre + nejlepší série (localStorage `cesky-kral:who-first`, `{ version: 1, best }`). Stejná dvojice nikdy dvakrát po sobě. V hlavičce jen ikona ⏳ (aria-label).
+- Řeka času (`ReignTimeline`, jedna komponenta): podle `reignFrom`, pověsti první se štítkem Pověst. Získaný = malý portrét + jméno + roky (zlatá karta = zlatý rám), klik = kronika; nezískaný = tečka s ?, klik = hra o kartu. `full` na /sbirka (mobil svisle, od `lg` vodorovně), `compact` na / (vodorovný pruh, posouvá se jen pruh).
+- Úvodní stránka: nadpis → Řeka času → okénko „⏳ Kdo vládl dřív?“ (jedna dvojice, pak „Hrát dál“ → /kdo-driv) → úvodní text → hodnost a sbírka → galerie. Data jedním dotazem v jednom Suspense, náhodná dvojice se losuje na serveru (bez nesouladu při hydrataci).
 - Kronika panovníka: po otočení vyhrané karty tlačítko „📜 Přečíst kroniku“; v galerii klik na získanou kartu otevře kroniku (dialog, na mobilu přes celou obrazovku), nezískaná karta: „Kronika se odemkne, až panovníka získáš.“ Bez kroniky = nic se nezobrazí. Kronika = oddíly (nadpis + text, iniciála jen u prvního, mezi nimi oddělovač), bez oddílů úvod (`chronicleIntro`); pak „Věděli jste, že…“ a zdroje. Nadpis „Kronika: …“ a zavřít zůstávají nahoře, posouvá se jen obsah.
 
 ## Datový model
@@ -89,11 +92,11 @@ Pokud NODE_ENV=production:
 
 ## Struktura projektu
 - Next.js 16 (App Router, `src/`, Cache Components zapnuté), Tailwind 4, Prisma 7
-- `src/app/` – stránky: `page.tsx` (galerie /), `kral/[slug]/` (hra), `kral/[slug]/zlate-kolo/` (zlaté kolo), `rychlovka/`, `sbirka/` (Moje sbírka), `zdroje/` (licence obrázků a písem), `not-found.tsx`, `layout.tsx` (fonty, hlavička, metadata), `opengraph-image.tsx` (náhled pro sdílení), `globals.css` (barvy, pergamen, animace)
-- `src/app/actions/quiz.ts` – server action `checkAnswer` (ověření odpovědi na serveru)
-- `src/components/` – `site-header`, `site-nav` (navigace, aktivní odkaz; klient v Suspense), `king-card`, `king-portrait` (zlatý rám, silueta), `crest` (erb s iniciálou = placeholder), `ornaments` (rohy, oddělovač, koruna), `illuminated-initial`, `royal-celebration`, `legend-badge` (Pověst), `difficulty-badge` (korunky), `knight-oath` (rytířský slib), `quiz` (hra + výsledky + otočení karty, klient), `collection-gallery` (galerie /, klient), `collection-summary` (`useCollectionSummary`, `CollectionStatus`, `GoldenCount`, `KingGrid` – sdílí galerie i /sbirka), `my-collection` (/sbirka, klient), `chronicle-dialog` (kronika, klient), `golden-badge` (Zlatá karta), `golden-round-button` (tlačítko zlatého kola + zlatý rám hlavičky panovníka, klient)
+- `src/app/` – stránky: `page.tsx` (galerie /), `kral/[slug]/` (hra), `kral/[slug]/zlate-kolo/` (zlaté kolo), `rychlovka/`, `kdo-driv/` (Kdo vládl dřív?), `sbirka/` (Moje sbírka), `zdroje/` (licence obrázků a písem), `not-found.tsx`, `layout.tsx` (fonty, hlavička, metadata), `opengraph-image.tsx` (náhled pro sdílení), `globals.css` (barvy, pergamen, animace)
+- `src/app/actions/quiz.ts` – server action `checkAnswer` (ověření odpovědi na serveru); `actions/who-first.ts` – `checkWhoFirst`
+- `src/components/` – `site-header`, `site-nav` (navigace, aktivní odkaz; klient v Suspense), `king-card`, `king-portrait` (zlatý rám, silueta), `crest` (erb s iniciálou = placeholder), `ornaments` (rohy, oddělovač, koruna), `illuminated-initial`, `royal-celebration`, `legend-badge` (Pověst), `difficulty-badge` (korunky), `knight-oath` (rytířský slib), `quiz` (hra + výsledky + otočení karty, klient), `collection-gallery` (galerie /, klient), `collection-summary` (`useCollectionSummary`, `CollectionStatus`, `GoldenCount`, `KingGrid` – sdílí galerie i /sbirka), `my-collection` (/sbirka, klient), `chronicle-dialog` (kronika, klient), `golden-badge` (Zlatá karta), `golden-round-button` (tlačítko zlatého kola + zlatý rám hlavičky panovníka, klient), `reign-timeline` (Řeka času, klient), `who-first-game` (Kdo vládl dřív?, `full` / `teaser`, klient)
 - `src/components/ui/` – shadcn komponenty (button, card, progress, dialog)
-- `src/lib/` – `utils.ts` (cn), `game-rules.ts` (konstanty, `getRank`), `prisma.ts` (klient s adapterem pg), `kings.ts` (dotazy na krále), `questions.ts` (otázky bez správnosti, míchání, `getGoldenQuestions`), `quiz-types.ts`, `collection.ts` (sbírka + zlaté karty v localStorage, verze 2, `useCollectionReady`), `slug.ts`, `king-initial.ts`, `king-image.ts` (povolené cesty obrázků), `king-display.ts` (titul, roky, text o pověsti), `chronicle.ts` (typ + bezpečné čtení kroniky a oddílů), `image-credits.ts`
+- `src/lib/` – `utils.ts` (cn), `game-rules.ts` (konstanty, `getRank`), `prisma.ts` (klient s adapterem pg), `kings.ts` (dotazy na krále), `questions.ts` (otázky bez správnosti, míchání, `getGoldenQuestions`), `quiz-types.ts`, `collection.ts` (sbírka + zlaté karty v localStorage, verze 2, `useCollectionReady`), `slug.ts`, `king-initial.ts`, `king-image.ts` (povolené cesty obrázků), `king-display.ts` (titul, roky, text o pověsti), `chronicle.ts` (typ + bezpečné čtení kroniky a oddílů), `who-first.ts` (typy, `pickPair`), `who-first-best.ts` (nejlepší série v localStorage), `image-credits.ts`
 - `assets/fonts/` – TTF písma pro generování OG obrázku (+ OFL licence)
 - `prisma/schema.prisma` – King, Question, Answer; `prisma/migrations/` – migrace; `prisma/seed.ts` – obsah (idempotentní); `prisma.config.ts` čte `.env.local`
 - `src/generated/prisma` – vygenerovaný klient (gitignored, `npm install` ho vytvoří přes postinstall)
@@ -128,6 +131,8 @@ Pokud NODE_ENV=production:
 
 - 2026-11-08: stránka /sbirka; „Do sbírky“ po hře vede na /sbirka, „Zpět do galerie“ na /; usePathname v hlavičce musí být v Suspense (Cache Components)
 - 2026-11-08: oddíly kroniky (migrace `king_chronicle_sections`, nedestruktivní, výchozí []); `intro` v `chronicles.ts` zůstává jako záloha
+
+- 2026-11-08: Kdo vládl dřív? – karty do prohlížeče bez roků, roky vrací až server action po odpovědi; remíza v roce = správně obojí
 
 ## Údržba tohoto souboru
 - Aktualizuj po každé strukturální změně, novém pravidlu nebo rozhodnutí
