@@ -1,6 +1,7 @@
 import "server-only";
 import { randomInt } from "node:crypto";
 
+import { pickDailyQuestions } from "@/lib/daily";
 import { GOLDEN_DIFFICULTY, ROUND_PLAN, toDifficulty } from "@/lib/game-rules";
 import { getPrisma } from "@/lib/prisma";
 import { isValidSlug } from "@/lib/slug";
@@ -91,4 +92,21 @@ export async function getRandomQuestions(count: number): Promise<QuizQuestion[]>
     .filter((row): row is QuestionRow => row !== undefined)
     .sort((a, b) => a.difficulty - b.difficulty)
     .map(toQuizQuestion);
+}
+
+/**
+ * "Denní výzva": the questions of `dateKey`, the same for every player
+ * (see `pickDailyQuestions`). Answers are shuffled as in every other mode.
+ */
+export async function getDailyQuestions(dateKey: string): Promise<QuizQuestion[]> {
+  const rows = await getPrisma().question.findMany({
+    select: { ...questionSelect, king: { select: { name: true, isLegend: true, slug: true } } },
+  });
+  const pool = rows.map((row) => ({
+    row,
+    kingSlug: row.king.slug,
+    text: row.text,
+    difficulty: toDifficulty(row.difficulty),
+  }));
+  return pickDailyQuestions(dateKey, pool).map(({ row }) => toQuizQuestion(row));
 }

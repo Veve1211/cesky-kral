@@ -1,7 +1,7 @@
 import { expect, test, type Locator, type Page } from "@playwright/test";
 
-import { currentQuestion, open, readCollection, setCollection, STORAGE_KEY, waitForHydration } from "./helpers/game";
-import { kings } from "./helpers/seed-answers";
+import { currentQuestion, open, progress, readCollection, setCollection, STORAGE_KEY, waitForHydration } from "./helpers/game";
+import { findQuestion, kings } from "./helpers/seed-answers";
 
 /** Reach a control through the actual tab order, without focusing it via script. */
 async function tabTo(page: Page, control: Locator) {
@@ -49,9 +49,19 @@ for (const mode of modes) {
     if (mode.restart) {
       await tabTo(page, page.getByRole("button", { name: mode.restart, exact: true }));
       await page.keyboard.press("Enter");
-      await page.waitForLoadState("networkidle");
-      const first = await currentQuestion(page);
-      await expect(page.getByRole("heading", { name: first.text, exact: true })).toBeFocused();
+      // The restart loads new random questions from the server, so the
+      // heading may be swapped once more – check whichever question ends up
+      // there is focused, not the one read a moment earlier.
+      await expect(progress(page, 1, mode.count)).toBeVisible();
+      await expect
+        .poll(async () => {
+          const focused = await page.evaluate(() => {
+            const active = document.activeElement;
+            return active?.tagName === "H2" ? (active.textContent ?? "") : null;
+          });
+          return focused !== null && findQuestion(focused) !== undefined;
+        })
+        .toBe(true);
     }
   });
 }
