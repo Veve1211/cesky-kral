@@ -243,6 +243,19 @@
     color: transparent;
   }
 
+  /* Dark antique gold ink: AA contrast for large headings on parchment. */
+  .gilt-text-ink {
+    background-image: linear-gradient(
+      135deg,
+      #5b3c08 0%,
+      #70500f 22%,
+      #62430c 45%,
+      #73500e 62%,
+      #5d400c 82%,
+      #6c490c 100%
+    );
+  }
+
   /* Golden card: gilded, shimmering frame around a warm gold sheet */
   .golden-frame {
     background-image: var(--gilt);

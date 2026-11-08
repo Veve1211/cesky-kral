@@ -19,7 +19,7 @@ export default function CollectionPage() {
           Erbovní kniha
         </p>
         <h1 className="text-5xl leading-[1.05] font-bold sm:text-6xl">
-          Moje <span className="gilt-text">sbírka</span>
+          Moje <span className="gilt-text gilt-text-ink">sbírka</span>
         </h1>
         <OrnamentDivider />
       </header>

@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState, useTransition } from "react";
+import { useCallback, useEffect, useRef, useState, useTransition, type RefObject } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { ArrowRight, Check, ExternalLink, Lock, RotateCcw, X } from "lucide-react";
@@ -30,6 +30,8 @@ import type { AnswerResult, QuizQuestion } from "@/lib/quiz-types";
 import { cn } from "@/lib/utils";
 
 type Feedback = Extract<AnswerResult, { ok: true }>;
+
+const HEADING_FOCUS = "scroll-mt-20 rounded-sm focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-current";
 
 type QuizKing = {
   slug: string;
@@ -70,6 +72,17 @@ export function Quiz(props: QuizProps) {
   const total = questions.length;
   const question = questions[index];
   const locked = isPending || feedback !== null;
+  const questionHeading = useRef<HTMLHeadingElement>(null);
+  const resultHeading = useRef<HTMLHeadingElement>(null);
+  const focusQuestions = useRef(false);
+
+  useEffect(() => {
+    if (finished) {
+      resultHeading.current?.focus();
+    } else if (focusQuestions.current) {
+      questionHeading.current?.focus();
+    }
+  }, [index, finished, collected, question?.id]);
 
   function choose(answerId: number) {
     if (locked || !question) return;
@@ -107,6 +120,7 @@ export function Quiz(props: QuizProps) {
   function next() {
     if (!feedback) return;
     if (index + 1 < total) {
+      focusQuestions.current = true;
       setIndex(index + 1);
       setSelectedId(null);
       setFeedback(null);
@@ -123,6 +137,7 @@ export function Quiz(props: QuizProps) {
   }
 
   function restart() {
+    focusQuestions.current = true;
     setIndex(0);
     setScore(0);
     setSelectedId(null);
@@ -164,6 +179,7 @@ export function Quiz(props: QuizProps) {
         completedAll={completedAll}
         onRestart={restart}
         onRetrySave={saveKing}
+        headingRef={resultHeading}
       />
     );
   }
@@ -174,7 +190,7 @@ export function Quiz(props: QuizProps) {
 
       <div className="flex flex-col gap-2">
         <div className="flex justify-between text-sm">
-          <span>
+          <span id="quiz-question-progress">
             Otázka <strong>{index + 1}</strong> z {total}
           </span>
           <span className="text-muted-foreground">
@@ -198,7 +214,12 @@ export function Quiz(props: QuizProps) {
             </p>
             <DifficultyBadge difficulty={question.difficulty} className="mr-4" />
           </div>
-          <h2 className="text-2xl leading-snug font-bold sm:text-3xl">
+          <h2
+            ref={questionHeading}
+            tabIndex={-1}
+            aria-describedby="quiz-question-progress"
+            className={cn("text-2xl leading-snug font-bold sm:text-3xl", HEADING_FOCUS)}
+          >
             {question.text}
           </h2>
         </CardHeader>
@@ -300,23 +321,29 @@ function Results(
     completedAll: boolean;
     onRestart: () => void;
     onRetrySave: () => void;
+    headingRef: RefObject<HTMLHeadingElement | null>;
   },
 ) {
-  const { score, total, onRestart } = props;
+  const { score, total, onRestart, headingRef } = props;
   const [revealed, setRevealed] = useState(false);
   const onRevealed = useCallback(() => setRevealed(true), []);
 
   if (props.mode === "golden") {
     return props.collected ? (
-      <GoldenWin king={props.king} score={score} total={total} />
+      <GoldenWin king={props.king} score={score} total={total} headingRef={headingRef} />
     ) : (
       <Card className="animate-card-reveal items-center text-center">
         <CardCorners className="m-1 size-8 text-gold-dark" />
         <CardContent className="flex flex-col items-center gap-4">
-          <p className="text-xs font-semibold tracking-[0.2em] text-gold-dark uppercase">
+          <h2
+            ref={headingRef}
+            tabIndex={-1}
+            aria-describedby="quiz-result-score"
+            className={cn("font-sans text-xs font-semibold tracking-[0.2em] text-gold-dark uppercase", HEADING_FOCUS)}
+          >
             Konec zlatého kola
-          </p>
-          <p className="font-heading text-7xl font-bold">
+          </h2>
+          <p id="quiz-result-score" className="font-heading text-7xl font-bold">
             {score}
             <span className="text-3xl text-muted-foreground"> z {total}</span>
           </p>
@@ -344,18 +371,25 @@ function Results(
       <Card className="items-center text-center">
         <CardCorners className="m-1 size-8 text-gold-dark" />
         <CardContent className="flex flex-col items-center gap-4">
-          <p className="text-xs font-semibold tracking-[0.2em] text-gold-dark uppercase">
+          <p id="quiz-result-score" className="text-xs font-semibold tracking-[0.2em] text-gold-dark uppercase">
             Skóre {score} z {total}
           </p>
           <div role="alert" className="flex flex-col gap-3">
-            <h2 className="text-3xl font-bold">Kartu se nepodařilo uložit</h2>
+            <h2
+              ref={headingRef}
+              tabIndex={-1}
+              aria-describedby="quiz-result-score"
+              className={cn("text-3xl font-bold", HEADING_FOCUS)}
+            >
+              Kartu se nepodařilo uložit
+            </h2>
             <p className="text-muted-foreground">
               Povol ukládání v prohlížeči nebo uvolni místo a zkus uložení znovu.
               Kvíz nemusíš opakovat. Skóre zůstane zachované, dokud tuto stránku
               nezavřeš nebo neobnovíš.
             </p>
           </div>
-          <Button onClick={props.onRetrySave} variant="accent" size="lg" autoFocus>
+          <Button onClick={props.onRetrySave} variant="accent" size="lg">
             <RotateCcw aria-hidden />
             Zkusit uložit znovu
           </Button>
@@ -370,11 +404,18 @@ function Results(
         <Card className="items-center text-center">
           <CardCorners className="m-1 size-8 text-gold-dark" />
           <CardContent className="flex flex-col items-center gap-4">
-            <p className="text-xs font-semibold tracking-[0.2em] text-gold-dark uppercase">
+            <p id="quiz-result-score" className="text-xs font-semibold tracking-[0.2em] text-gold-dark uppercase">
               Skóre {score} z {total}
             </p>
             <CardFlipReveal king={props.king} onRevealed={onRevealed} />
-            <h2 className="text-4xl font-bold">Král je ve tvé sbírce!</h2>
+            <h2
+              ref={headingRef}
+              tabIndex={-1}
+              aria-describedby="quiz-result-score"
+              className={cn("text-4xl font-bold", HEADING_FOCUS)}
+            >
+              Král je ve tvé sbírce!
+            </h2>
             {revealed && props.king.chronicle && (
               <div className="animate-in fade-in slide-in-from-bottom-2 duration-500">
                 <ChronicleDialog
@@ -415,10 +456,15 @@ function Results(
     <Card className="animate-card-reveal items-center text-center">
       <CardCorners className="m-1 size-8 text-gold-dark" />
       <CardContent className="flex flex-col items-center gap-4">
-        <p className="text-xs font-semibold tracking-[0.2em] text-gold-dark uppercase">
+        <h2
+          ref={headingRef}
+          tabIndex={-1}
+          aria-describedby="quiz-result-score"
+          className={cn("font-sans text-xs font-semibold tracking-[0.2em] text-gold-dark uppercase", HEADING_FOCUS)}
+        >
           {isKing ? "Konec hry" : "Konec rychlovky"}
-        </p>
-        <p className="font-heading text-7xl font-bold">
+        </h2>
+        <p id="quiz-result-score" className="font-heading text-7xl font-bold">
           {score}
           <span className="text-3xl text-muted-foreground"> z {total}</span>
         </p>
@@ -538,10 +584,12 @@ function GoldenWin({
   king,
   score,
   total,
+  headingRef,
 }: {
   king: QuizKing;
   score: number;
   total: number;
+  headingRef: RefObject<HTMLHeadingElement | null>;
 }) {
   const [flipped, setFlipped] = useState(false);
 
@@ -566,7 +614,7 @@ function GoldenWin({
         />
       ))}
 
-      <p className="relative text-xs font-semibold tracking-[0.3em] text-gold uppercase">
+      <p id="quiz-result-score" className="relative text-xs font-semibold tracking-[0.3em] text-gold uppercase">
         Skóre {score} z {total} · bez chyby
       </p>
 
@@ -600,7 +648,13 @@ function GoldenWin({
       </div>
 
       <GoldenBadge className="relative" />
-      <h2 id="golden-win-heading" className="relative text-4xl font-bold sm:text-5xl">
+      <h2
+        id="golden-win-heading"
+        ref={headingRef}
+        tabIndex={-1}
+        aria-describedby="quiz-result-score"
+        className={cn("relative text-4xl font-bold sm:text-5xl", HEADING_FOCUS)}
+      >
         <span className="gilt-text animate-shimmer">Zlatá karta je tvoje!</span>
       </h2>
       <OrnamentDivider />
