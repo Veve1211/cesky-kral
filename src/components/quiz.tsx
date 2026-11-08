@@ -92,6 +92,18 @@ export function Quiz(props: QuizProps) {
     });
   }
 
+  function saveKing() {
+    if (props.mode !== "king" || score < CORRECT_TO_COLLECT) return;
+    const saved = addToCollection(props.king.slug);
+    setCollected(saved);
+    const owned = new Set(readCollection().kings);
+    setCompletedAll(
+      saved &&
+        props.allKingSlugs.length > 0 &&
+        props.allKingSlugs.every((slug) => owned.has(slug)),
+    );
+  }
+
   function next() {
     if (!feedback) return;
     if (index + 1 < total) {
@@ -105,13 +117,7 @@ export function Quiz(props: QuizProps) {
       setCollected(addGoldenCard(props.king.slug));
     }
     if (props.mode === "king" && score >= CORRECT_TO_COLLECT) {
-      addToCollection(props.king.slug);
-      setCollected(true);
-      const owned = new Set(readCollection().kings);
-      setCompletedAll(
-        props.allKingSlugs.length > 0 &&
-          props.allKingSlugs.every((slug) => owned.has(slug)),
-      );
+      saveKing();
     }
     setFinished(true);
   }
@@ -157,6 +163,7 @@ export function Quiz(props: QuizProps) {
         collected={collected}
         completedAll={completedAll}
         onRestart={restart}
+        onRetrySave={saveKing}
       />
     );
   }
@@ -292,6 +299,7 @@ function Results(
     collected: boolean;
     completedAll: boolean;
     onRestart: () => void;
+    onRetrySave: () => void;
   },
 ) {
   const { score, total, onRestart } = props;
@@ -326,6 +334,31 @@ function Results(
               <Link href="/sbirka">Moje sbírka</Link>
             </Button>
           </div>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  if (props.mode === "king" && score >= CORRECT_TO_COLLECT && !props.collected) {
+    return (
+      <Card className="items-center text-center">
+        <CardCorners className="m-1 size-8 text-gold-dark" />
+        <CardContent className="flex flex-col items-center gap-4">
+          <p className="text-xs font-semibold tracking-[0.2em] text-gold-dark uppercase">
+            Skóre {score} z {total}
+          </p>
+          <div role="alert" className="flex flex-col gap-3">
+            <h2 className="text-3xl font-bold">Kartu se nepodařilo uložit</h2>
+            <p className="text-muted-foreground">
+              Povol ukládání v prohlížeči nebo uvolni místo a zkus uložení znovu.
+              Kvíz nemusíš opakovat. Skóre zůstane zachované, dokud tuto stránku
+              nezavřeš nebo neobnovíš.
+            </p>
+          </div>
+          <Button onClick={props.onRetrySave} variant="accent" size="lg" autoFocus>
+            <RotateCcw aria-hidden />
+            Zkusit uložit znovu
+          </Button>
         </CardContent>
       </Card>
     );
