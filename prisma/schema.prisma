@@ -11,24 +11,26 @@ datasource db {
 }
 
 model King {
-  id               Int        @id @default(autoincrement())
-  name             String
-  slug             String     @unique
-  reignFrom        Int? // null for legendary figures
-  reignTo          Int?
+  id                Int        @id @default(autoincrement())
+  name              String
+  slug              String     @unique
+  reignFrom         Int? // null for legendary figures
+  reignTo           Int?
   /// kníže / kněžna / král / královna (CHECK constraint in migration)
-  title            String     @default("král")
-  isLegend         Boolean    @default(false)
-  dynasty          String
-  shortBio         String
-  imageUrl         String?
-  order            Int        @unique
+  title             String     @default("král")
+  isLegend          Boolean    @default(false)
+  dynasty           String
+  shortBio          String
+  imageUrl          String?
+  order             Int        @unique
   /// Chronicle shown after the king is collected (empty = no chronicle yet)
-  chronicleIntro   String     @default("")
-  chronicleFacts   String[]   @default([])
+  chronicleIntro    String     @default("")
+  chronicleFacts    String[]   @default([])
   /// [{ "label": string, "url": "https://..." }]
-  chronicleSources Json       @default("[]")
-  questions        Question[]
+  chronicleSources  Json       @default("[]")
+  /// [{ "heading": string, "text": string }] – shown instead of the intro when not empty
+  chronicleSections Json       @default("[]")
+  questions         Question[]
 
   @@index([dynasty])
 }

@@ -36,11 +36,11 @@
 - Pověstné postavy (`isLegend`): štítek „Pověst“ na kartě i ve hře, ve hře věta „Otázky jsou o pověsti, ne o doložené historii.“, roky se nezobrazují.
 - Na kartě se zobrazuje titul (kníže / kněžna / král / královna).
 - Postup hráče se ukládá v prohlížeči (localStorage), bez účtů.
-- /sbirka „Moje sbírka“: hodnost + „Ve sbírce: X z N“, získaní (klik = kronika), „Ještě chybí“ (siluety, Hrát o kartu); prázdný stav s tlačítkem na prvního panovníka. Hlavička: Sbírka → /sbirka, Rychlovka → /rychlovka, aktivní odkaz `aria-current="page"`; logo → /.
-- Kronika panovníka: po otočení vyhrané karty tlačítko „📜 Přečíst kroniku“; v galerii klik na získanou kartu otevře kroniku (dialog, na mobilu přes celou obrazovku), nezískaná karta: „Kronika se odemkne, až panovníka získáš.“ Bez kroniky = nic se nezobrazí.
+- /sbirka „Moje sbírka“: hodnost + „Ve sbírce: X z N“, získaní (klik = kronika), „Ještě chybí“ (siluety, Hrát o kartu); prázdný stav s tlačítkem na prvního panovníka. Hlavička: „Moje sbírka“ → /sbirka, Rychlovka → /rychlovka (pod `sm` jen ikona ⚡ s aria-label), aktivní odkaz `aria-current="page"`; logo → /.
+- Kronika panovníka: po otočení vyhrané karty tlačítko „📜 Přečíst kroniku“; v galerii klik na získanou kartu otevře kroniku (dialog, na mobilu přes celou obrazovku), nezískaná karta: „Kronika se odemkne, až panovníka získáš.“ Bez kroniky = nic se nezobrazí. Kronika = oddíly (nadpis + text, iniciála jen u prvního, mezi nimi oddělovač), bez oddílů úvod (`chronicleIntro`); pak „Věděli jste, že…“ a zdroje. Nadpis „Kronika: …“ a zavřít zůstávají nahoře, posouvá se jen obsah.
 
 ## Datový model
-- King: name, slug, reignFrom?, reignTo? (prázdné u pověstí), title (kníže/kněžna/král/královna, CHECK v DB), isLegend, dynasty, shortBio, imageUrl?, order, chronicleIntro (""), chronicleFacts (text[]), chronicleSources (JSON `[{label, url}]`, CHECK pole)
+- King: name, slug, reignFrom?, reignTo? (prázdné u pověstí), title (kníže/kněžna/král/královna, CHECK v DB), isLegend, dynasty, shortBio, imageUrl?, order, chronicleIntro (""), chronicleFacts (text[]), chronicleSources (JSON `[{label, url}]`, CHECK pole), chronicleSections (JSON `[{heading, text}]`, výchozí [], CHECK pole)
 - Question: kingId, text, explanation, sourceUrl, difficulty (1 lehká, 2 střední, 3 těžká; CHECK 1–3 v DB)
 - Answer: questionId, text, isCorrect
 - Obsah se nahrává přes Prisma seed (prisma/seed.ts); kroniky v `prisma/chronicles.ts` (podle slug, chybějící král se přeskočí).
@@ -92,7 +92,7 @@ Pokud NODE_ENV=production:
 - `src/app/actions/quiz.ts` – server action `checkAnswer` (ověření odpovědi na serveru)
 - `src/components/` – `site-header`, `site-nav` (navigace, aktivní odkaz; klient v Suspense), `king-card`, `king-portrait` (zlatý rám, silueta), `crest` (erb s iniciálou = placeholder), `ornaments` (rohy, oddělovač, koruna), `illuminated-initial`, `royal-celebration`, `legend-badge` (Pověst), `difficulty-badge` (korunky), `knight-oath` (rytířský slib), `quiz` (hra + výsledky + otočení karty, klient), `collection-gallery` (galerie /, klient), `collection-summary` (`useCollectionSummary`, `CollectionStatus`, `KingGrid` – sdílí galerie i /sbirka), `my-collection` (/sbirka, klient), `chronicle-dialog` (kronika, klient)
 - `src/components/ui/` – shadcn komponenty (button, card, progress, dialog)
-- `src/lib/` – `utils.ts` (cn), `game-rules.ts` (konstanty, `getRank`), `prisma.ts` (klient s adapterem pg), `kings.ts` (dotazy na krále), `questions.ts` (otázky bez správnosti, míchání), `quiz-types.ts`, `collection.ts` (sbírka v localStorage, `useCollectionReady`), `slug.ts`, `king-initial.ts`, `king-image.ts` (povolené cesty obrázků), `king-display.ts` (titul, roky, text o pověsti), `chronicle.ts` (typ + bezpečné čtení kroniky), `image-credits.ts`
+- `src/lib/` – `utils.ts` (cn), `game-rules.ts` (konstanty, `getRank`), `prisma.ts` (klient s adapterem pg), `kings.ts` (dotazy na krále), `questions.ts` (otázky bez správnosti, míchání), `quiz-types.ts`, `collection.ts` (sbírka v localStorage, `useCollectionReady`), `slug.ts`, `king-initial.ts`, `king-image.ts` (povolené cesty obrázků), `king-display.ts` (titul, roky, text o pověsti), `chronicle.ts` (typ + bezpečné čtení kroniky a oddílů), `image-credits.ts`
 - `assets/fonts/` – TTF písma pro generování OG obrázku (+ OFL licence)
 - `prisma/schema.prisma` – King, Question, Answer; `prisma/migrations/` – migrace; `prisma/seed.ts` – obsah (idempotentní); `prisma.config.ts` čte `.env.local`
 - `src/generated/prisma` – vygenerovaný klient (gitignored, `npm install` ho vytvoří přes postinstall)
@@ -123,6 +123,7 @@ Pokud NODE_ENV=production:
 - 2026-11-08: obrázek Přemysla Otakara I. = jezdecká pečeť 1192–93, kresba A. Sedláček (PD-old); 12 karet = plná mřížka (2 sloupce mobil, 3 od `sm`)
 
 - 2026-11-08: stránka /sbirka; „Do sbírky“ po hře vede na /sbirka, „Zpět do galerie“ na /; usePathname v hlavičce musí být v Suspense (Cache Components)
+- 2026-11-08: oddíly kroniky (migrace `king_chronicle_sections`, nedestruktivní, výchozí []); `intro` v `chronicles.ts` zůstává jako záloha
 
 ## Údržba tohoto souboru
 - Aktualizuj po každé strukturální změně, novém pravidlu nebo rozhodnutí
