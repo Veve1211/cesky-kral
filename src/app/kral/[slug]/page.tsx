@@ -110,6 +110,12 @@ async function KingGame({ params }: { params: Promise<{ slug: string }> }) {
           name: king.name,
           initial,
           imageUrl: king.imageUrl,
+          title: king.title,
+          dynasty: king.dynasty,
+          isLegend: king.isLegend,
+          reignFrom: king.reignFrom,
+          reignTo: king.reignTo,
+          chronicle: king.chronicle,
         }}
       />
     </>

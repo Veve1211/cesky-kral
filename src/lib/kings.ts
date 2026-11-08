@@ -1,5 +1,6 @@
 import "server-only";
 
+import { toChronicle, type Chronicle } from "@/lib/chronicle";
 import { getPrisma } from "@/lib/prisma";
 import { toKingTitle, type KingTitle } from "@/lib/king-display";
 import { isValidSlug } from "@/lib/slug";
@@ -13,7 +14,14 @@ export type KingSummary = {
   isLegend: boolean;
   dynasty: string;
   imageUrl: string | null;
+  chronicle: Chronicle | null;
 };
+
+const chronicleSelect = {
+  chronicleIntro: true,
+  chronicleFacts: true,
+  chronicleSources: true,
+} as const;
 
 export async function getKings(): Promise<KingSummary[]> {
   const rows = await getPrisma().king.findMany({
@@ -27,9 +35,16 @@ export async function getKings(): Promise<KingSummary[]> {
       isLegend: true,
       dynasty: true,
       imageUrl: true,
+      ...chronicleSelect,
     },
   });
-  return rows.map((row) => ({ ...row, title: toKingTitle(row.title) }));
+  return rows.map(
+    ({ chronicleIntro, chronicleFacts, chronicleSources, ...row }) => ({
+      ...row,
+      title: toKingTitle(row.title),
+      chronicle: toChronicle({ chronicleIntro, chronicleFacts, chronicleSources }),
+    }),
+  );
 }
 
 export async function getKingSlugs(): Promise<string[]> {
@@ -53,9 +68,16 @@ export async function getKingBySlug(slug: string) {
       dynasty: true,
       shortBio: true,
       imageUrl: true,
+      ...chronicleSelect,
     },
   });
-  return row ? { ...row, title: toKingTitle(row.title) } : null;
+  if (!row) return null;
+  const { chronicleIntro, chronicleFacts, chronicleSources, ...king } = row;
+  return {
+    ...king,
+    title: toKingTitle(king.title),
+    chronicle: toChronicle({ chronicleIntro, chronicleFacts, chronicleSources }),
+  };
 }
 
 export { kingInitial } from "@/lib/king-initial";
