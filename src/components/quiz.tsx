@@ -11,6 +11,7 @@ import { DifficultyBadge } from "@/components/difficulty-badge";
 import { GoldenBadge } from "@/components/golden-badge";
 import { KingPortrait } from "@/components/king-portrait";
 import { KnightOath } from "@/components/knight-oath";
+import { KofiButton } from "@/components/kofi-button";
 import { LegendBadge } from "@/components/legend-badge";
 import { CardCorners, OrnamentDivider } from "@/components/ornaments";
 import { RoyalCelebration } from "@/components/royal-celebration";
@@ -513,6 +514,7 @@ function Results(
             <Link href="/sbirka">Do sbírky</Link>
           </Button>
         </div>
+        {props.mode === "quick" && <KofiButton variant="card" className="mt-2" />}
       </CardContent>
     </Card>
   );

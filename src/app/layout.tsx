@@ -80,7 +80,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           {children}
         </main>
         <footer className="flex flex-col items-center gap-2 px-4 pt-4 pb-8 text-center text-xs text-muted-foreground">
-          <KofiButton />
+          <KofiButton variant="footer" className="mb-2" />
           <OrnamentDivider className="max-w-[12rem]" />
           <p>
             <span className="font-heading text-sm">Český král</span> ·{" "}

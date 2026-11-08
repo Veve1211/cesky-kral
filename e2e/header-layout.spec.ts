@@ -1,10 +1,12 @@
 // Header on narrow screens: the logo stays whole and "Jak hrát" stays readable.
-// With larger text the menu wraps onto a second line instead of cutting anything.
+// The test build includes the Ko-fi coin in the header (see helpers/kofi.ts).
+// From 360 px everything shares one line; on 320–359 px phones and with larger
+// text the menu wraps onto a second line instead of cutting anything.
 import { expect, type Page, test } from "@playwright/test";
 
 import { open } from "./helpers/game";
 
-const WIDTHS = [320, 360, 375, 390, 414, 480, 768, 1280];
+const WIDTHS = [320, 340, 360, 375, 390, 414, 430, 460, 480, 640, 768, 1280];
 
 async function headerState(page: Page) {
   return page.evaluate(() => {
@@ -33,13 +35,15 @@ test.describe("hlavička na úzkých displejích", () => {
   test.skip(({ isMobile }) => isMobile, "Viewports are set per test; one project is enough.");
 
   for (const width of WIDTHS) {
-    test(`${width} px: logo celé, „Jak hrát“ čitelné, jeden řádek`, async ({ page }) => {
+    const oneLine = width >= 360;
+    test(`${width} px: logo celé, „Jak hrát“ čitelné${oneLine ? ", jeden řádek" : ""}`, async ({ page }) => {
       await page.setViewportSize({ width, height: 700 });
       await open(page, "/jak-hrat");
       const state = await headerState(page);
       expect(state).toMatchObject({ logoWhole: true, linksInside: true, howToTextVisible: true, noPageScroll: true });
+      await expect(page.getByTestId("kofi-header")).toBeVisible();
       // Normal text size: logo and menu share one line (56 px bar + 3 px gilded rule).
-      expect(state.headerHeight).toBeLessThanOrEqual(60);
+      if (oneLine) expect(state.headerHeight).toBeLessThanOrEqual(60);
     });
   }
 

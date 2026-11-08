@@ -59,6 +59,9 @@ jobs:
 
       - name: Build
         run: npm run build
+        env:
+          # Fake Ko-fi page so the tests see the button (same as e2e/helpers/kofi.ts).
+          NEXT_PUBLIC_KOFI_URL: https://ko-fi.com/cesky-kral-test
 
       - name: Migrate and seed the test database
         run: |

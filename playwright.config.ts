@@ -7,6 +7,8 @@ import { existsSync } from "node:fs";
 import { defineConfig, devices } from "@playwright/test";
 import { config as loadEnv } from "dotenv";
 
+import { TEST_KOFI_URL } from "./e2e/helpers/kofi";
+
 // Local runs may keep E2E_DATABASE_URL in .env.local (never commit it).
 loadEnv({ path: ".env.local", quiet: true });
 
@@ -65,6 +67,8 @@ export default defineConfig({
     env: {
       // The app reads only the test database during the tests.
       DATABASE_URL: process.env.E2E_DATABASE_URL ?? "",
+      // Built into the app, so the Ko-fi button shows in the tests.
+      NEXT_PUBLIC_KOFI_URL: TEST_KOFI_URL,
     },
   },
 });
