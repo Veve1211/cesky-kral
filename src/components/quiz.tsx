@@ -14,6 +14,7 @@ import { KnightOath } from "@/components/knight-oath";
 import { LegendBadge } from "@/components/legend-badge";
 import { CardCorners, OrnamentDivider } from "@/components/ornaments";
 import { RoyalCelebration } from "@/components/royal-celebration";
+import { ShareButton } from "@/components/share-button";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
@@ -27,6 +28,7 @@ import {
 import type { Chronicle } from "@/lib/chronicle";
 import { CORRECT_TO_COLLECT } from "@/lib/game-rules";
 import type { AnswerResult, QuizQuestion } from "@/lib/quiz-types";
+import { quickShareText } from "@/lib/share-text";
 import { cn } from "@/lib/utils";
 
 type Feedback = Extract<AnswerResult, { ok: true }>;
@@ -68,6 +70,8 @@ export function Quiz(props: QuizProps) {
 
   const [index, setIndex] = useState(props.mode === "daily" ? props.startIndex : 0);
   const [score, setScore] = useState(props.mode === "daily" ? props.startScore : 0);
+  /** Right/wrong per answered question, in order (for sharing the result). */
+  const [marks, setMarks] = useState<boolean[]>([]);
   const [selectedId, setSelectedId] = useState<number | null>(null);
   const [feedback, setFeedback] = useState<Feedback | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -107,6 +111,7 @@ export function Quiz(props: QuizProps) {
         }
         setFeedback(result);
         if (result.correct) setScore((s) => s + 1);
+        setMarks((current) => [...current, result.correct]);
         if (props.mode === "daily") props.onAnswered(index, result.correct);
       } catch {
         setError("Nepodařilo se ověřit odpověď. Zkus to znovu.");
@@ -154,6 +159,7 @@ export function Quiz(props: QuizProps) {
     focusQuestions.current = true;
     setIndex(0);
     setScore(0);
+    setMarks([]);
     setSelectedId(null);
     setFeedback(null);
     setError(null);
@@ -189,6 +195,7 @@ export function Quiz(props: QuizProps) {
         {...props}
         score={score}
         total={total}
+        marks={marks}
         collected={collected}
         completedAll={completedAll}
         onRestart={restart}
@@ -331,6 +338,7 @@ function Results(
   props: QuizProps & {
     score: number;
     total: number;
+    marks: readonly boolean[];
     collected: boolean;
     completedAll: boolean;
     onRestart: () => void;
@@ -490,6 +498,12 @@ function Results(
               ? "Bez jediné chyby, klobouk dolů!"
               : "Dobrá práce! Dáš příště víc?"}
         </p>
+        {props.mode === "quick" && props.marks.length === total && (
+          <ShareButton
+            text={quickShareText(props.marks)}
+            url={`${window.location.origin}/rychlovka`}
+          />
+        )}
         <div className="flex flex-wrap justify-center gap-3">
           <Button onClick={onRestart} size="lg" variant={isKing ? "accent" : "default"}>
             <RotateCcw aria-hidden />
