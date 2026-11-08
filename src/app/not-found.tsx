@@ -7,10 +7,10 @@ export default function NotFound() {
     <div className="mx-auto flex max-w-md flex-col items-center gap-4 py-16 text-center">
       <h1 className="text-3xl font-bold">Tohoto krále neznáme</h1>
       <p className="text-muted-foreground">
-        Stránka neexistuje. Vrať se do sbírky a vyber si jiného panovníka.
+        Stránka neexistuje. Vrať se do galerie a vyber si jiného panovníka.
       </p>
       <Button asChild>
-        <Link href="/">Zpět do sbírky</Link>
+        <Link href="/">Zpět do galerie</Link>
       </Button>
     </div>
   );

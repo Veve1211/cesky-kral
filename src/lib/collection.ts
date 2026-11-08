@@ -93,3 +93,17 @@ export function addToCollection(slug: string): boolean {
   listeners.forEach((listener) => listener());
   return true;
 }
+
+const noopSubscribe = () => () => {};
+
+/**
+ * False during server render and hydration, true once localStorage can be read.
+ * Lets pages avoid flashing an "empty collection" state before hydration.
+ */
+export function useCollectionReady(): boolean {
+  return useSyncExternalStore(
+    noopSubscribe,
+    () => true,
+    () => false,
+  );
+}

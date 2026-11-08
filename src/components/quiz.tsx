@@ -295,11 +295,11 @@ function Results(
             )}
             <OrnamentDivider />
             <p className="text-muted-foreground">
-              Skvělá práce. Karta už na tebe čeká v galerii.
+              Skvělá práce. Karta už na tebe čeká ve sbírce.
             </p>
             {!props.completedAll && (
               <Button asChild variant="accent" size="lg">
-                <Link href="/">Do sbírky</Link>
+                <Link href="/sbirka">Do sbírky</Link>
               </Button>
             )}
           </CardContent>
@@ -307,7 +307,7 @@ function Results(
         {props.completedAll && (
           <RoyalCelebration total={props.allKingSlugs.length}>
             <Button asChild variant="accent" size="lg" className="mt-2">
-              <Link href="/">Prohlédnout sbírku</Link>
+              <Link href="/sbirka">Prohlédnout sbírku</Link>
             </Button>
           </RoyalCelebration>
         )}
@@ -342,7 +342,7 @@ function Results(
             {isKing ? "Zkusit znovu" : "Hrát znovu"}
           </Button>
           <Button asChild variant="outline" size="lg">
-            <Link href="/">Do sbírky</Link>
+            <Link href="/sbirka">Do sbírky</Link>
           </Button>
         </div>
       </CardContent>
