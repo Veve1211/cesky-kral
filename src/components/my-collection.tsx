@@ -1,84 +1,105 @@
 "use client";
 
 import Link from "next/link";
-import { Shield } from "lucide-react";
+import { Swords, Zap } from "lucide-react";
 
-import { GoldenCount, useKingCards } from "@/components/collection-gallery";
-import { KingCard } from "@/components/king-card";
+import {
+  CollectionStatus,
+  GoldenCount,
+  KingGrid,
+  useCollectionSummary,
+} from "@/components/collection-summary";
 import { CardCorners } from "@/components/ornaments";
+import { RoyalCelebration } from "@/components/royal-celebration";
 import { Button } from "@/components/ui/button";
-import { Progress } from "@/components/ui/progress";
-import { useIsClient } from "@/lib/collection";
-import { getRank } from "@/lib/game-rules";
+import { useCollectionReady } from "@/lib/collection";
 import type { KingSummary } from "@/lib/kings";
 
-/** Only the kings the player owns, with collection and golden counters. */
+/** "Moje sbírka" – the player's collected kings and the ones still missing. */
 export function MyCollection({ kings }: { kings: KingSummary[] }) {
-  const isClient = useIsClient();
-  const cards = useKingCards(kings);
-  const owned = cards.filter((king) => king.collected);
-  const golden = owned.filter((king) => king.golden).length;
-  const rank = getRank(owned.length, cards.length);
+  const ready = useCollectionReady();
+  const { cards, collected, golden, total, rank, complete } = useCollectionSummary(kings);
 
-  // The collection lives in localStorage – unknown until hydration.
-  if (!isClient) {
-    return <div aria-busy="true" className="parchment h-40 animate-pulse rounded-2xl" />;
+  // localStorage is only readable after hydration – show a placeholder until then.
+  if (!ready) return <MyCollectionSkeleton />;
+
+  if (total === 0) {
+    return <p className="text-center text-muted-foreground">Zatím tu nejsou žádní panovníci.</p>;
   }
+
+  const owned = cards.filter((king) => king.collected);
+  const missing = cards.filter((king) => !king.collected);
+  const firstKing = cards[0];
 
   return (
     <>
-      <section className="parchment relative flex flex-col gap-4 rounded-2xl p-5 sm:flex-row sm:items-center sm:p-6">
-        <CardCorners className="m-1 size-7 text-gold-dark" />
-        <div className="flex items-center gap-3">
-          <span className="gilt flex size-12 items-center justify-center rounded-full p-[3px] shadow">
-            <span className="flex size-full items-center justify-center rounded-full bg-navy text-gold">
-              <Shield className="size-5" aria-hidden />
-            </span>
-          </span>
-          <div>
-            <p className="text-xs text-muted-foreground">Tvoje hodnost</p>
-            <p className="font-heading text-2xl leading-tight font-bold">{rank}</p>
-          </div>
-        </div>
-        <div className="flex flex-1 flex-col gap-2">
-          <p className="text-sm">
-            Ve sbírce:{" "}
-            <strong>
-              {owned.length} z {cards.length}
-            </strong>
-          </p>
-          <Progress value={owned.length} max={cards.length} label="Získaní králové" />
-          <GoldenCount golden={golden} total={cards.length} />
-        </div>
-      </section>
+      {complete ? (
+        <RoyalCelebration total={total}>
+          <GoldenCount golden={golden} total={total} />
+        </RoyalCelebration>
+      ) : (
+        <CollectionStatus rank={rank} collected={collected} golden={golden} total={total} />
+      )}
 
       {owned.length === 0 ? (
-        <section className="parchment relative flex flex-col items-center gap-4 rounded-2xl p-8 text-center">
-          <CardCorners className="m-1 size-7 text-gold-dark" />
-          <p className="font-heading text-2xl font-bold">Sbírka je zatím prázdná</p>
-          <p className="max-w-sm text-muted-foreground">
-            Vyber si panovníka v galerii a vyhraj jeho kartu. Pak se ti tu
-            odemkne i zlaté kolo.
+        <section className="parchment relative flex flex-col items-center gap-4 rounded-2xl px-6 py-10 text-center">
+          <CardCorners className="m-1 size-8 text-gold-dark" />
+          <h2 className="text-3xl font-bold">Sbírka je zatím prázdná</h2>
+          <p className="max-w-sm text-ink/85">
+            Odpověz správně aspoň na čtyři otázky z pěti a první karta je tvoje.
+            Začni tam, kde začínají české dějiny.
           </p>
           <Button asChild variant="accent" size="lg">
-            <Link href="/">Do galerie</Link>
+            <Link href={`/kral/${firstKing.slug}`}>
+              <Swords aria-hidden />
+              Hrát o kartu: {firstKing.name}
+            </Link>
           </Button>
         </section>
       ) : (
-        <ul
-          aria-label="Získaní panovníci"
-          className="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-5"
-        >
-          {owned.map((king, index) => (
-            <li
-              key={king.slug}
-              className="last:odd:col-span-2 last:odd:mx-auto last:odd:w-[calc(50%-0.375rem)] sm:last:odd:col-span-1 sm:last:odd:mx-0 sm:last:odd:w-auto"
-            >
-              <KingCard king={king} index={index} />
-            </li>
-          ))}
-        </ul>
+        <section aria-labelledby="owned-heading" className="flex flex-col gap-5">
+          <h2 id="owned-heading" className="text-center text-4xl font-bold sm:text-left">
+            Získaní panovníci
+          </h2>
+          <p className="-mt-3 text-center text-sm text-muted-foreground sm:text-left">
+            Klepni na kartu a přečti si kroniku.
+          </p>
+          <KingGrid cards={owned} />
+        </section>
+      )}
+
+      {missing.length > 0 && (
+        <section aria-labelledby="missing-heading" className="flex flex-col gap-5">
+          <h2 id="missing-heading" className="text-center text-4xl font-bold sm:text-left">
+            Ještě chybí
+          </h2>
+          <KingGrid cards={missing} />
+        </section>
+      )}
+
+      {complete && (
+        <div className="flex justify-center">
+          <Button asChild variant="accent" size="lg">
+            <Link href="/rychlovka">
+              <Zap aria-hidden />
+              Rychlovka
+            </Link>
+          </Button>
+        </div>
       )}
     </>
+  );
+}
+
+export function MyCollectionSkeleton() {
+  return (
+    <div aria-busy="true" aria-label="Načítám sbírku" className="flex flex-col gap-10">
+      <div className="parchment h-28 animate-pulse rounded-2xl" />
+      <div className="grid grid-cols-2 gap-4 sm:grid-cols-3">
+        {Array.from({ length: 3 }, (_, i) => (
+          <div key={i} className="h-80 animate-pulse rounded-2xl bg-navy/80" />
+        ))}
+      </div>
+    </div>
   );
 }

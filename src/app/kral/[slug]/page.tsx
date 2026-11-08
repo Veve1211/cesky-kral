@@ -37,7 +37,7 @@ export default function KingGamePage({ params }: PageProps<"/kral/[slug]">) {
         className="flex w-fit items-center gap-1 text-sm text-muted-foreground transition-colors hover:text-foreground"
       >
         <ArrowLeft className="size-4" aria-hidden />
-        Zpět do sbírky
+        Zpět do galerie
       </Link>
 
       <Suspense fallback={<GameSkeleton />}>
@@ -112,6 +112,12 @@ async function KingGame({ params }: { params: Promise<{ slug: string }> }) {
           name: king.name,
           initial,
           imageUrl: king.imageUrl,
+          title: king.title,
+          dynasty: king.dynasty,
+          isLegend: king.isLegend,
+          reignFrom: king.reignFrom,
+          reignTo: king.reignTo,
+          chronicle: king.chronicle,
         }}
       />
     </>

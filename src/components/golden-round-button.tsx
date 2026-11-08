@@ -5,7 +5,7 @@ import { Lock } from "lucide-react";
 
 import { GoldenBadge } from "@/components/golden-badge";
 import { Button } from "@/components/ui/button";
-import { useCollection, useIsClient } from "@/lib/collection";
+import { useCollection, useCollectionReady } from "@/lib/collection";
 import { cn } from "@/lib/utils";
 
 /**
@@ -19,7 +19,7 @@ export function GoldenRoundButton({
   slug: string;
   className?: string;
 }) {
-  const isClient = useIsClient();
+  const isClient = useCollectionReady();
   const { kings, golden } = useCollection();
 
   // Collection is unknown until hydration – keep the space, show nothing.

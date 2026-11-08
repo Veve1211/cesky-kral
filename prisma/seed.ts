@@ -10,6 +10,7 @@ import { config } from "dotenv";
 import { PrismaPg } from "@prisma/adapter-pg";
 
 import { PrismaClient } from "../src/generated/prisma/client";
+import { chronicles, type SeedChronicle } from "./chronicles";
 
 config({ path: ".env.local" });
 
@@ -219,6 +220,91 @@ const kings: SeedKing[] = [
     ],
   },
   {
+    name: "Přemysl Otakar I.",
+    slug: "premysl-otakar-i",
+    reignFrom: 1198,
+    reignTo: 1230,
+    dynasty: "Přemyslovci",
+    shortBio:
+      "První dědičný český král, kterému dědičnost potvrdila Zlatá bula sicilská.",
+    order: 3,
+    title: "král",
+    isLegend: false,
+    imageUrl: "/kings/premysl-otakar-i.webp",
+    sourceUrl: "https://en.wikipedia.org/wiki/Ottokar_I_of_Bohemia",
+    questions: [
+      {
+        difficulty: 1,
+        text: "Čím byl Přemysl Otakar I. výjimečný?",
+        correct: "Byl prvním dědičným českým králem",
+        wrong: ["Byl posledním Přemyslovcem", "Byl prvním římským císařem z Čech"],
+        explanation: "Královský titul mohli po něm zdědit i jeho potomci.",
+      },
+      {
+        difficulty: 1,
+        text: "Který dokument potvrdil, že královský titul bude dědičný?",
+        correct: "Zlatá bula sicilská",
+        wrong: ["Zlatá bula Karla IV.", "Majestát Rudolfa II."],
+        explanation: "Vydal ji Fridrich II. roku 1212.",
+        sourceUrl: "https://en.wikipedia.org/wiki/Golden_Bull_of_Sicily",
+      },
+      {
+        difficulty: 1,
+        text: "Která světice byla dcerou Přemysla Otakara I.?",
+        correct: "Svatá Anežka Česká",
+        wrong: ["Svatá Ludmila", "Svatá Zdislava"],
+        explanation: "Na trůně ho vystřídal jeho syn Václav I.",
+      },
+      {
+        difficulty: 2,
+        text: "Ve kterém roce se Přemysl Otakar I. prohlásil králem?",
+        correct: "1198",
+        wrong: ["1212", "1230"],
+        explanation: "Korunován byl v Mohuči.",
+      },
+      {
+        difficulty: 2,
+        text: "Kdo vydal Zlatou bulu sicilskou?",
+        correct: "Fridrich II., tehdy sicilský král",
+        wrong: ["Karel IV.", "Rudolf Habsburský"],
+        explanation: "Vydal ji 26. září 1212 v Basileji.",
+        sourceUrl: "https://en.wikipedia.org/wiki/Golden_Bull_of_Sicily",
+      },
+      {
+        difficulty: 2,
+        text: "Kde je Zlatá bula sicilská uložena dnes?",
+        correct: "V Národním archivu v Praze",
+        wrong: ["Ve Vatikánu", "Na Sicílii"],
+        explanation: "K 800. výročí byla v září 2012 na čtyři dny vystavena.",
+        sourceUrl: "https://en.wikipedia.org/wiki/Golden_Bull_of_Sicily",
+      },
+      {
+        difficulty: 3,
+        text: "Kolik rytířů musel český král podle Zlaté buly sicilské poskytnout císaři na cestu ke korunovaci do Říma?",
+        correct: "300",
+        wrong: ["30", "3 000"],
+        explanation: "Šlo o ozbrojený doprovod císaře.",
+        sourceUrl: "https://en.wikipedia.org/wiki/Golden_Bull_of_Sicily",
+      },
+      {
+        difficulty: 3,
+        text: "Na které říšské sněmy musel český král podle Zlaté buly sicilské jezdit?",
+        correct: "Jen na ty, které se konaly blízko českých hranic",
+        wrong: ["Na všechny", "Na žádné"],
+        explanation: "Byla to jedna z výsad, které bula českým králům zaručila.",
+        sourceUrl: "https://en.wikipedia.org/wiki/Golden_Bull_of_Sicily",
+      },
+      {
+        difficulty: 3,
+        text: "Kdo byla druhá manželka Přemysla Otakara I.?",
+        correct: "Konstancie Uherská",
+        wrong: ["Adléta Míšeňská", "Jitka Durynská"],
+        explanation:
+          "S Adlétou Míšeňskou se rozvedl roku 1199 a téhož roku se oženil s Konstancií. Jitka Durynská byla jeho matka.",
+      },
+    ],
+  },
+  {
     name: "Přemysl Otakar II.",
     slug: "premysl-otakar-ii",
     reignFrom: 1253,
@@ -226,7 +312,7 @@ const kings: SeedKing[] = [
     dynasty: "Přemyslovci",
     shortBio:
       "Král železný a zlatý, jehož říše sahala od Krkonoš až po Jadran.",
-    order: 3,
+    order: 4,
     title: "král",
     isLegend: false,
     imageUrl: "/kings/premysl-otakar-ii.webp",
@@ -316,7 +402,7 @@ const kings: SeedKing[] = [
     dynasty: "Přemyslovci",
     shortBio:
       "Král stříbra, který dal Čechám pražský groš a získal polskou korunu.",
-    order: 4,
+    order: 5,
     title: "král",
     isLegend: false,
     imageUrl: "/kings/vaclav-ii.webp",
@@ -404,7 +490,7 @@ const kings: SeedKing[] = [
     dynasty: "Lucemburkové",
     shortBio:
       "Rytíř a cestovatel na českém trůně, který slepý padl v bitvě u Kresčaku.",
-    order: 5,
+    order: 6,
     title: "král",
     isLegend: false,
     imageUrl: "/kings/jan-lucembursky.webp",
@@ -491,7 +577,7 @@ const kings: SeedKing[] = [
     reignTo: 1378,
     dynasty: "Lucemburkové",
     shortBio: "Otec vlasti, který z Prahy udělal jedno z center Evropy.",
-    order: 6,
+    order: 7,
     title: "král",
     isLegend: false,
     imageUrl: "/kings/karel-iv.webp",
@@ -586,7 +672,7 @@ const kings: SeedKing[] = [
     dynasty: "Páni z Kunštátu a Poděbrad",
     shortBio:
       "Husitský král, kterému současníci říkali přítel míru.",
-    order: 7,
+    order: 8,
     imageUrl: "/kings/jiri-z-podebrad.webp",
     sourceUrl: "https://en.wikipedia.org/wiki/George_of_Pod%C4%9Bbrady",
     questions: [
@@ -674,7 +760,7 @@ const kings: SeedKing[] = [
     dynasty: "Habsburkové",
     shortBio:
       "Císař, který z Prahy udělal středisko umění, vědy a alchymie.",
-    order: 8,
+    order: 9,
     imageUrl: "/kings/rudolf-ii.webp",
     sourceUrl: "https://ipfs.ssi.eecc.de/ipns/en.wikipedia-on-ipfs.org/wiki/Rudolf_II%2C_Holy_Roman_Emperor",
     questions: [
@@ -761,7 +847,7 @@ const kings: SeedKing[] = [
     dynasty: "Habsburkové",
     shortBio:
       "Jediná žena, která vládla habsburské monarchii, a velká reformátorka.",
-    order: 9,
+    order: 10,
     title: "královna",
     isLegend: false,
     imageUrl: "/kings/marie-terezie.webp",
@@ -856,7 +942,7 @@ const kings: SeedKing[] = [
     dynasty: "Habsbursko-Lotrinští",
     shortBio:
       "Osvícený reformátor, který zrušil nevolnictví a povolil jiné víry.",
-    order: 10,
+    order: 11,
     imageUrl: "/kings/josef-ii.webp",
     sourceUrl: "https://en.wikipedia.org/wiki/Josephinism",
     questions: [
@@ -948,7 +1034,7 @@ const kings: SeedKing[] = [
     dynasty: "Habsbursko-Lotrinští",
     shortBio:
       "Poslední český král, který vládl v době první světové války.",
-    order: 11,
+    order: 12,
     imageUrl: "/kings/karel-i.webp",
     sourceUrl: "https://www.newworldencyclopedia.org/entry/Charles_I_of_Austria",
     questions: [
@@ -1080,8 +1166,45 @@ function validate(data: SeedKing[]) {
   }
 }
 
+function validateChronicles(data: Record<string, SeedChronicle>) {
+  for (const [slug, chronicle] of Object.entries(data)) {
+    if (!chronicle.intro.trim()) throw new Error(`${slug}: chronicle intro is empty`);
+    for (const section of chronicle.sections) {
+      if (!section.heading.trim() || !section.text.trim()) {
+        throw new Error(`${slug}: chronicle section without heading or text`);
+      }
+    }
+    if (chronicle.facts.some((fact) => !fact.trim())) {
+      throw new Error(`${slug}: empty chronicle fact`);
+    }
+    for (const source of chronicle.sources) {
+      if (!source.label.trim()) throw new Error(`${slug}: chronicle source without label`);
+      if (!source.url.startsWith("https://")) {
+        throw new Error(`${slug}: chronicle source must be https: ${source.url}`);
+      }
+    }
+  }
+}
+
+// Kings without a chronicle get empty fields (nothing breaks in the app).
+function chronicleData(slug: string) {
+  const chronicle = chronicles[slug];
+  return {
+    chronicleIntro: chronicle?.intro ?? "",
+    chronicleFacts: chronicle?.facts ?? [],
+    chronicleSources: chronicle?.sources ?? [],
+    chronicleSections: chronicle?.sections ?? [],
+  };
+}
+
 async function main() {
   validate(kings);
+  validateChronicles(chronicles);
+  for (const slug of Object.keys(chronicles)) {
+    if (!kings.some((king) => king.slug === slug)) {
+      console.log(`Chronicle for "${slug}" skipped: king is not in the seed yet`);
+    }
+  }
 
   const connectionString = process.env.DATABASE_URL;
   if (!connectionString) throw new Error("DATABASE_URL is not set");
@@ -1106,7 +1229,8 @@ async function main() {
         }
 
         for (const king of kings) {
-          const { questions, sourceUrl, ...kingData } = king;
+          const { questions, sourceUrl, ...rest } = king;
+          const kingData = { ...rest, ...chronicleData(king.slug) };
 
           const saved = await tx.king.upsert({
             where: { slug: king.slug },

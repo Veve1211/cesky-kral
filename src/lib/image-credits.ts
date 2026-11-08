@@ -38,6 +38,16 @@ export const imageCredits: ImageCredit[] = [
     localPath: "/kings/svaty-vaclav.webp",
   },
   {
+    kingSlug: "premysl-otakar-i",
+    kingName: "Přemysl Otakar I.",
+    title: "Jezdecká pečeť (1192–1193), avers – kresba",
+    author: "August Sedláček",
+    year: "19.–20. století",
+    license: "Volné dílo (public domain, PD-old)",
+    commonsUrl: "https://commons.wikimedia.org/wiki/File:PO1_jezdecka.jpg",
+    localPath: "/kings/premysl-otakar-i.webp",
+  },
+  {
     kingSlug: "premysl-otakar-ii",
     kingName: "Přemysl Otakar II.",
     title:

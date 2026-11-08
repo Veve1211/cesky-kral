@@ -1,11 +1,12 @@
 "use client";
 
-import { useEffect, useState, useTransition } from "react";
+import { useCallback, useEffect, useState, useTransition } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { ArrowRight, Check, ExternalLink, Lock, RotateCcw, X } from "lucide-react";
 
 import { checkAnswer } from "@/app/actions/quiz";
+import { ChronicleDialog, type ChronicleKing } from "@/components/chronicle-dialog";
 import { DifficultyBadge } from "@/components/difficulty-badge";
 import { GoldenBadge } from "@/components/golden-badge";
 import { KingPortrait } from "@/components/king-portrait";
@@ -21,8 +22,9 @@ import {
   addToCollection,
   readCollection,
   useCollection,
-  useIsClient,
+  useCollectionReady,
 } from "@/lib/collection";
+import type { Chronicle } from "@/lib/chronicle";
 import { CORRECT_TO_COLLECT } from "@/lib/game-rules";
 import type { AnswerResult, QuizQuestion } from "@/lib/quiz-types";
 import { cn } from "@/lib/utils";
@@ -41,7 +43,10 @@ type QuizProps =
       mode: "king";
       questions: QuizQuestion[];
       allKingSlugs: string[];
-      king: QuizKing;
+      king: Omit<ChronicleKing, "chronicle"> &
+        QuizKing & {
+          chronicle: Chronicle | null;
+        };
     }
   | { mode: "golden"; questions: QuizQuestion[]; king: QuizKing }
   | { mode: "quick"; questions: QuizQuestion[] };
@@ -59,7 +64,7 @@ export function Quiz(props: QuizProps) {
   const [collected, setCollected] = useState(false);
   const [completedAll, setCompletedAll] = useState(false);
   const [isPending, startTransition] = useTransition();
-  const isClient = useIsClient();
+  const isClient = useCollectionReady();
   const { kings: ownedKings } = useCollection();
 
   const total = questions.length;
@@ -290,6 +295,8 @@ function Results(
   },
 ) {
   const { score, total, onRestart } = props;
+  const [revealed, setRevealed] = useState(false);
+  const onRevealed = useCallback(() => setRevealed(true), []);
 
   if (props.mode === "golden") {
     return props.collected ? (
@@ -333,15 +340,27 @@ function Results(
             <p className="text-xs font-semibold tracking-[0.2em] text-gold-dark uppercase">
               Skóre {score} z {total}
             </p>
-            <CardFlipReveal king={props.king} />
+            <CardFlipReveal king={props.king} onRevealed={onRevealed} />
             <h2 className="text-4xl font-bold">Král je ve tvé sbírce!</h2>
+            {revealed && props.king.chronicle && (
+              <div className="animate-in fade-in slide-in-from-bottom-2 duration-500">
+                <ChronicleDialog
+                  king={{ ...props.king, chronicle: props.king.chronicle }}
+                  trigger={
+                    <Button variant="outline" size="lg">
+                      📜 Přečíst kroniku
+                    </Button>
+                  }
+                />
+              </div>
+            )}
             <OrnamentDivider />
             <p className="text-muted-foreground">
-              Skvělá práce. Karta už na tebe čeká v galerii.
+              Skvělá práce. Karta už na tebe čeká ve sbírce.
             </p>
             {!props.completedAll && (
               <Button asChild variant="accent" size="lg">
-                <Link href="/">Do sbírky</Link>
+                <Link href="/sbirka">Do sbírky</Link>
               </Button>
             )}
           </CardContent>
@@ -349,7 +368,7 @@ function Results(
         {props.completedAll && (
           <RoyalCelebration total={props.allKingSlugs.length}>
             <Button asChild variant="accent" size="lg" className="mt-2">
-              <Link href="/">Prohlédnout sbírku</Link>
+              <Link href="/sbirka">Prohlédnout sbírku</Link>
             </Button>
           </RoyalCelebration>
         )}
@@ -384,7 +403,7 @@ function Results(
             {isKing ? "Zkusit znovu" : "Hrát znovu"}
           </Button>
           <Button asChild variant="outline" size="lg">
-            <Link href="/">Do sbírky</Link>
+            <Link href="/sbirka">Do sbírky</Link>
           </Button>
         </div>
       </CardContent>
@@ -395,19 +414,33 @@ function Results(
 /** Card turns over from the dark silhouette to the king's portrait. */
 function CardFlipReveal({
   king,
+  onRevealed,
 }: {
   king: { name: string; initial: string; imageUrl: string | null };
+  /** Called once the flip animation has finished. */
+  onRevealed?: () => void;
 }) {
   const [flipped, setFlipped] = useState(false);
 
   useEffect(() => {
-    const timer = window.setTimeout(() => setFlipped(true), 350);
-    return () => window.clearTimeout(timer);
-  }, []);
+    const flip = window.setTimeout(() => setFlipped(true), 350);
+    // Fallback in case `transitionend` never fires (350 ms delay + 1.1 s flip).
+    const done = window.setTimeout(() => onRevealed?.(), 1600);
+    return () => {
+      window.clearTimeout(flip);
+      window.clearTimeout(done);
+    };
+  }, [onRevealed]);
 
   return (
     <div className="flip-scene w-44 sm:w-52" aria-live="polite">
-      <div className="flip-card" data-flipped={flipped}>
+      <div
+        className="flip-card"
+        data-flipped={flipped}
+        onTransitionEnd={(event) => {
+          if (event.target === event.currentTarget && flipped) onRevealed?.();
+        }}
+      >
         {/* front = before the flip: silhouette */}
         <div className="flip-face rounded-2xl bg-navy p-3 shadow-lg">
           <KingPortrait

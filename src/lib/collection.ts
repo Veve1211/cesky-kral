@@ -137,17 +137,6 @@ export function useCollection(): Collection {
   return useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
 }
 
-const noopSubscribe = () => () => {};
-
-/** False during SSR and hydration, true once running in the browser. */
-export function useIsClient(): boolean {
-  return useSyncExternalStore(
-    noopSubscribe,
-    () => true,
-    () => false,
-  );
-}
-
 /** Adds a king to the collection. Returns false if storage is unavailable. */
 export function addToCollection(slug: string): boolean {
   if (!isValidSlug(slug)) return false;
@@ -166,4 +155,18 @@ export function addGoldenCard(slug: string): boolean {
   if (!current.kings.includes(slug)) return false;
   if (current.golden.includes(slug)) return true;
   return write({ kings: current.kings, golden: [...current.golden, slug] });
+}
+
+const noopSubscribe = () => () => {};
+
+/**
+ * False during server render and hydration, true once localStorage can be read.
+ * Lets pages avoid flashing an "empty collection" state before hydration.
+ */
+export function useCollectionReady(): boolean {
+  return useSyncExternalStore(
+    noopSubscribe,
+    () => true,
+    () => false,
+  );
 }
