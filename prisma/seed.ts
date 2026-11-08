@@ -10,6 +10,7 @@ import { config } from "dotenv";
 import { PrismaPg } from "@prisma/adapter-pg";
 
 import { PrismaClient } from "../src/generated/prisma/client";
+import { chronicles, type SeedChronicle } from "./chronicles";
 
 config({ path: ".env.local" });
 
@@ -1080,8 +1081,39 @@ function validate(data: SeedKing[]) {
   }
 }
 
+function validateChronicles(data: Record<string, SeedChronicle>) {
+  for (const [slug, chronicle] of Object.entries(data)) {
+    if (!chronicle.intro.trim()) throw new Error(`${slug}: chronicle intro is empty`);
+    if (chronicle.facts.some((fact) => !fact.trim())) {
+      throw new Error(`${slug}: empty chronicle fact`);
+    }
+    for (const source of chronicle.sources) {
+      if (!source.label.trim()) throw new Error(`${slug}: chronicle source without label`);
+      if (!source.url.startsWith("https://")) {
+        throw new Error(`${slug}: chronicle source must be https: ${source.url}`);
+      }
+    }
+  }
+}
+
+// Kings without a chronicle get empty fields (nothing breaks in the app).
+function chronicleData(slug: string) {
+  const chronicle = chronicles[slug];
+  return {
+    chronicleIntro: chronicle?.intro ?? "",
+    chronicleFacts: chronicle?.facts ?? [],
+    chronicleSources: chronicle?.sources ?? [],
+  };
+}
+
 async function main() {
   validate(kings);
+  validateChronicles(chronicles);
+  for (const slug of Object.keys(chronicles)) {
+    if (!kings.some((king) => king.slug === slug)) {
+      console.log(`Chronicle for "${slug}" skipped: king is not in the seed yet`);
+    }
+  }
 
   const connectionString = process.env.DATABASE_URL;
   if (!connectionString) throw new Error("DATABASE_URL is not set");
@@ -1106,7 +1138,8 @@ async function main() {
         }
 
         for (const king of kings) {
-          const { questions, sourceUrl, ...kingData } = king;
+          const { questions, sourceUrl, ...rest } = king;
+          const kingData = { ...rest, ...chronicleData(king.slug) };
 
           const saved = await tx.king.upsert({
             where: { slug: king.slug },
