@@ -2,7 +2,7 @@
 
 Living list of known risks. Update with every feature.
 
-- **Route param `/kral/[slug]`**: slug is only used to look up a known king; unknown values return the 404 page. When the DB is connected, query by slug via Prisma (parameterized) – never build raw SQL from it. Note: with streaming (Cache Components) the 404 page is rendered but the HTTP status can be 200.
+- **Route param `/kral/[slug]`**: slug is only used to look up a known king via parameterized Prisma queries. The narrowly matched `src/proxy.ts` validates the slug and checks existence before GET/HEAD rendering starts, so missing kings and golden rounds return HTTP 404 with the existing not-found UI. Page-level `notFound()` checks remain in place. The check adds one lean DB lookup to requests for these two routes; no DB data is cached in the proxy or sent in headers.
 - **XSS**: all text is rendered through React (auto-escaped). Never use `dangerouslySetInnerHTML` for seed content (questions, explanations).
 - **Secrets**: `DATABASE_URL` lives only in `.env.local` (git-ignored, `.env*` in .gitignore). `.env.example` contains placeholders only.
 - **imageUrl**: only local paths matching `/kings/<slug>.webp` are rendered (`safeKingImage`); anything else from the DB falls back to the crest. No remote image hosts are allowed in `next.config`.
@@ -27,3 +27,5 @@ Living list of known risks. Update with every feature.
 - **Best streak (`cesky-kral:who-first`)**: localStorage read in try/catch, size limit, version check, safe non-negative integer only; anything else counts as 0.
 
 - **E2E tests**: they write to a database (migrations + seed). The URL comes only from `E2E_DATABASE_URL` and the database name must contain `test`, otherwise the run stops – so the tests never touch production. The password in `.github/workflows/e2e.yml` belongs to a throwaway Postgres service inside the CI job (not a secret).
+
+- **Development dependency audit (2026-11-08)**: `npm audit` reports 8 moderate findings in the ESLint dependency chain, all rooted in `minimatch@10.2.6` ([GHSA-g3hv-75wg-m249](https://github.com/advisories/GHSA-g3hv-75wg-m249), glob amplification / denial of service). `typescript-eslint@8.72.1` is the latest stable release and depends on `minimatch ^10.2.2`; `10.2.6` is the latest 10.x release and is still affected. `npm audit fix --dry-run` offers no compatible changes. Do not force an override to minimatch 11 or downgrade `eslint-config-next` from 16 to 15 just to clear the report: those cross major-version compatibility boundaries. Revisit when upstream ships a compatible fix. `npm audit --omit=dev` reports 0 vulnerabilities; this dependency is used by development linting, not the game runtime.

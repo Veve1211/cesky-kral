@@ -6,10 +6,12 @@ import { OrnamentDivider } from "@/components/ornaments";
 import { SiteHeader } from "@/components/site-header";
 import "./globals.css";
 
+// Keep preloads, but avoid late font swaps after the page has painted on a slow network.
 // latin-ext subset = Czech diacritics (ř, ě, š, č, ů ...)
 const inter = Inter({
   variable: "--font-inter",
   subsets: ["latin", "latin-ext"],
+  display: "optional",
 });
 
 // Gothic manuscript-style headings (verified: ř, ě, ů, ť, ď, ň present)
@@ -17,6 +19,7 @@ const gothic = Grenze_Gotisch({
   variable: "--font-gothic",
   subsets: ["latin", "latin-ext"],
   weight: ["500", "700"],
+  display: "optional",
 });
 
 // Lombardic-style capitals for illuminated initials and crests
@@ -24,6 +27,7 @@ const uncial = Uncial_Antiqua({
   variable: "--font-uncial",
   subsets: ["latin", "latin-ext"],
   weight: "400",
+  display: "optional",
 });
 
 const SITE_NAME = "Český král";
