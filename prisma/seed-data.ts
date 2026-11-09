@@ -89,7 +89,7 @@ export const kings: SeedKing[] = [
       {
         difficulty: 2,
         text: "Jak poslové Přemysla našli?",
-        correct: "Šli za Libušiným bílým koněm",
+        correct: "Šli za jejím bílým koněm",
         wrong: ["Podle mapy", "Přemysl přišel na Vyšehrad sám"],
         explanation:
           "Kůň je dovedl až k poli, kde Přemysl oral.",
@@ -113,11 +113,11 @@ export const kings: SeedKing[] = [
       },
       {
         difficulty: 3,
-        text: "Kterou operou bylo otevřeno Národní divadlo?",
-        correct: "Smetanovou Libuší",
-        wrong: ["Dvořákovou Rusalkou", "Smetanovou Prodanou nevěstou"],
+        text: "Kdo složil operu Libuše, kterou bylo otevřeno Národní divadlo?",
+        correct: "Bedřich Smetana",
+        wrong: ["Antonín Dvořák", "Leoš Janáček"],
         explanation:
-          "Libuše je naše nejslavnostnější opera, její fanfáry zní při slavnostních příležitostech.",
+          "Smetanova Libuše je naše nejslavnostnější opera, její fanfáry zní při slavnostních příležitostech.",
         sourceUrl: "https://english.radio.cz/node/8091287",
       },
     ],
@@ -523,11 +523,12 @@ export const kings: SeedKing[] = [
       },
       {
         difficulty: 2,
-        text: "Kde se Jan Lucemburský narodil?",
-        correct: "V Lucembursku",
-        wrong: ["V Praze", "V Paříži"],
+        text: "Na kterém královském dvoře Jan Lucemburský vyrůstal?",
+        correct: "Na francouzském dvoře Filipa Sličného",
+        wrong: ["Na anglickém dvoře", "Na uherském dvoře"],
         explanation:
-          "Narodil se v Lucembursku a vyrůstal v Paříži.",
+          "Jan vyrůstal na francouzském královském dvoře Filipa Sličného; jeho vzorem pak byl způsob vlády na francouzském dvoře.",
+        sourceUrl: "https://cs.wikipedia.org/wiki/Jan_Lucembursk%C3%BD",
       },
       {
         difficulty: 2,
@@ -556,11 +557,11 @@ export const kings: SeedKing[] = [
       },
       {
         difficulty: 3,
-        text: "Kde je Jan Lucemburský dnes pohřben?",
-        correct: "V katedrále Notre-Dame v Lucemburku",
-        wrong: ["V katedrále sv. Víta v Praze", "Ve Zbraslavském klášteře"],
+        text: "Kdy byly ostatky Jana Lucemburského přeneseny do katedrály, kde dnes leží?",
+        correct: "Roku 1945",
+        wrong: ["Roku 1346", "Roku 1918"],
         explanation:
-          "Jeho ostatky byly do lucemburské katedrály přeneseny v roce 1945.",
+          "Jeho ostatky byly do lucemburské katedrály Notre-Dame přeneseny v roce 1945.",
       },
     ],
   },
@@ -787,11 +788,11 @@ export const kings: SeedKing[] = [
       },
       {
         difficulty: 2,
-        text: "Jak se jmenují astronomické tabulky, které dokončil Kepler?",
-        correct: "Rudolfinské tabulky",
-        wrong: ["Karlovy tabulky", "Pražské tabulky"],
+        text: "Kde měl dvorní astronom Rudolfa II. Tycho Brahe vyhrazený zámek pro svá pozorování?",
+        correct: "V Benátkách nad Jizerou",
+        wrong: ["Na Karlštejně", "V Konopišti"],
         explanation:
-          "Začal je Tycho Brahe, po jeho smrti je dokončil Kepler.",
+          "Na zámku v Benátkách nad Jizerou vybudoval jednu z předních evropských observatoří té doby.",
         sourceUrl: "https://biography.hiu.cas.cz/wiki/BRAHE_Tycho_14.12.1546-24.10.1601",
       },
       {
@@ -1289,10 +1290,10 @@ export const kings: SeedKing[] = [
       },
       {
         difficulty: 1,
-        text: "Ze kterého rodu pocházel Vladislav II.?",
-        correct: "Z Jagellonců",
-        wrong: ["Z Habsburků", "Z Lucemburků"],
-        explanation: "Jagellonci byli polsko-litevský rod, Vladislav byl synem polského krále Kazimíra IV.",
+        text: "Kdo byl otcem Vladislava II.?",
+        correct: "Polský král Kazimír IV.",
+        wrong: ["Uherský král Matyáš Korvín", "Český král Jiří z Poděbrad"],
+        explanation: "Vladislav byl synem polského krále Kazimíra IV. z polsko-litevského rodu Jagellonců.",
       },
       {
         difficulty: 1,
@@ -1310,9 +1311,9 @@ export const kings: SeedKing[] = [
       },
       {
         difficulty: 2,
-        text: "Jak se jmenuje zákoník, který vznikl za Vladislava II. roku 1500?",
-        correct: "Vladislavské zřízení zemské",
-        wrong: ["Majestát", "Obnovené zřízení zemské"],
+        text: "Čí moc výrazně omezilo Vladislavské zřízení zemské z roku 1500?",
+        correct: "Moc krále",
+        wrong: ["Moc šlechty", "Moc církve"],
         explanation: "Zákoník sepsaly šlechtické stavy a výrazně omezil královskou moc.",
       },
       {

@@ -33,6 +33,8 @@ test("úvod: ozdobné V se v textu neopakuje", async ({ page }) => {
 
 test("stránky panovníků: popis začíná jedním písmenem (všech 18)", async ({ page }) => {
   expect(kings.length).toBe(18);
+  // The description is shown once the card is collected (it would give answers away before).
+  await setCollection(page, kings.map((king) => king.slug));
   for (const king of kings) {
     await open(page, `/kral/${king.slug}`);
     const bio = page.locator("p", { has: page.getByTestId("illuminated-initial") });

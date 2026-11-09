@@ -19,7 +19,7 @@ export function BoardList({ board, mode, testId }: { board: Board; mode: GameMod
       </p>
     );
   }
-  const { timed, unit } = GAME_INFO[mode];
+  const { timed } = GAME_INFO[mode];
   return (
     <ol className="flex flex-col divide-y divide-gold-dark/20" data-testid={testId}>
       {board.entries.map((entry) => (
@@ -28,10 +28,8 @@ export function BoardList({ board, mode, testId }: { board: Board; mode: GameMod
             {entry.rank === 1 ? <span aria-label="1.">👑</span> : `${entry.rank}.`}
           </span>
           <NicknameWithCrest entry={entry} />
-          <span className="tabular-nums">
-            <strong>{entry.score}</strong>
-            <span className="sr-only"> {unit}</span>
-            {mode === "quick" && <span aria-hidden>/10</span>}
+          <span className="shrink-0 pl-1 tabular-nums" data-testid="board-score">
+            <ScoreText mode={mode} score={entry.score} />
           </span>
           {timed && entry.durationMs !== null && (
             <span className="w-20 text-right text-sm text-muted-foreground tabular-nums">{formatDuration(entry.durationMs)}</span>
@@ -39,6 +37,23 @@ export function BoardList({ board, mode, testId }: { board: Board; mode: GameMod
         </li>
       ))}
     </ol>
+  );
+}
+
+/** "17 🔥 v řadě", "5 🌊 kol", "8/10" – always with a unit, never glued to the nickname. */
+function ScoreText({ mode, score }: { mode: GameMode; score: number }) {
+  if (mode === "quick") {
+    return (
+      <>
+        <strong>{score}</strong>/10<span className="sr-only"> správně</span>
+      </>
+    );
+  }
+  const unit = mode === "who-first" ? "v řadě" : score === 1 ? "kolo" : score >= 2 && score <= 4 ? "kola" : "kol";
+  return (
+    <>
+      <strong>{score}</strong> <span className="text-xs text-muted-foreground">{unit}</span>
+    </>
   );
 }
 

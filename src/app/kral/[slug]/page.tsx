@@ -6,7 +6,7 @@ import { connection } from "next/server";
 import { ArrowLeft } from "lucide-react";
 
 import { GoldenHeaderFrame, GoldenRoundButton } from "@/components/golden-round-button";
-import { IlluminatedInitial } from "@/components/illuminated-initial";
+import { KingBio } from "@/components/king-bio";
 import { KingPortrait } from "@/components/king-portrait";
 import { KingReignLine } from "@/components/king-reign-line";
 import { LegendBadge } from "@/components/legend-badge";
@@ -26,7 +26,8 @@ export async function generateMetadata({
   if (!king) return { title: "Král nenalezen" };
   // Own preview for sharing a ruler's link (the image is `opengraph-image.tsx`).
   const title = `${king.name} – hra o kartu`;
-  const description = `Zahraj si o kartu: ${king.name}. ${king.shortBio}`;
+  // No short bio here: it would give away answers of the round.
+  const description = `Zahraj si o kartu: ${king.name}. Pět otázek, tři možnosti – čtyři správně a ${king.title} je ve tvé sbírce.`;
   return {
     title: king.name,
     description,
@@ -104,13 +105,7 @@ async function KingGame({ params }: { params: Promise<{ slug: string }> }) {
           )}
         </div>
         <OrnamentDivider />
-        {bio && (
-          <p className="text-left text-ink/90">
-            <IlluminatedInitial letter={bio.charAt(0)} size="md" />
-            <span className="sr-only">{bio.charAt(0)}</span>
-            {bio.slice(1)}
-          </p>
-        )}
+        <KingBio slug={king.slug} bio={bio} />
         <GoldenRoundButton slug={king.slug} />
       </GoldenHeaderFrame>
 
