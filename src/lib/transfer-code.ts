@@ -22,6 +22,7 @@ export const TRANSFER_KEYS = {
   mastery: "cesky-kral:mastery",
   daily: "cesky-kral:daily",
   whoFirst: "cesky-kral:who-first",
+  crest: "cesky-kral:crest",
 } as const;
 export type TransferPayload = Partial<Record<keyof typeof TRANSFER_KEYS, string>>;
 

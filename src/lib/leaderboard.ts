@@ -1,4 +1,5 @@
 // Leaderboard helpers shared by server, client and tests (no DB, no window).
+import type { CrestDesign } from "@/lib/heraldry";
 
 export type BoardEntry = {
   rank: number;
@@ -6,6 +7,8 @@ export type BoardEntry = {
   score: number;
   /** Time in milliseconds (shorter wins on equal score), null when not timed. */
   durationMs: number | null;
+  /** The player's own coat of arms (validated parameters), if any. */
+  crest?: CrestDesign | null;
 };
 
 export type Standing = {

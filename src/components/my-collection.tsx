@@ -10,6 +10,7 @@ import {
   useCollectionSummary,
 } from "@/components/collection-summary";
 import { CardCorners } from "@/components/ornaments";
+import { MyCrestCard } from "@/components/my-crest-card";
 import { PlayerPanel } from "@/components/player-panel";
 import { ReignTimeline } from "@/components/reign-timeline";
 import { RoyalCelebration } from "@/components/royal-celebration";
@@ -80,6 +81,8 @@ export function MyCollection({ kings }: { kings: KingSummary[] }) {
           <KingGrid cards={missing} />
         </section>
       )}
+
+      <MyCrestCard />
 
       <PlayerPanel />
 

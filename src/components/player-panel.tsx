@@ -7,6 +7,7 @@ import { NicknameForm } from "@/components/nickname-form";
 import { CardCorners } from "@/components/ornaments";
 import { Button } from "@/components/ui/button";
 import { mergeCollectionFrom } from "@/lib/collection";
+import { mergeCrestFrom } from "@/lib/crest-progress";
 import { mergeDailyFrom } from "@/lib/daily-progress";
 import { mergeMasteryFrom } from "@/lib/mastery-progress";
 import { ensurePlayer, postJson, readToken, writeToken } from "@/lib/player";
@@ -34,6 +35,7 @@ function applySnapshot(payload: TransferPayload): boolean {
     mergeMasteryFrom(payload.mastery),
     mergeDailyFrom(payload.daily),
     mergeBestStreakFrom(payload.whoFirst),
+    mergeCrestFrom(payload.crest),
   ].every(Boolean);
 }
 
@@ -126,7 +128,7 @@ function TransferCode() {
         </h3>
         <p className="text-sm text-ink/85">
           Vytvoř si krátký kód a zadej ho na druhém zařízení. Platí {TRANSFER_MINUTES} minut a jen jednou.
-          Přenese sbírku, koruny, Denní výzvu, nejlepší sérii i přezdívku.
+          Přenese sbírku, koruny, Denní výzvu, nejlepší sérii, erb i přezdívku.
         </p>
         {created ? (
           <p className="flex flex-col items-start gap-1">

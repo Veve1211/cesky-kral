@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { GAME_INFO, PERIOD_NAMES, type GameMode, type Period } from "@/lib/games";
 import { formatDuration, type BoardEntry } from "@/lib/leaderboard";
 import { LEADERBOARD_CHANGED } from "@/lib/player";
+import { NicknameWithCrest } from "@/components/nickname-with-crest";
 import { cn } from "@/lib/utils";
 
 export type Board = { entries: BoardEntry[]; total: number };
@@ -26,7 +27,7 @@ export function BoardList({ board, mode, testId }: { board: Board; mode: GameMod
           <span className={cn("w-8 text-right font-heading text-xl font-bold tabular-nums", entry.rank === 1 ? "text-gold-dark" : "text-ink/70")}>
             {entry.rank === 1 ? <span aria-label="1.">👑</span> : `${entry.rank}.`}
           </span>
-          <span className="min-w-0 flex-1 truncate font-semibold">{entry.nickname}</span>
+          <NicknameWithCrest entry={entry} />
           <span className="tabular-nums">
             <strong>{entry.score}</strong>
             <span className="sr-only"> {unit}</span>

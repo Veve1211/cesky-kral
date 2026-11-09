@@ -2,6 +2,7 @@ import "server-only";
 
 import { evaluateAnswer, isId } from "@/lib/answer-check";
 import { dailyDateKey, isDateKey } from "@/lib/daily";
+import { parseCrest } from "@/lib/heraldry";
 import type { BoardEntry, Standing } from "@/lib/leaderboard";
 import type { PlayerRow } from "@/lib/player-server";
 import { getPrisma } from "@/lib/prisma";
@@ -109,7 +110,7 @@ export async function getDailyLeaderboard(date: string, limit = 10): Promise<{ e
       where: finishedRanked(date),
       orderBy: [{ score: "desc" }, { durationMs: "asc" }, { finishedAt: "asc" }],
       take: limit,
-      select: { score: true, durationMs: true, player: { select: { nickname: true } } },
+      select: { score: true, durationMs: true, player: { select: { nickname: true, crest: true } } },
     }),
     prisma.dailyAttempt.count({ where: finishedRanked(date) }),
   ]);
@@ -120,6 +121,7 @@ export async function getDailyLeaderboard(date: string, limit = 10): Promise<{ e
       nickname: row.player.nickname ?? "",
       score: row.score,
       durationMs: row.durationMs,
+      crest: parseCrest(row.player.crest),
     })),
   };
 }
