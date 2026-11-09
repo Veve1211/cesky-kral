@@ -36,7 +36,8 @@ export function MyCollection({ kings }: { kings: KingSummary[] }) {
 
   return (
     <>
-      <MyCrestCard kingSlugs={kings.map((king) => king.slug)} />
+      {/* At the top of the page: the player's crest (or an invitation). */}
+      <MyCrestCard kingSlugs={kings.map((king) => king.slug)} compact />
 
       {complete ? (
         <RoyalCelebration total={total}>

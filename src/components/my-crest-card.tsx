@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useSyncExternalStore } from "react";
 import Link from "next/link";
 import { Shield } from "lucide-react";
 
@@ -14,6 +14,17 @@ import { useCrestCounts } from "@/lib/crest-unlocks";
 import { unlockedPartCount, type CrestDesign } from "@/lib/heraldry";
 import { postJson, readToken } from "@/lib/player";
 import { cn } from "@/lib/utils";
+
+// Moje sbírka shows the card at the very top. Chrome may still swap in late
+// "optional" web fonts when this card appears there before they arrive, so
+// there it waits for the fonts behind a placeholder of the same size.
+function subscribeFonts(onChange: () => void) {
+  void document.fonts.ready.then(onChange);
+  return () => {};
+}
+function useFontsSettled(): boolean {
+  return useSyncExternalStore(subscribeFonts, () => document.fonts.status === "loaded", () => false);
+}
 
 /** A tempting example for players without a crest yet. */
 const EXAMPLE: CrestDesign = {
@@ -31,12 +42,22 @@ const EXAMPLE: CrestDesign = {
  * sbírka. Without a crest: an invitation with an example shield. With one:
  * the crest, the nickname, how many parts are unlocked and "Upravit erb".
  */
-export function MyCrestCard({ kingSlugs, className }: { kingSlugs: string[]; className?: string }) {
+export function MyCrestCard({
+  kingSlugs,
+  className,
+  compact = false,
+}: {
+  kingSlugs: string[];
+  className?: string;
+  /** Moje sbírka: shorter, without the description. */
+  compact?: boolean;
+}) {
   const ready = useCollectionReady();
   const crest = useSavedCrest();
   const counts = useCrestCounts(kingSlugs);
   const { unlocked, total } = unlockedPartCount(counts);
   const [nickname, setNickname] = useState<string | null>(null);
+  const fontsSettled = useFontsSettled();
 
   useEffect(() => {
     if (!crest) return;
@@ -50,7 +71,9 @@ export function MyCrestCard({ kingSlugs, className }: { kingSlugs: string[]; cla
     };
   }, [crest]);
 
-  if (!ready) return <div aria-hidden className={cn("parchment h-44 animate-pulse rounded-2xl", className)} />;
+  if (!ready || (compact && !fontsSettled)) {
+    return <div aria-hidden className={cn("parchment rounded-2xl", compact ? "min-h-60" : "h-44 animate-pulse", className)} />;
+  }
 
   return (
     <section
@@ -60,11 +83,12 @@ export function MyCrestCard({ kingSlugs, className }: { kingSlugs: string[]; cla
       className={cn(
         "relative flex items-center gap-4 overflow-hidden rounded-2xl p-5 sm:gap-6 sm:p-6",
         crest ? "parchment" : "bg-navy text-parchment shadow-xl ring-2 ring-gold",
+        compact && "min-h-60",
         className,
       )}
     >
       <CardCorners className={cn("m-1 size-7", crest ? "text-gold-dark" : "text-gold")} />
-      <div className={cn("w-24 shrink-0 drop-shadow-lg sm:w-28", !crest && "animate-float")}>
+      <div className={cn("shrink-0 drop-shadow-lg", compact ? "flex h-32 w-[107px] items-center" : "w-24 sm:w-28", !crest && "animate-float")}>
         <CrestSvg design={crest ?? EXAMPLE} withMotto={Boolean(crest)} label={crest ? undefined : "Ukázkový erb"} />
       </div>
       <div className="flex min-w-0 flex-1 flex-col items-start gap-2">
@@ -72,7 +96,7 @@ export function MyCrestCard({ kingSlugs, className }: { kingSlugs: string[]; cla
         <h2 id="my-crest-heading" className="text-3xl leading-tight font-bold">
           {crest ? (nickname ? `Erb hráče ${nickname}` : "Tvůj erb") : "Vytvoř si vlastní erb"}
         </h2>
-        <p className={cn("text-sm", crest ? "text-ink/85" : "text-parchment/85")}>
+        <p className={cn("text-sm", crest ? "text-ink/85" : "text-parchment/85", compact && "sr-only")}>
           {crest
             ? "Ukazuje se vedle tvé přezdívky v žebříčcích."
             : "Štít, barvy, figura a heslo. Vzácné díly odemkneš kartami a korunami učenosti."}
@@ -81,7 +105,7 @@ export function MyCrestCard({ kingSlugs, className }: { kingSlugs: string[]; cla
           <p className="text-sm" data-testid="crest-parts">
             Odemčeno <strong>{unlocked}</strong> z {total} dílů erbu
           </p>
-          <Progress value={unlocked} max={total} label="Odemčené díly erbu" />
+          {!compact && <Progress value={unlocked} max={total} label="Odemčené díly erbu" />}
         </div>
         <Button asChild size="lg" variant={crest ? "outline" : "accent"} className="mt-1">
           <Link href="/muj-erb">

@@ -180,7 +180,7 @@ function KingCardFace({
             {reign && (
               <p
                 data-testid="king-card-reign"
-                className={cn("text-xs tabular-nums", locked ? "text-parchment/70" : "text-muted-foreground")}
+                className={cn("h-4 text-xs leading-4 tabular-nums", locked ? "text-parchment/70" : "text-muted-foreground")}
               >
                 {locked ? (
                   <>
