@@ -35,8 +35,9 @@ test("výhra: správné odpovědi → karta se otočí → panovník je ve sbír
   await expect(status).toContainText("Rytíř");
   await expect(status).toContainText(`Ve sbírce: 1 z ${kings.length}`);
   const gallery = page.getByRole("region", { name: "Galerie panovníků" });
+  // Five correct answers of nine also earned the bronze "koruna učenosti".
   await expect(
-    gallery.getByRole("button", { name: `král ${getKing(SLUG).name} – ve sbírce, přečíst kroniku` }),
+    gallery.getByRole("button", { name: `král ${getKing(SLUG).name}, bronzová koruna učenosti – ve sbírce, přečíst kroniku` }),
   ).toBeVisible();
 });
 

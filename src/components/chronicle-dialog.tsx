@@ -4,6 +4,7 @@ import { Fragment, type ReactNode } from "react";
 import { ExternalLink } from "lucide-react";
 
 import { IlluminatedInitial } from "@/components/illuminated-initial";
+import { KingPortrait } from "@/components/king-portrait";
 import { LegendBadge } from "@/components/legend-badge";
 import { CardCorners, OrnamentDivider } from "@/components/ornaments";
 import {
@@ -15,6 +16,9 @@ import {
 } from "@/components/ui/dialog";
 import type { Chronicle } from "@/lib/chronicle";
 import { formatReign, type KingTitle } from "@/lib/king-display";
+import { kingInitial } from "@/lib/king-initial";
+import { TIER_NAMES } from "@/lib/mastery";
+import { tierOf, useMastery } from "@/lib/mastery-progress";
 
 export type ChronicleKing = {
   name: string;
@@ -24,6 +28,9 @@ export type ChronicleKing = {
   reignFrom: number | null;
   reignTo: number | null;
   chronicle: Chronicle;
+  /** With a slug the chronicle shows the portrait and its "koruna učenosti". */
+  slug?: string;
+  imageUrl?: string | null;
 };
 
 /** Opens the king's chronicle – a page of an illuminated manuscript. */
@@ -39,6 +46,8 @@ export function ChronicleDialog({
   footer?: ReactNode;
 }) {
   const { intro, sections, facts, sources } = king.chronicle;
+  const mastery = useMastery();
+  const tier = king.slug ? tierOf(mastery, king.slug) : 0;
   const subtitle = [king.title, king.dynasty, formatReign(king)]
     .filter(Boolean)
     .join(" · ");
@@ -65,6 +74,22 @@ export function ChronicleDialog({
             <CardCorners className="m-1.5 size-9 text-gold-dark" />
 
             <div className="flex flex-col items-center gap-2 text-center">
+              {king.slug && (
+                <div className={tier > 0 ? "mt-8 w-28 sm:w-32" : "w-24 sm:w-28"}>
+                  <KingPortrait
+                    name={king.name}
+                    initial={kingInitial(king.name)}
+                    imageUrl={king.imageUrl}
+                    sizes="128px"
+                    crown={tier}
+                  />
+                </div>
+              )}
+              {tier > 0 && (
+                <p className="text-xs font-semibold tracking-[0.2em] text-gold-dark uppercase">
+                  {TIER_NAMES[tier as 1 | 2 | 3]}
+                </p>
+              )}
               <DialogDescription className="text-sm text-muted-foreground first-letter:uppercase">
                 {subtitle}
               </DialogDescription>

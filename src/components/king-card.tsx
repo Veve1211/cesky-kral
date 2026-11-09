@@ -12,6 +12,7 @@ import { CardCorners, CrownMark } from "@/components/ornaments";
 import { Button } from "@/components/ui/button";
 import type { Chronicle } from "@/lib/chronicle";
 import { formatReign, type KingTitle } from "@/lib/king-display";
+import { TIER_SHORT, type Tier } from "@/lib/mastery";
 import { cn } from "@/lib/utils";
 
 export type KingCardData = {
@@ -28,6 +29,8 @@ export type KingCardData = {
   collected: boolean;
   /** Won in the golden round (only meaningful when collected). */
   golden: boolean;
+  /** "Koruna učenosti" – 0 none, 1 bronze, 2 silver, 3 gold. */
+  tier: Tier;
 };
 
 const LINK_CLASS =
@@ -38,7 +41,8 @@ const STRETCHED_CLASS =
   "cursor-pointer text-xs font-semibold text-gold-dark underline-offset-4 outline-none group-hover:underline after:absolute after:inset-0 after:rounded-2xl focus-visible:after:ring-4 focus-visible:after:ring-ring/60";
 
 export function KingCard({ king, index }: { king: KingCardData; index: number }) {
-  const label = `${king.title} ${king.name}${king.isLegend ? " (pověst)" : ""}`;
+  const crown = king.tier > 0 ? `, ${TIER_SHORT[king.tier as 1 | 2 | 3]} učenosti` : "";
+  const label = `${king.title} ${king.name}${king.isLegend ? " (pověst)" : ""}${crown}`;
   const chronicle = king.chronicle;
 
   if (!king.collected) {
@@ -144,8 +148,10 @@ function KingCardFace({
         >
           <CardCorners className={cn("m-1 size-8", locked ? "text-gold/50" : "text-gold-dark")} />
 
-          <div className="relative w-full">
+          {/* With a crown, the portrait moves down so the crown stays inside the card. */}
+          <div className={cn("relative w-full", king.tier > 0 && "mt-7 sm:mt-8")}>
             <KingPortrait
+              crown={king.tier}
               name={king.name}
               initial={king.initial}
               imageUrl={king.imageUrl}

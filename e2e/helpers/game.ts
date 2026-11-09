@@ -87,9 +87,7 @@ export async function answer(
   await waitForHydration(button);
   await button.click();
 
-  await expect(
-    page.getByRole("status").filter({ hasText: correctly ? "Správně!" : "Tentokrát vedle." }),
-  ).toBeVisible();
+  await settleAnswer(page, correctly ? "Správně!" : "Tentokrát vedle.");
   await page
     .getByRole("button", { name: index < total ? "Další otázka" : "Zobrazit výsledek" })
     .click();
@@ -103,4 +101,33 @@ export async function playRound(page: Page, plan: boolean[]): Promise<KnownQuest
     asked.push(await answer(page, i + 1, plan.length, correctly));
   }
   return asked;
+}
+
+/** The "koruna učenosti" celebration, if one is open right now. */
+export function celebration(page: Page) {
+  return page.getByTestId("tier-celebration");
+}
+
+/** Closes the celebration with "Pokračovat" when it is open; returns its tier or null. */
+export async function dismissCelebration(page: Page): Promise<string | null> {
+  const dialog = celebration(page);
+  if (!(await dialog.isVisible())) return null;
+  const tier = await dialog.getAttribute("data-tier");
+  await dialog.getByRole("button", { name: "Pokračovat" }).click();
+  await expect(dialog).toHaveCount(0);
+  return tier;
+}
+
+/**
+ * Waits for the answer's feedback. A new "koruna učenosti" opens its
+ * celebration in the same moment (as a modal, so the feedback is hidden from
+ * the accessibility tree until it closes) – close it first.
+ * Returns the celebrated tier, if any.
+ */
+export async function settleAnswer(page: Page, feedbackText: string): Promise<string | null> {
+  const feedback = page.getByRole("status").filter({ hasText: feedbackText });
+  await expect(feedback.or(celebration(page))).toBeVisible();
+  const tier = await dismissCelebration(page);
+  await expect(feedback).toBeVisible();
+  return tier;
 }

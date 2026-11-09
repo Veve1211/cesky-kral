@@ -1,6 +1,6 @@
 import { expect, test, type Locator, type Page } from "@playwright/test";
 
-import { currentQuestion, open, progress, readCollection, setCollection, STORAGE_KEY, waitForHydration } from "./helpers/game";
+import { celebration, currentQuestion, open, progress, settleAnswer, readCollection, setCollection, STORAGE_KEY, waitForHydration } from "./helpers/game";
 import { findQuestion, kings } from "./helpers/seed-answers";
 
 /** Reach a control through the actual tab order, without focusing it via script. */
@@ -38,7 +38,15 @@ for (const mode of modes) {
       await waitForHydration(choice);
       await tabTo(page, choice);
       await page.keyboard.press("Enter");
-      await expect(page.getByRole("status").filter({ hasText: mode.correct ? "Správně!" : "Tentokrát vedle." })).toBeVisible();
+      const feedback = page.getByRole("status").filter({ hasText: mode.correct ? "Správně!" : "Tentokrát vedle." });
+      await expect(feedback.or(celebration(page))).toBeVisible();
+      // A new "koruna učenosti": its "Pokračovat" gets focus, Enter closes it.
+      if (await celebration(page).isVisible()) {
+        await expect(celebration(page).getByRole("button", { name: "Pokračovat" })).toBeFocused();
+        await page.keyboard.press("Enter");
+        await expect(celebration(page)).toHaveCount(0);
+      }
+      await expect(feedback).toBeVisible();
       const next = page.getByRole("button", { name: i < mode.count - 1 ? "Další otázka" : "Zobrazit výsledek", exact: true });
       await expect(next).toBeFocused();
       await page.keyboard.press("Enter");
@@ -75,6 +83,7 @@ test("myš a dotyk: další otázka i výhra zůstávají ovladatelné", async (
     const answer = page.getByRole("button", { name: question.correct, exact: true });
     await waitForHydration(answer);
     if (isMobile) await answer.tap(); else await answer.click();
+    await settleAnswer(page, "Správně!");
     const next = page.getByRole("button", { name: i < 4 ? "Další otázka" : "Zobrazit výsledek", exact: true });
     await expect(next).toBeVisible();
     if (isMobile) await next.tap(); else await next.click();
@@ -99,6 +108,7 @@ test("fokus výsledku při chybě ukládání a po úspěšném opakování", as
   for (let i = 0; i < 5; i++) {
     const question = await currentQuestion(page);
     await page.getByRole("button", { name: question.correct, exact: true }).click();
+    await settleAnswer(page, "Správně!");
     await page.getByRole("button", { name: i < 4 ? "Další otázka" : "Zobrazit výsledek", exact: true }).click();
   }
   const error = page.getByRole("heading", { name: "Kartu se nepodařilo uložit", exact: true });

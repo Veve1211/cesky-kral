@@ -7,6 +7,7 @@ import { KingCard, type KingCardData } from "@/components/king-card";
 import { CardCorners } from "@/components/ornaments";
 import { Progress } from "@/components/ui/progress";
 import { useCollection } from "@/lib/collection";
+import { tierOf, useMastery } from "@/lib/mastery-progress";
 import { getRank, type Rank } from "@/lib/game-rules";
 import { kingInitial } from "@/lib/king-initial";
 import type { KingSummary } from "@/lib/kings";
@@ -24,6 +25,7 @@ export type CollectionSummary = {
 /** Merges kings from the DB with the player's collection (localStorage). */
 export function useCollectionSummary(kings: KingSummary[]): CollectionSummary {
   const collection = useCollection();
+  const mastery = useMastery();
   const owned = new Set(collection.kings);
   const goldenSlugs = new Set(collection.golden);
   const cards = kings.map((king) => ({
@@ -31,6 +33,7 @@ export function useCollectionSummary(kings: KingSummary[]): CollectionSummary {
     initial: kingInitial(king.name),
     collected: owned.has(king.slug),
     golden: owned.has(king.slug) && goldenSlugs.has(king.slug),
+    tier: tierOf(mastery, king.slug),
   }));
   // Count only kings that exist in the DB (ignores stale slugs).
   const collected = cards.filter((king) => king.collected).length;

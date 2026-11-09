@@ -2,7 +2,7 @@
 // Source rationale: docs/historical-content.md. No external network is needed in CI.
 import { expect, test } from "@playwright/test";
 
-import { currentQuestion, open, setCollection } from "./helpers/game";
+import { currentQuestion, open, setCollection, settleAnswer } from "./helpers/game";
 import { chronicles, getKing, kings } from "./helpers/seed-answers";
 
 const EYE_SOURCE = "https://dvojka.rozhlas.cz/120-schuzka-soukroma-podobizna-ceskeho-krale-jana-lucemburskeho-7939911";
@@ -124,8 +124,8 @@ test("Janova otázka ve zlatém kole ponechává ověřenou odpověď a vysvětl
   for (let i = 0; i < 3; i++) {
     const question = await currentQuestion(page);
     await page.getByRole("button", { name: question.correct, exact: true }).click();
+    await settleAnswer(page, "Správně!");
     const feedback = page.getByRole("status").filter({ hasText: "Správně!" });
-    await expect(feedback).toBeVisible();
     if (question.text.includes("zrak")) {
       expect(question.correct).toBe("Na křížové výpravě v Litvě");
       await expect(feedback).toContainText("postupně");
