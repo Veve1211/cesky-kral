@@ -418,6 +418,81 @@
   }
 }
 
+/* Fireworks on the "koruna učenosti" celebration (top level, not in @theme:
+   Tailwind drops @theme keyframes no utility uses, and these are set inline). One cycle = the rocket
+   rises (0–22 %), bursts, sparks fly out and fall (22–70 %), then a pause. */
+@keyframes firework-rocket {
+  0% {
+    opacity: 0;
+    transform: translateY(var(--rise));
+  }
+  3% {
+    opacity: 1;
+  }
+  21% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  23%,
+  100% {
+    opacity: 0;
+    transform: translateY(0);
+  }
+}
+
+@keyframes firework-flash {
+  0%,
+  21% {
+    opacity: 0;
+    transform: scale(0.2);
+  }
+  24% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  40%,
+  100% {
+    opacity: 0;
+    transform: scale(1.8);
+  }
+}
+
+@keyframes firework-spark {
+  0%,
+  21% {
+    opacity: 0;
+    transform: translate(0, 0) scale(1);
+  }
+  23% {
+    opacity: 1;
+  }
+  55% {
+    opacity: 1;
+  }
+  70%,
+  100% {
+    opacity: 0;
+    transform: translate(var(--dx), calc(var(--dy) + var(--fall))) scale(0.35);
+  }
+}
+
+
+/* The won card flies in from below before it turns face up. */
+@keyframes card-fly-in {
+  0% {
+    opacity: 0;
+    transform: translateY(70vh) rotate(-14deg) scale(0.55);
+  }
+  70% {
+    opacity: 1;
+    transform: translateY(-4%) rotate(2deg) scale(1.04);
+  }
+  100% {
+    opacity: 1;
+    transform: none;
+  }
+}
+
 /* "Koruny učenosti": colours of the three tiers (crowns, glow, frames). */
 .tier-bronze {
   --tier: #b8733d;
