@@ -40,8 +40,9 @@ neuvádějí sporný rok ani pevný počet let slepoty. Přesná diagnóza se ne
 Přidáno na výslovný pokyn majitele projektu (úkol 2). Každý fakt v otázce,
 odpovědi i vysvětlení byl ověřen v uvedeném článku české Wikipedie (staženo
 9. 11. 2026); co v článku nebylo, do otázek nešlo. Špatné odpovědi jsou
-zvolené tak, aby byly podle zdroje jednoznačně nesprávné. Obrázky zatím nejsou
-(erb s iniciálou), dokud se neověří volné dílo na Commons.
+zvolené tak, aby byly podle zdroje jednoznačně nesprávné. Portréty (volná
+díla z Wikimedia Commons, licence ověřená na stránce souboru) byly doplněny
+při opravách po recenzi, kredity jsou na /zdroje.
 
 | Panovník | Roky vlády (Čechy) | Otázky | Zdroj |
 | --- | --- | --- | --- |
@@ -54,3 +55,20 @@ zvolené tak, aby byly podle zdroje jednoznačně nesprávné. Obrázky zatím n
 
 Celkem 18 panovníků a 162 otázek. Regrese `e2e/new-rulers.spec.ts` hlídá
 roky, strukturu, zdroje, duplicity napříč všemi otázkami a pořadí podle doby.
+
+### Kroniky dávky 6 (9. 11. 2026, opravy po recenzi)
+
+Každý panovník dávky 6 dostal kroniku (3 oddíly, 4–5 „Věděli jste, že…“).
+Všechny věty jsou převyprávěné jen z téhož článku české Wikipedie, který
+podkládá otázky (odkaz je u kroniky ve „Zdrojích“). Vynecháno, co článek
+neříká přímo – např. „první Habsburk na trůně“ u Ferdinanda I. (Habsburkové
+vládli v Čechách už dřív) nebo přímá řeč „Bene“ u Vladislava II. (článek uvádí
+jen přezdívku „král Bene“ = „král Dobře“).
+
+## Karel I. = český král Karel III.
+
+Zdroj: https://cs.wikipedia.org/wiki/Karel_I. (oddíl o číslování): „Jako
+český král byl toho jména rovněž třetím (po Karlovi IV. a Karlovi VI.),
+označení Karel III. se však pro něj v českém prostředí nevžilo. … byl nazýván
+‚Karel Poslední‘.“ Doplněno do popisu (`shortBio`), do oddílu kroniky „Konec a
+odkaz“, do „Věděli jste, že…“ a do zdrojů kroniky.

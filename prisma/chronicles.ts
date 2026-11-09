@@ -372,11 +372,12 @@ export const chronicles: Record<string, SeedChronicle> = {
       },
       {
         heading: "Konec a odkaz",
-        text: "11. listopadu 1918 se vzdal účasti na vládě, formálně ale neabdikoval. Zemřel v chudobě v exilu na Madeiře 1. dubna 1922 ve věku 34 let. Papež Jan Pavel II. ho v roce 2004 prohlásil za blahoslaveného. Byl posledním českým králem.",
+        text: "11. listopadu 1918 se vzdal účasti na vládě, formálně ale neabdikoval. Zemřel v chudobě v exilu na Madeiře 1. dubna 1922 ve věku 34 let. Papež Jan Pavel II. ho v roce 2004 prohlásil za blahoslaveného. Byl posledním českým králem. Jako český král byl třetím Karlem (po Karlu IV. a Karlu VI.), tedy Karlem III., toto označení se ale v Čechách nevžilo a za první republiky se mu říkalo „Karel Poslední“.",
       },
     ],
     facts: [
       "byl posledním českým králem?",
+      "jako český král byl Karlem III., i když se mu tak v Čechách neříkalo?",
       "v roce 1917 se pokusil o tajný mír s Francií, dnes se tomu říká Sixtova aféra?",
       "jeho manželkou byla Zita Bourbonsko-Parmská, vzali se v roce 1911?",
       "papež Jan Pavel II. ho 3. října 2004 prohlásil za blahoslaveného?",
@@ -387,6 +388,163 @@ export const chronicles: Record<string, SeedChronicle> = {
         label: "New World Encyclopedia",
         url: "https://www.newworldencyclopedia.org/entry/Charles_I_of_Austria",
       },
+      { label: "Wikipedie – Karel I.", url: "https://cs.wikipedia.org/wiki/Karel_I." },
     ],
+  },
+
+  // Batch 6 chronicles: every fact comes from the Czech Wikipedia article
+  // listed in `sources` (the same article that backs the ruler's questions).
+  "vratislav-ii": {
+    intro:
+      "Narodil se okolo roku 1033 jako druhorozený syn knížete Břetislava I. Českým knížetem se stal v roce 1061 a v roce 1085 získal od císaře Jindřicha IV. královskou korunu jako první český král z rodu Přemyslovců. Zemřel 14. ledna 1092 na zranění po pádu z koně.",
+    sections: [
+      {
+        heading: "Kníže",
+        text: "Narodil se okolo roku 1033 jako druhorozený syn knížete Břetislava I. a Jitky ze Svinibrodu. Po otci zdědil olomoucký úděl a v roce 1061, po smrti staršího bratra Spytihněva II., se stal českým knížetem. V roce 1063 rozdělil českou diecézi na dvě a v Olomouci zřídil biskupství pro Moravu.",
+      },
+      {
+        heading: "Královská koruna",
+        text: "Byl věrným spojencem císaře Jindřicha IV. Za své služby od něj v dubnu 1085 na sjezdu v Mohuči dostal královskou korunu, ale jen pro svou osobu, ne dědičnou. 15. června 1086 ho na Pražském hradě korunoval králem trevírský arcibiskup Egilbert. U příležitosti korunovace vznikl Kodex vyšehradský.",
+      },
+      {
+        heading: "Poslední léta",
+        text: "Konec jeho vlády provázely spory v přemyslovském rodě. Při obléhání Brna v roce 1091 se proti němu vzbouřil jeho vlastní syn Břetislav. Zemřel v polovině ledna 1092 na zranění po pádu z koně a byl pohřben ve vyšehradském klášteře, jeho hrob se ale dosud nepodařilo najít.",
+      },
+    ],
+    facts: [
+      "jako kníže byl Vratislavem II., ale jako král Vratislavem I.?",
+      "založil vyšehradskou kapitulu, která podléhala přímo Římu?",
+      "u příležitosti jeho korunovace vznikl Kodex vyšehradský?",
+      "byl třikrát ženatý a jeho druhou manželkou byla uherská princezna Adléta?",
+      "jeho hrob ve vyšehradském klášteře se dosud nepodařilo najít?",
+    ],
+    sources: [{ label: "Wikipedie", url: "https://cs.wikipedia.org/wiki/Vratislav_II." }],
+  },
+  "vaclav-iv": {
+    intro:
+      "Narodil se 26. února 1361 v Norimberku jako syn císaře Karla IV. Českým králem byl korunován už jako dvouletý a po otcově smrti v roce 1378 vládl 41 let. Za jeho vlády se rozvinulo hnutí české reformace. Zemřel 16. srpna 1419 na Novém hradě u Kunratic.",
+    sections: [
+      {
+        heading: "Syn císaře",
+        text: "Narodil se 26. února 1361 v Norimberku jako syn císaře Karla IV. a Anny Svídnické. Otec ho nechal 15. června 1363 korunovat českým králem, když mu byly teprve dva roky. Jako patnáctiletý byl v roce 1376 zvolen také římským králem.",
+      },
+      {
+        heading: "Král a šlechta",
+        text: "Na trůn nastoupil jako sedmnáctiletý v roce 1378 po smrti Karla IV. Dostal se do sporu s vyšší šlechtou i s pražským arcibiskupem a v roce 1393 byl umučen Jan z Pomuku, později svatořečený Jan Nepomucký. V roce 1394 ho šlechta zajala a v roce 1400 ho kurfiřti sesadili z římského trůnu.",
+      },
+      {
+        heading: "Hus a konec vlády",
+        text: "Zpočátku podporoval Jana Husa, což vyvrcholilo v roce 1409 Dekretem kutnohorským. Zprávu o první pražské defenestraci se dozvěděl v ústraní a zemřel 16. srpna 1419 na Novém hradě u Kunratic. Zemřel bezdětný a jeho nástupcem se stal bratr Zikmund Lucemburský.",
+      },
+    ],
+    facts: [
+      "vládl 41 let, do té doby nejdéle ze všech českých králů?",
+      "jako sedmiletý napsal otci latinský dopis plný chyb, takže ho psal opravdu sám?",
+      "byl velkým milovníkem zvířat a v královské zahradě na místě dnešního Obecního domu měl lvinec?",
+      "kurfiřti ho v roce 1400 sesadili jako krále „nepotřebného, nečinného i nedbalého“?",
+      "husité v roce 1420 vyplenili Zbraslavský klášter a jeho tělo vytáhli z hrobu?",
+    ],
+    sources: [{ label: "Wikipedie", url: "https://cs.wikipedia.org/wiki/V%C3%A1clav_IV." }],
+  },
+  "vladislav-ii-jagellonsky": {
+    intro:
+      "Narodil se 1. března 1456 v Krakově v polsko-litevském rodu Jagellonců. Českým králem byl zvolen v roce 1471 jako patnáctiletý a od roku 1490 byl i králem uherským. Pro svou smířlivou povahu dostal přezdívku „král Bene“. Zemřel 13. března 1516 v Budíně.",
+    sections: [
+      {
+        heading: "Volba krále",
+        text: "Narodil se 1. března 1456 v Krakově jako syn polského krále Kazimíra IV. Jiří z Poděbrad se vzdal nároků svých synů a nabídl českou korunu Jagelloncům. Po Jiřího smrti zvolil sněm v Kutné Hoře 27. května 1471 patnáctiletého Vladislava českým králem.",
+      },
+      {
+        heading: "Dva čeští králové",
+        text: "Českým králem se nechal korunovat i uherský král Matyáš Korvín a mezi oběma vypukla válka. Olomouckými úmluvami v roce 1479 se dohodli, že titul českého krále budou užívat oba: Vladislav vládl v Čechách a Matyáš na Moravě, ve Slezsku a v Lužici. Po Matyášově smrti byl Vladislav v roce 1490 zvolen i uherským králem a přesídlil do Budína.",
+      },
+      {
+        heading: "„Král Bene“",
+        text: "Byl mírné, až flegmatické povahy a spory se snažil řešit smírně, a tak se mezi panstvem vžila jeho přezdívka „král Bene“, tedy „král Dobře“. Šlechta toho využila: Vladislavské zřízení zemské z roku 1500 výrazně omezilo královskou moc. Zemřel 13. března 1516 v Budíně.",
+      },
+    ],
+    facts: [
+      "jeho matce se říkalo „matka králů“, protože se čtyři její synové stali králi?",
+      "mezi panstvem se vžila jeho přezdívka „král Bene“, tedy „král Dobře“?",
+      "jako král jednu dobu sdílel titul českého krále s Matyášem Korvínem?",
+      "měl značný smysl pro humor a rád pořádal rytířské turnaje?",
+    ],
+    sources: [{ label: "Wikipedie", url: "https://cs.wikipedia.org/wiki/Vladislav_Jagellonsk%C3%BD" }],
+  },
+  "ferdinand-i": {
+    intro:
+      "Narodil se 10. března 1503 ve španělském Alcalá de Henares. Díky sňatku s Annou Jagellonskou byl v roce 1526 zvolen českým králem. Od roku 1556 byl také římským císařem. Zemřel 25. července 1564 ve Vídni.",
+    sections: [
+      {
+        heading: "Mládí ve Španělsku",
+        text: "Narodil se 10. března 1503 na zámku Alcalá de Henares nedaleko Madridu jako syn Filipa I. Sličného a Jany Šílené. Dětství prožil ve Španělsku. Když v roce 1521 přišel do Vídně, byl vnímán jako cizinec a neuměl německy.",
+      },
+      {
+        heading: "Cesta na český trůn",
+        text: "26. května 1521 se oženil s Annou Jagellonskou, sestrou českého a uherského krále Ludvíka. Když Ludvík v roce 1526 padl v bitvě u Moháče bez potomků, zvolil český sněm 23. října 1526 Ferdinanda českým králem. Korunován byl 24. února 1527 v katedrále sv. Víta.",
+      },
+      {
+        heading: "Vláda a odkaz",
+        text: "Byl zastáncem absolutismu, a proto se dostal do sporu s českými stavy. Povstání z let 1546–1547 potlačil a městům vzal politická práva. V roce 1556 pozval do Čech jezuity. Zemřel 25. července 1564 ve Vídni a podle svého přání byl pohřben v chrámu sv. Víta vedle manželky Anny.",
+      },
+    ],
+    facts: [
+      "se svým starším bratrem, pozdějším císařem Karlem V., se poprvé v životě setkal až v roce 1517?",
+      "s manželkou Annou Jagellonskou měl patnáct dětí?",
+      "před volbou slíbil, že uhradí polovinu dluhu české státní pokladny?",
+      "v roce 1556 pozval do Čech jezuity?",
+    ],
+    sources: [{ label: "Wikipedie", url: "https://cs.wikipedia.org/wiki/Ferdinand_I._Habsbursk%C3%BD" }],
+  },
+  "fridrich-falcky": {
+    intro:
+      "Narodil se 26. srpna 1596 a byl falckým kurfiřtem. Čeští stavové ho v roce 1619 zvolili králem místo sesazeného Ferdinanda II. Po prohrané bitvě na Bílé hoře 8. listopadu 1620 z Prahy uprchl. Kvůli tak krátké vládě se mu říká „zimní král“. Zemřel 29. listopadu 1632 v Mohuči.",
+    sections: [
+      {
+        heading: "Kurfiřt z Falce",
+        text: "Narodil se 26. srpna 1596 v rodu falckých Wittelsbachů. Byl kalvinista a stál v čele Protestantské unie. V roce 1613 se oženil s Alžbětou, dcerou anglického a skotského krále Jakuba I.",
+      },
+      {
+        heading: "Zvolený král",
+        text: "Po pražské defenestraci v roce 1618 vypuklo české stavovské povstání a v srpnu 1619 sněm prohlásil Ferdinanda II. za sesazeného. Fridrich po váhání nabídku koruny přijal a 4. listopadu 1619 byl korunován českým králem. Jeho dvorní kazatel krátce nato nechal z katedrály sv. Víta odvézt nebo zničit vzácná díla náboženského umění, což lid velmi pobouřilo.",
+      },
+      {
+        heading: "Zimní král",
+        text: "Slibovaná pomoc anglického krále a protestantských spojenců nepřišla. Po bitvě na Bílé hoře 8. listopadu 1620 opustil Pražský hrad, rok a čtyři dny po své korunovaci. Přišel o všechny své země a zemřel 29. listopadu 1632 v Mohuči. Dodnes není známo, kde leží jeho tělo.",
+      },
+    ],
+    facts: [
+      "už v roce 1619 ho skeptici nazývali „zimním králem“?",
+      "Prahu opustil přesně rok a čtyři dny po své korunovaci?",
+      "s manželkou Alžbětou měl třináct dětí?",
+      "jeho dcera Žofie byla matkou Jiřího I., prvního anglického krále z hannoverského rodu?",
+      "jeho jediný pomník v Čechách stojí od roku 2010 v Pyšelích?",
+    ],
+    sources: [{ label: "Wikipedie", url: "https://cs.wikipedia.org/wiki/Fridrich_Falck%C3%BD" }],
+  },
+  "frantisek-josef-i": {
+    intro:
+      "Narodil se 18. srpna 1830 na zámku Schönbrunn ve Vídni. Císařem se stal v osmnácti letech v roce 1848 a vládl téměř 68 let. Českým králem byl, ale nikdy se nenechal korunovat. Zemřel 21. listopadu 1916 uprostřed první světové války.",
+    sections: [
+      {
+        heading: "Mladý císař",
+        text: "Narodil se 18. srpna 1830 na zámku Schönbrunn ve Vídni. Jako dítě se učil několik cizích jazyků, mimo jiné i češtinu. Na trůn nastoupil v osmnácti letech 2. prosince 1848 v Olomouci, po abdikaci svého strýce Ferdinanda Dobrotivého.",
+      },
+      {
+        heading: "Rakousko-Uhersko",
+        text: "Zpočátku vládl absolutisticky, ale po prohraných válkách v letech 1859 a 1866 postupně přešel ke konstituční vládě. V roce 1867 vzniklo rakousko-uherské vyrovnání a František Josef byl korunován uherským králem. Českým králem nebyl nikdy korunován.",
+      },
+      {
+        heading: "Rodina a konec",
+        text: "V roce 1854 se oženil se sestřenicí Alžbětou Bavorskou, známou jako Sisi. Jeho život poznamenala řada tragédií: syn Rudolf zemřel v roce 1889 a manželku Alžbětu v roce 1898 zavraždil anarchista. Zemřel 21. listopadu 1916 ve Vídni uprostřed první světové války a na trůn po něm nastoupil Karel I.",
+      },
+    ],
+    facts: [
+      "vládl téměř 68 let, což ho řadí mezi nejdéle vládnoucí panovníky světové historie?",
+      "jako malému mu přezdívali „solný princ“?",
+      "byl českým králem, ale nikdy se nenechal korunovat?",
+      "jeho manželkou byla Alžběta Bavorská, známá jako Sisi?",
+    ],
+    sources: [{ label: "Wikipedie", url: "https://cs.wikipedia.org/wiki/Franti%C5%A1ek_Josef_I." }],
   },
 };

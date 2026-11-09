@@ -15,13 +15,13 @@ const NEW_RULERS = [
   { slug: "frantisek-josef-i", name: "František Josef I.", from: 1848, to: 1916 },
 ];
 
-test("data: roky vlády, 9 otázek 3/3/3, ověřitelný zdroj u každé otázky, bez obrázků s nejistou licencí", () => {
+test("data: roky vlády, 9 otázek 3/3/3, ověřitelný zdroj u každé otázky, portrét s ověřeným kreditem", () => {
   for (const ruler of NEW_RULERS) {
     const king = getKing(ruler.slug);
     expect(king.name).toBe(ruler.name);
     expect([king.reignFrom, king.reignTo]).toEqual([ruler.from, ruler.to]);
     expect(king.isLegend).toBe(false);
-    expect(king.imageUrl).toBeNull(); // crest placeholder until a public-domain image is verified
+    expect(king.imageUrl).toBe(`/kings/${king.slug}.webp`); // public-domain portrait, credit checked in rulers-complete.spec.ts
     expect(king.questions).toHaveLength(9);
     for (const level of [1, 2, 3]) expect(king.questions.filter((q) => q.difficulty === level)).toHaveLength(3);
     for (const q of king.questions) {

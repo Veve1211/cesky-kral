@@ -3,6 +3,11 @@ import { cn } from "@/lib/utils";
 /**
  * Decorative manuscript initial: gold letter on a navy field
  * with a gilded frame and vine flourishes.
+ *
+ * The letter is drawn with CSS generated content (`::before`), so it is not
+ * part of the DOM text: search engines and screen readers read the word that
+ * follows exactly once (callers keep the whole word in the text, the first
+ * letter visually hidden with `sr-only`).
  */
 export function IlluminatedInitial({
   letter,
@@ -16,6 +21,7 @@ export function IlluminatedInitial({
   return (
     <span
       aria-hidden
+      data-testid="illuminated-initial"
       className={cn(
         "gilt relative float-left mt-1 mr-3 mb-0.5 inline-flex shrink-0 items-center justify-center rounded-md p-[3px] shadow-md",
         size === "lg" ? "size-16 sm:size-[4.5rem]" : "size-14",
@@ -40,13 +46,12 @@ export function IlluminatedInitial({
           </g>
         </svg>
         <span
+          data-letter={letter}
           className={cn(
-            "gilt-text relative font-initial leading-none",
+            "gilt-text relative font-initial leading-none before:content-[attr(data-letter)]",
             size === "lg" ? "text-5xl sm:text-6xl" : "text-[2.6rem]",
           )}
-        >
-          {letter}
-        </span>
+        />
       </span>
     </span>
   );
