@@ -2,6 +2,7 @@
 
 import { Dialog as DialogPrimitive } from "radix-ui";
 
+import { Fireworks } from "@/components/fireworks";
 import { KingPortrait } from "@/components/king-portrait";
 import { CardCorners, OrnamentDivider } from "@/components/ornaments";
 import { Button } from "@/components/ui/button";
@@ -38,9 +39,9 @@ const SPARKLES: { top: string; left: string; delay: string }[] = [
 const SPARKLE_COUNT = { 1: 6, 2: 10, 3: 16 } as const;
 
 /**
- * Full-screen ceremony for a new "koruna učenosti". A crown in the tier's
- * metal descends onto the ruler's head, the background glows in the same
- * colour. Closes only with "Pokračovat" (or Esc); focus then returns to the
+ * Full-screen ceremony for a new "koruna učenosti": fireworks in the tier's
+ * colours, a crown in the tier's metal descends onto the ruler's head and the
+ * background glows in the same colour. Closes only with "Pokračovat" (or Esc); focus then returns to the
  * game. Under prefers-reduced-motion everything simply appears in place.
  */
 export function TierCelebration({
@@ -78,6 +79,8 @@ export function TierCelebration({
             "data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95 fixed inset-0 z-50 flex items-center justify-center overflow-y-auto overscroll-contain p-4 outline-none",
           )}
         >
+          {/* fireworks fill the whole screen behind the card */}
+          {open && tier && <Fireworks tier={tier} />}
           {open && tier && ruler && (
             <div className="relative flex w-full max-w-md flex-col items-center gap-4 py-6 text-center text-parchment">
               {/* glow in the tier's colour */}

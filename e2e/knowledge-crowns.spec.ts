@@ -45,6 +45,11 @@ async function playCorrect(page: Page, count: number, rulerName: string): Promis
       const tierName = { bronze: "Bronzová", silver: "Stříbrná", gold: "Zlatá" }[tier!];
       await expect(dialog.getByRole("heading")).toContainText(`${tierName} koruna učenosti`);
       await expect(dialog.getByTestId(`tier-crown-${tier}`)).toBeVisible();
+      // Fireworks – more bursts for a higher tier.
+      const fireworks = dialog.getByTestId("fireworks");
+      await expect(fireworks).toBeVisible();
+      const bursts: Record<string, string> = { bronze: "4", silver: "6", gold: "8" };
+      await expect(fireworks).toHaveAttribute("data-bursts", bursts[tier!]);
       await expect(dialog.getByRole("button", { name: "Pokračovat" })).toBeFocused();
       await dialog.getByRole("button", { name: "Pokračovat" }).click();
       await expect(dialog).toHaveCount(0);
@@ -161,7 +166,8 @@ test("oslava na mobilu i s omezeným pohybem: vše vidět, koruna hned na hlavě
   expect(await dialog.evaluate((el) => el.scrollWidth <= el.clientWidth)).toBe(true);
   await dialog.getByRole("button", { name: "Pokračovat" }).scrollIntoViewIfNeeded();
   await expect(dialog.getByRole("button", { name: "Pokračovat" })).toBeInViewport();
-  // Reduced motion: the descending animation is cut to almost nothing.
+  // Reduced motion: no fireworks at all, the descending crown is cut to almost nothing.
+  await expect(dialog.getByTestId("fireworks")).toBeHidden();
   const duration = await dialog.getByTestId("tier-crown-bronze").evaluate((el) => parseFloat(getComputedStyle(el).animationDuration));
   expect(duration).toBeLessThan(0.01);
 });
