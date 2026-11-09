@@ -91,6 +91,12 @@ const REWARDS: { icon: string; name: string; what: string; how: string }[] = [
     how: `Podle počtu karet: ${RANKS[0]} (žádná) → ${RANKS[1]} (méně než polovina) → ${RANKS[2]} (aspoň polovina) → ${RANKS[3]} (všichni panovníci).`,
   },
   {
+    icon: "🛡️",
+    name: "Díly erbu",
+    what: "Vzácnější tvary štítu, barvy a figury pro tvůj vlastní erb (Moje sbírka → Můj erb).",
+    how: "Korunami učenosti: základ hned, další za bronzové, stříbrné a zlaté koruny, nejvzácnější za zlatou korunu u všech panovníků.",
+  },
+  {
     icon: "🔥",
     name: "Série",
     what: "Tvoje vytrvalost.",
@@ -111,7 +117,7 @@ const STORED: { where: string; items: string[] }[] = [
   {
     where: "Na serveru",
     items: [
-      "přezdívka, jen když si ji zvolíš (pro žebříčky)",
+      "přezdívka a erb (jen jeho díly), když si je zvolíš – pro žebříčky",
       "výsledky Denní výzvy, Rychlovky, Kdo vládl dřív? a Řeky času: skóre a čas",
       "jen otisk anonymního klíče, ne klíč samotný",
       "kód pro přenos postupu – smaže se po použití, nejpozději za 30 minut",

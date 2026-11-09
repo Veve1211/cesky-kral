@@ -13,6 +13,7 @@ import {
   type Period,
   type Reign,
 } from "@/lib/games";
+import { parseCrest } from "@/lib/heraldry";
 import type { BoardEntry } from "@/lib/leaderboard";
 import type { PlayerRow } from "@/lib/player-server";
 import { getPrisma } from "@/lib/prisma";
@@ -230,7 +231,7 @@ export function periodStart(period: Period, now = new Date()): Date {
   return period === "week" ? pragueDayStart(weekStartKey(dailyDateKey(now))) : new Date(0);
 }
 
-type BoardRow = { nickname: string; score: number; durationMs: number | null };
+type BoardRow = { nickname: string; score: number; durationMs: number | null; crest: unknown };
 
 /**
  * Best result of every player with a nickname in the period: highest score;
@@ -241,8 +242,8 @@ export async function getGameLeaderboard(mode: GameMode, period: Period, limit =
   const timed = mode === "quick";
   const prisma = getPrisma();
   const rows = await prisma.$queryRaw<BoardRow[]>`
-    SELECT nickname, score, "durationMs" FROM (
-      SELECT DISTINCT ON (s."playerId") p.nickname, s.score, s."durationMs", s."finishedAt"
+    SELECT nickname, score, "durationMs", crest FROM (
+      SELECT DISTINCT ON (s."playerId") p.nickname, p.crest, s.score, s."durationMs", s."finishedAt"
       FROM "GameSession" s JOIN "Player" p ON p.id = s."playerId"
       WHERE s.mode = ${mode} AND s."finishedAt" IS NOT NULL AND s."finishedAt" >= ${since}
         AND p.nickname IS NOT NULL AND s.score > 0
@@ -263,6 +264,7 @@ export async function getGameLeaderboard(mode: GameMode, period: Period, limit =
       nickname: row.nickname,
       score: row.score,
       durationMs: timed ? row.durationMs : null,
+      crest: parseCrest(row.crest),
     })),
   };
 }

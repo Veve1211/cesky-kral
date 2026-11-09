@@ -68,6 +68,8 @@ model Player {
   nickname      String?
   /// Normalized nickname (lowercase, no diacritics/spaces) – unique
   nicknameKey   String?        @unique
+  /// Own coat of arms – only its parameters (validated), shown next to the nickname
+  crest         Json?
   createdAt     DateTime       @default(now())
   dailyAttempts DailyAttempt[]
   transferCodes TransferCode[]

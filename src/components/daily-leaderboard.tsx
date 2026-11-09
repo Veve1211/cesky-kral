@@ -3,8 +3,10 @@
 import { useEffect, useState } from "react";
 
 import { CardCorners } from "@/components/ornaments";
+import { CrestSvg } from "@/components/crest-svg";
 import { formatDuration, type BoardEntry } from "@/lib/leaderboard";
 import { LEADERBOARD_CHANGED } from "@/lib/player";
+import { NicknameWithCrest } from "@/components/nickname-with-crest";
 import { cn } from "@/lib/utils";
 
 type Board = { entries: BoardEntry[]; total: number };
@@ -52,7 +54,7 @@ export function DailyLeaderboard({ initial }: { initial: Board }) {
           {rest.map((entry) => (
             <li key={entry.rank} className="flex items-center gap-3 py-2" data-testid="board-row">
               <span className="w-8 text-right font-heading text-xl font-bold text-gold-dark tabular-nums">{entry.rank}.</span>
-              <span className="min-w-0 flex-1 truncate font-semibold">{entry.nickname}</span>
+              <NicknameWithCrest entry={entry} />
               <span className="tabular-nums">
                 <strong>{entry.score}</strong>/5
               </span>
@@ -83,8 +85,13 @@ export function TodayRulerCard({ entry, className }: { entry: BoardEntry; classN
         👑
       </span>
       <p className="text-xs font-semibold tracking-[0.3em] text-gold uppercase">Dnešní vládce</p>
-      <p className="max-w-full truncate font-heading text-3xl font-bold" data-testid="today-ruler-name">
-        {entry.nickname}
+      <p className="flex max-w-full items-center gap-2 font-heading text-3xl font-bold" data-testid="today-ruler-name">
+        {entry.crest && (
+          <span className="w-9 shrink-0" data-testid="board-crest">
+            <CrestSvg design={entry.crest} withMotto={false} label={`Erb hráče ${entry.nickname}`} />
+          </span>
+        )}
+        <span className="truncate">{entry.nickname}</span>
       </p>
       <p className="text-sm text-parchment/85 tabular-nums">
         {entry.score} z 5 správně
