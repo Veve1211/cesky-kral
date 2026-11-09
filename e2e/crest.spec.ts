@@ -200,14 +200,23 @@ test("erb vedle přezdívky v žebříčku; server přijme jen platné parametry
 
   const name = `Erbovník ${randomBytes(3).toString("hex")}`;
   await request.post("/api/player/nickname", { data: { token, nickname: name } });
-  // One short game of "Kdo vládl dřív?" via the API puts the player in the board.
+  // A game of "Kdo vládl dřív?" via the API: a long streak puts the player on
+  // top of the board even in a test database full of older games.
   const start = (await (await request.post("/api/game/start", { data: { token, mode: "who-first" } })).json()) as { game: { sessionId: string; slugs: string[] } };
-  const [a, b] = start.game.slugs;
-  const earlier = getKing(a).reignFrom! <= getKing(b).reignFrom! ? a : b;
   const base = { token, mode: "who-first", sessionId: start.game.sessionId };
-  const first = (await (await request.post("/api/game/answer", { data: { ...base, choice: earlier } })).json()) as { result: { next: string[] } };
-  const [c, d] = first.result.next;
-  await request.post("/api/game/answer", { data: { ...base, choice: getKing(c).reignFrom! > getKing(d).reignFrom! ? c : d } });
+  let pair = start.game.slugs;
+  for (let i = 0; i < 25; i++) {
+    const earlier = getKing(pair[0]).reignFrom! <= getKing(pair[1]).reignFrom! ? pair[0] : pair[1];
+    const step = (await (await request.post("/api/game/answer", { data: { ...base, choice: earlier } })).json()) as { result: { next: string[] } };
+    pair = step.result.next;
+  }
+  // Ends the game (a tie in years would count as right – then pick again).
+  for (let i = 0; i < 5; i++) {
+    const later = getKing(pair[0]).reignFrom! > getKing(pair[1]).reignFrom! ? pair[0] : pair[1];
+    const step = (await (await request.post("/api/game/answer", { data: { ...base, choice: later } })).json()) as { result: { next: string[] | null } };
+    if (!step.result.next) break;
+    pair = step.result.next;
+  }
 
   const board = (await (await request.get("/api/game/leaderboard?mode=who-first&period=week")).json()) as {
     entries: { nickname: string; crest: CrestDesign | null }[];
