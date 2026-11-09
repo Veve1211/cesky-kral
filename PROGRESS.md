@@ -8,7 +8,7 @@ Aktualizováno: 2026-11-09 20:05 (Praha). STOP pravidlo: v 6:00 práci ukončit.
 | PR A – úvod, groš, hlavička, odměny | `feat/home-rewards` (z PR 0) | #40 | hotovo, testy lokálně zelené (280) |
 | PR B – žebříčky, Denní výzva, přenos | `feat/leaderboards` (z PR A) | #41 | hotovo, lokálně 297 zelených, CI zelené |
 | PR C – plynulé režimy, další žebříčky | `feat/smooth-modes` (z PR B) | #42 | hotovo, lokálně 314 zelených |
-| PR D – vlastní erb + README novinky | `feat/crest` (z PR C) | – | rozpracováno (editor, sdílení, žebříčky hotové; chybí testy, README) |
+| PR D – vlastní erb + README novinky | `feat/crest` (z PR C) | – | kód + testy erbu hotové, README a CLAUDE.md doplněné; běží celá sada |
 
 Pořadí mergování: #39 → #40 → B → C → D (každý je založený na předchozím).
 

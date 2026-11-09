@@ -133,7 +133,7 @@ function Editor({ kingSlugs, initial }: { kingSlugs: string[]; initial: CrestDes
     <div className="flex flex-col gap-6 lg:grid lg:grid-cols-[minmax(0,320px)_1fr] lg:items-start">
       {/* Preview: always in view on phones while choosing below. */}
       <div className="sticky top-16 z-10 -mx-4 flex flex-col items-center gap-2 bg-parchment/90 px-4 pt-2 pb-3 backdrop-blur lg:top-20 lg:mx-0 lg:bg-transparent lg:p-0">
-        <div className="w-36 drop-shadow-lg sm:w-44 lg:w-full lg:max-w-[300px]" data-testid="crest-preview">
+        <div className="w-24 drop-shadow-lg sm:w-36 lg:w-full lg:max-w-[300px]" data-testid="crest-preview">
           <CrestSvg design={current} id="crest-preview-svg" />
         </div>
         <p className="text-xs text-muted-foreground" data-testid="crown-counts">
@@ -156,7 +156,7 @@ function Editor({ kingSlugs, initial }: { kingSlugs: string[]; initial: CrestDes
               counts={counts}
               onClick={() => pick(UNLOCKS.shape[shape], null, { shape })}
             >
-              <span className="w-9">
+              <span className="block w-9">
                 <CrestSvg design={{ ...DEFAULT_CREST, shape, charge: "none", motto: "" }} label="" />
               </span>
             </Option>
@@ -173,7 +173,7 @@ function Editor({ kingSlugs, initial }: { kingSlugs: string[]; initial: CrestDes
               counts={counts}
               onClick={() => pick(UNLOCKS.division[division], null, { division })}
             >
-              <span className="w-9">
+              <span className="block w-9">
                 <CrestSvg design={{ ...DEFAULT_CREST, division, field: "azure", second: "or", charge: "none", motto: "" }} label="" />
               </span>
             </Option>
@@ -214,7 +214,7 @@ function Editor({ kingSlugs, initial }: { kingSlugs: string[]; initial: CrestDes
               counts={counts}
               onClick={() => pick(UNLOCKS.charge[charge], null, { charge })}
             >
-              <span className="w-9">
+              <span className="block w-9">
                 <CrestSvg design={{ ...DEFAULT_CREST, shape: "heater", charge, chargeTincture: "or", field: "azure", motto: "" }} label="" />
               </span>
             </Option>
@@ -342,7 +342,7 @@ function Option({
         locked && "opacity-60",
       )}
     >
-      <span className={cn(locked && "grayscale")}>{children}</span>
+      <span className={cn("flex justify-center", locked && "grayscale")}>{children}</span>
       <span>{label}</span>
       {locked && (
         <span className="flex items-center gap-0.5 text-[10px] font-semibold text-gold-dark">
