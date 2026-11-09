@@ -16,6 +16,7 @@ import { LegendBadge } from "@/components/legend-badge";
 import { CardCorners, OrnamentDivider } from "@/components/ornaments";
 import { RoyalCelebration } from "@/components/royal-celebration";
 import { ShareButton } from "@/components/share-button";
+import { CardCelebration, type CelebratedCard } from "@/components/card-celebration";
 import { TierCelebration, type CelebratedRuler } from "@/components/tier-celebration";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
@@ -35,6 +36,11 @@ import { quickShareText } from "@/lib/share-text";
 import { cn } from "@/lib/utils";
 
 type Feedback = Extract<AnswerResult, { ok: true }>;
+
+type CelebrationInput =
+  | { kind: "crown"; ruler: CelebratedRuler; tier: 1 | 2 | 3 }
+  | { kind: "card"; card: CelebratedCard; firstTime: boolean };
+type Celebration = CelebrationInput & { id: number };
 
 const HEADING_FOCUS = "scroll-mt-20 rounded-sm focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-current";
 
@@ -76,8 +82,23 @@ export function Quiz(props: QuizProps) {
   /** Right/wrong per answered question, in order (for sharing the result). */
   const [marks, setMarks] = useState<boolean[]>([]);
   const [selectedId, setSelectedId] = useState<number | null>(null);
-  /** A new "koruna učenosti" reached by the last answer – shown right away. */
-  const [celebration, setCelebration] = useState<{ ruler: CelebratedRuler; tier: 1 | 2 | 3 } | null>(null);
+  /**
+   * Celebrations, one at a time (never two over each other). A new "koruna
+   * učenosti" is shown right after the answer – except in a king round, where
+   * it waits for the end of the round: the card comes first, then the crown.
+   */
+  const [celebrations, setCelebrations] = useState<Celebration[]>([]);
+  const celebrationCounter = useRef(0);
+  /** Highest crown reached during the current king round (shown at its end). */
+  const pendingCrown = useRef<{ ruler: CelebratedRuler; tier: 1 | 2 | 3 } | null>(null);
+
+  function queueCelebrations(items: CelebrationInput[]) {
+    if (items.length === 0) return;
+    setCelebrations((current) => [
+      ...current,
+      ...items.map((item) => ({ ...item, id: ++celebrationCounter.current }) as Celebration),
+    ]);
+  }
   const [feedback, setFeedback] = useState<Feedback | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [finished, setFinished] = useState(false);
@@ -120,7 +141,11 @@ export function Quiz(props: QuizProps) {
         if (result.correct) {
           const { ruler } = result;
           const reached = recordCorrectAnswer(ruler.slug, ruler.questionKey, ruler.totalQuestions);
-          if (reached) setCelebration({ ruler, tier: reached });
+          if (reached && props.mode === "king") {
+            if (!pendingCrown.current || reached > pendingCrown.current.tier) pendingCrown.current = { ruler, tier: reached };
+          } else if (reached) {
+            queueCelebrations([{ kind: "crown", ruler, tier: reached }]);
+          }
         }
         if (props.mode === "daily") props.onAnswered(index, result.correct);
       } catch {
@@ -130,8 +155,8 @@ export function Quiz(props: QuizProps) {
     });
   }
 
-  function saveKing() {
-    if (props.mode !== "king" || score < CORRECT_TO_COLLECT) return;
+  function saveKing(): boolean {
+    if (props.mode !== "king" || score < CORRECT_TO_COLLECT) return false;
     const saved = addToCollection(props.king.slug);
     setCollected(saved);
     const owned = new Set(readCollection().kings);
@@ -140,6 +165,7 @@ export function Quiz(props: QuizProps) {
         props.allKingSlugs.length > 0 &&
         props.allKingSlugs.every((slug) => owned.has(slug)),
     );
+    return saved;
   }
 
   function next() {
@@ -159,8 +185,16 @@ export function Quiz(props: QuizProps) {
     if (props.mode === "golden" && score === total) {
       setCollected(addGoldenCard(props.king.slug));
     }
-    if (props.mode === "king" && score >= CORRECT_TO_COLLECT) {
-      saveKing();
+    if (props.mode === "king") {
+      const queue: CelebrationInput[] = [];
+      if (score >= CORRECT_TO_COLLECT) {
+        const ownedBefore = readCollection().kings.includes(props.king.slug);
+        if (saveKing()) queue.push({ kind: "card", card: props.king, firstTime: !ownedBefore });
+      }
+      // The card first, then the crown reached during the round.
+      if (pendingCrown.current) queue.push({ kind: "crown", ...pendingCrown.current });
+      pendingCrown.current = null;
+      queueCelebrations(queue);
     }
     setFinished(true);
   }
@@ -176,7 +210,33 @@ export function Quiz(props: QuizProps) {
     setFinished(false);
     setCollected(false);
     setCompletedAll(false);
+    setCelebrations([]);
+    pendingCrown.current = null;
     router.refresh(); // new shuffle / new random questions from the server
+  }
+
+  /** The first queued celebration; "Pokračovat" shows the next one. */
+  function celebrationOverlay(returnFocusTo: string) {
+    const current = celebrations[0] ?? null;
+    const close = () => setCelebrations((queue) => queue.slice(1));
+    return (
+      <>
+        <TierCelebration
+          ruler={current?.kind === "crown" ? current.ruler : null}
+          tier={current?.kind === "crown" ? current.tier : null}
+          celebrationId={current?.id}
+          onClose={close}
+          returnFocusTo={returnFocusTo}
+        />
+        <CardCelebration
+          card={current?.kind === "card" ? current.card : null}
+          firstTime={current?.kind === "card" ? current.firstTime : false}
+          celebrationId={current?.id}
+          onClose={close}
+          returnFocusTo={returnFocusTo}
+        />
+      </>
+    );
   }
 
   if (total === 0) {
@@ -201,6 +261,8 @@ export function Quiz(props: QuizProps) {
 
   if (finished) {
     return (
+      <>
+      {celebrationOverlay("quiz-result-heading")}
       <Results
         {...props}
         score={score}
@@ -209,9 +271,15 @@ export function Quiz(props: QuizProps) {
         collected={collected}
         completedAll={completedAll}
         onRestart={restart}
-        onRetrySave={saveKing}
+        onRetrySave={() => {
+          if (props.mode !== "king") return;
+          // The card may have been saved meanwhile in another tab.
+          const ownedBefore = readCollection().kings.includes(props.king.slug);
+          if (saveKing()) queueCelebrations([{ kind: "card", card: props.king, firstTime: !ownedBefore }]);
+        }}
         headingRef={resultHeading}
       />
+      </>
     );
   }
 
@@ -340,12 +408,7 @@ export function Quiz(props: QuizProps) {
           )}
         </CardContent>
       </Card>
-      <TierCelebration
-        ruler={celebration?.ruler ?? null}
-        tier={celebration?.tier ?? null}
-        onClose={() => setCelebration(null)}
-        returnFocusTo="quiz-next"
-      />
+      {celebrationOverlay("quiz-next")}
     </div>
   );
 }
@@ -375,6 +438,7 @@ function Results(
         <CardContent className="flex flex-col items-center gap-4">
           <h2
             ref={headingRef}
+            id="quiz-result-heading"
             tabIndex={-1}
             aria-describedby="quiz-result-score"
             className={cn("font-sans text-xs font-semibold tracking-[0.2em] text-gold-dark uppercase", HEADING_FOCUS)}
@@ -415,6 +479,7 @@ function Results(
           <div role="alert" className="flex flex-col gap-3">
             <h2
               ref={headingRef}
+              id="quiz-result-heading"
               tabIndex={-1}
               aria-describedby="quiz-result-score"
               className={cn("text-3xl font-bold", HEADING_FOCUS)}
@@ -448,6 +513,7 @@ function Results(
             <CardFlipReveal king={props.king} onRevealed={onRevealed} />
             <h2
               ref={headingRef}
+              id="quiz-result-heading"
               tabIndex={-1}
               aria-describedby="quiz-result-score"
               className={cn("text-4xl font-bold", HEADING_FOCUS)}
@@ -496,6 +562,7 @@ function Results(
       <CardContent className="flex flex-col items-center gap-4">
         <h2
           ref={headingRef}
+          id="quiz-result-heading"
           tabIndex={-1}
           aria-describedby="quiz-result-score"
           className={cn("font-sans text-xs font-semibold tracking-[0.2em] text-gold-dark uppercase", HEADING_FOCUS)}

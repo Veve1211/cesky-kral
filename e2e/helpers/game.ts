@@ -91,6 +91,8 @@ export async function answer(
   await page
     .getByRole("button", { name: index < total ? "Další otázka" : "Zobrazit výsledek" })
     .click();
+  // The end of a won king round opens the card celebration (and maybe a crown after it).
+  if (index === total) await dismissAllCelebrations(page);
   return question;
 }
 
@@ -130,4 +132,39 @@ export async function settleAnswer(page: Page, feedbackText: string): Promise<st
   const tier = await dismissCelebration(page);
   await expect(feedback).toBeVisible();
   return tier;
+}
+
+/** Any celebration dialog: a new card or a new "koruna učenosti". */
+export function anyCelebration(page: Page) {
+  return page.locator('[data-testid="tier-celebration"], [data-testid="card-celebration"]');
+}
+
+export type ShownCelebration = { kind: "card"; firstTime: boolean } | { kind: "crown"; tier: string };
+
+/** Describes the celebration that is open now (or null). */
+export async function openCelebration(page: Page): Promise<(ShownCelebration & { id: string }) | null> {
+  const dialog = anyCelebration(page).first();
+  if (!(await dialog.isVisible())) return null;
+  const id = (await dialog.getAttribute("data-celebration-id")) ?? "";
+  if ((await dialog.getAttribute("data-testid")) === "card-celebration") {
+    return { id, kind: "card", firstTime: (await dialog.getAttribute("data-first-time")) === "true" };
+  }
+  return { id, kind: "crown", tier: (await dialog.getAttribute("data-tier")) ?? "" };
+}
+
+/**
+ * Closes every queued celebration with "Pokračovat", one after another,
+ * and returns them in the order they were shown.
+ */
+export async function dismissAllCelebrations(page: Page): Promise<ShownCelebration[]> {
+  const shown: ShownCelebration[] = [];
+  for (let i = 0; i < 6; i++) {
+    const current = await openCelebration(page);
+    if (!current) break;
+    const { id, ...rest } = current;
+    shown.push(rest);
+    await anyCelebration(page).first().getByRole("button", { name: "Pokračovat" }).click();
+    await expect(page.locator(`[data-celebration-id="${id}"]`)).toHaveCount(0);
+  }
+  return shown;
 }

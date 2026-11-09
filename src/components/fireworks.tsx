@@ -22,22 +22,32 @@ const BURSTS: Burst[] = [
   { left: 62, top: 62, delay: 1.75 },
 ];
 
-const SETTINGS = {
+/**
+ * Size of the show. The game's ranking of celebrations:
+ * gold crown (biggest) > new card > silver crown > bronze crown.
+ */
+export type FireworksLevel = 1 | 2 | 3 | "card";
+
+const SETTINGS: Record<FireworksLevel, { bursts: number; sparks: number; radius: number; cycle: number }> = {
   1: { bursts: 4, sparks: 14, radius: 80, cycle: 3.4 },
   2: { bursts: 6, sparks: 18, radius: 100, cycle: 3.0 },
+  card: { bursts: 7, sparks: 22, radius: 115, cycle: 2.8 },
   3: { bursts: 8, sparks: 24, radius: 125, cycle: 2.7 },
-} as const;
+};
 
 // Bronze and silver shine in their own metal; gold adds the crown's jewels.
 const GOLD_EXTRA = ["#e0475b", "#4f8fe8", "#3dbb83", "#fff3c4"];
 
-function sparkColor(tier: 1 | 2 | 3, burst: number, spark: number): string {
-  if (tier === 3 && burst % 2 === 1) return GOLD_EXTRA[(burst + spark) % GOLD_EXTRA.length];
+function sparkColor(level: FireworksLevel, burst: number, spark: number): string {
+  if (level === 3 && burst % 2 === 1) return GOLD_EXTRA[(burst + spark) % GOLD_EXTRA.length];
+  if (level === "card" && burst % 3 === 2) return spark % 2 === 0 ? "#fff3c4" : "#f5efe0";
   return spark % 3 === 0 ? "var(--tier-light)" : "var(--tier)";
 }
 
-export function Fireworks({ tier, className }: { tier: 1 | 2 | 3; className?: string }) {
-  const { bursts, sparks, radius, cycle } = SETTINGS[tier];
+/** `level`: crown tier 1–3 or "card"; the colours come from the parent's `.tier-*` class. */
+export function Fireworks({ level, className }: { level: FireworksLevel; className?: string }) {
+  const tier = level;
+  const { bursts, sparks, radius, cycle } = SETTINGS[level];
 
   return (
     <div
@@ -79,7 +89,7 @@ export function Fireworks({ tier, className }: { tier: 1 | 2 | 3; className?: st
                   key={s}
                   className={cn(
                     "absolute rounded-full shadow-[0_0_8px_2px_currentColor]",
-                    tier === 3 ? "-top-1.5 -left-1.5 size-3" : "-top-[5px] -left-[5px] size-2.5",
+                    tier === 3 || tier === "card" ? "-top-1.5 -left-1.5 size-3" : "-top-[5px] -left-[5px] size-2.5",
                   )}
                   style={{
                     ...timing,

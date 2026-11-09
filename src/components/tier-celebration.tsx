@@ -49,10 +49,13 @@ export function TierCelebration({
   tier,
   onClose,
   returnFocusTo,
+  celebrationId,
 }: {
   ruler: CelebratedRuler | null;
   tier: 1 | 2 | 3 | null;
   onClose: () => void;
+  /** Changes for every celebration in a queue (used by tests). */
+  celebrationId?: number;
   /** Element id that gets focus back after "Pokračovat" (e.g. the next-question button). */
   returnFocusTo?: string;
 }) {
@@ -66,6 +69,7 @@ export function TierCelebration({
         <DialogPrimitive.Content
           data-testid="tier-celebration"
           data-tier={key}
+          data-celebration-id={celebrationId}
           onPointerDownOutside={(event) => event.preventDefault()}
           onCloseAutoFocus={(event) => {
             const target = returnFocusTo ? document.getElementById(returnFocusTo) : null;
@@ -76,11 +80,11 @@ export function TierCelebration({
           }}
           className={cn(
             `tier-${key}`,
-            "data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95 fixed inset-0 z-50 flex items-center justify-center overflow-y-auto overscroll-contain p-4 outline-none",
+            "data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95 fixed inset-0 z-50 flex items-center justify-center overflow-x-hidden overflow-y-auto overscroll-contain p-4 outline-none",
           )}
         >
           {/* fireworks fill the whole screen behind the card */}
-          {open && tier && <Fireworks tier={tier} />}
+          {open && tier && <Fireworks level={tier} />}
           {open && tier && ruler && (
             <div className="relative flex w-full max-w-md flex-col items-center gap-4 py-6 text-center text-parchment">
               {/* glow in the tier's colour */}

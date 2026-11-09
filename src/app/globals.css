@@ -477,6 +477,22 @@
 }
 
 
+/* The won card flies in from below before it turns face up. */
+@keyframes card-fly-in {
+  0% {
+    opacity: 0;
+    transform: translateY(70vh) rotate(-14deg) scale(0.55);
+  }
+  70% {
+    opacity: 1;
+    transform: translateY(-4%) rotate(2deg) scale(1.04);
+  }
+  100% {
+    opacity: 1;
+    transform: none;
+  }
+}
+
 /* "Koruny učenosti": colours of the three tiers (crowns, glow, frames). */
 .tier-bronze {
   --tier: #b8733d;
