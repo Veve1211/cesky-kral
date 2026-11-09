@@ -10,8 +10,11 @@ test("Jak hrát: odkaz v menu, pět kroků, časté otázky a tlačítko Hrát",
   const nav = page.getByRole("navigation", { name: "Hlavní navigace" });
   const link = nav.getByRole("link", { name: "Jak hrát" });
   await expect(link).toBeVisible();
-  // The label is shown as text, not only as an icon.
-  await expect(link.getByText("Jak hrát", { exact: true })).toBeVisible();
+  // Text from 640 px; on phones an icon with the aria-label "Jak hrát".
+  const labelWidth = await link.getByText("Jak hrát", { exact: true }).evaluate((el) => el.getBoundingClientRect().width);
+  if ((page.viewportSize()?.width ?? 0) >= 640) expect(labelWidth).toBeGreaterThan(30);
+  else expect(labelWidth).toBeLessThanOrEqual(1);
+  await expect(link).toHaveAttribute("aria-label", "Jak hrát");
   await link.click();
   await expect(page).toHaveURL("/jak-hrat");
   await expect(page.getByRole("heading", { level: 1 })).toHaveText("Jak hrát");
