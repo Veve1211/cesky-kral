@@ -13,7 +13,7 @@ Aktualizováno: 2026-11-09 19:00 (Praha). STOP pravidlo: v 6:00 práci ukončit.
 Pořadí mergování: #39 → #40 → B → C → D (každý je založený na předchozím).
 
 ## Další konkrétní krok (PR C)
-1. Automatický posun: Kdo vládl dřív? po správné odpovědi ~1 s; kvízy po správné odpovědi ~1,2 s (špatná čeká na Další kvůli vysvětlení); pauza při oslavě.
+1. ✅ Automatický posun (commit „feat: auto-advance…“): kvíz po správné odpovědi 1,2 s, Kdo vládl dřív? po správné volbě; vypnuto při „omezit pohyb“; test `e2e/auto-advance.spec.ts`.
 2. `GameSession` (migrace) + API `/api/game/start|answer|leaderboard`: Rychlovka, Kdo vládl dřív?, Řeka času (nový režim `/reka-casu`).
 3. Stránka `/zebricky` (týden / celkem), osobní rekord Rychlovky.
 4. Testy, CLAUDE.md, PR „mergovat až po #41“.

@@ -3,6 +3,11 @@ import { expect, test, type Locator, type Page } from "@playwright/test";
 import { anyCelebration, celebration, currentQuestion, dismissAllCelebrations, open, progress, settleAnswer, readCollection, setCollection, STORAGE_KEY, waitForHydration } from "./helpers/game";
 import { findQuestion, kings } from "./helpers/seed-answers";
 
+// Focus and keyboard flow step by step: with "reduce motion" the game never
+// moves on by itself, so every "Další" is the player's choice.
+// (The automatic next question is covered in e2e/auto-advance.spec.ts.)
+test.use({ reducedMotion: "reduce" });
+
 /**
  * End-of-round celebrations (new card, then a crown) with the keyboard only:
  * focus starts on "Pokračovat" and Enter moves on to the next one.

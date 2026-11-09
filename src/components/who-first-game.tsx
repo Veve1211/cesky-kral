@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useEffect, useState, useTransition } from "react";
 import Link from "next/link";
 import { ArrowRight, RotateCcw } from "lucide-react";
 
@@ -9,6 +9,7 @@ import { KingPortrait } from "@/components/king-portrait";
 import { KofiButton } from "@/components/kofi-button";
 import { CardCorners } from "@/components/ornaments";
 import { Button } from "@/components/ui/button";
+import { AUTO_ADVANCE_MS, useAutoAdvanceAllowed } from "@/lib/auto-advance";
 import { kingInitial } from "@/lib/king-initial";
 import { cn } from "@/lib/utils";
 import {
@@ -44,6 +45,20 @@ export function WhoFirstGame({
   const [isPending, startTransition] = useTransition();
   const best = useBestStreak();
   const full = variant === "full";
+
+  // A right pick shows the years for a moment, then the next pair comes by itself.
+  const autoAdvanceAllowed = useAutoAdvanceAllowed();
+  const autoNext = autoAdvanceAllowed && full && feedback?.correct === true;
+  useEffect(() => {
+    if (!autoNext) return;
+    const timer = window.setTimeout(() => {
+      setPair((current) => pickPair(kings.length, current));
+      setChosen(null);
+      setFeedback(null);
+      setError(null);
+    }, AUTO_ADVANCE_MS);
+    return () => window.clearTimeout(timer);
+  }, [autoNext, kings.length]);
 
   if (!pair) {
     return (
@@ -221,9 +236,12 @@ export function WhoFirstGame({
         )}
 
         {feedback && full && feedback.correct && (
-          <Button variant="accent" size="lg" onClick={nextPair} autoFocus>
+          <Button variant="accent" size="lg" onClick={nextPair} autoFocus className="relative overflow-hidden">
             Další
             <ArrowRight aria-hidden />
+            {autoNext && (
+              <span aria-hidden data-testid="auto-advance" className="animate-auto-advance absolute inset-x-0 bottom-0 h-1 origin-left bg-navy/60" />
+            )}
           </Button>
         )}
 

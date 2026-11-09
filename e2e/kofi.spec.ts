@@ -117,6 +117,8 @@ test("hra o kartu: během kola ne, po dohrání (výhra i prohra) ano, bez vyska
 });
 
 test("Kdo vládl dřív?: groš až po konci hry", async ({ page }) => {
+  // No automatic next pair, so the loop below stays simple.
+  await page.emulateMedia({ reducedMotion: "reduce" });
   await open(page, "/kdo-driv");
   await expect(page.getByTestId("kofi-card")).toHaveCount(0);
   const group = page.getByRole("group", { name: "Kdo začal vládnout dřív?" });
