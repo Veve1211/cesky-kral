@@ -85,7 +85,7 @@ for (const path of ["/", "/sbirka"]) {
     test("s prázdnou sbírkou neukazuje žádné jméno ani odkaz na panovníka", async ({ page }) => {
       await open(page, path);
       const river = timeline(page);
-      await expect(river.getByTestId("timeline-unknown")).toHaveText(`a ještě ${kings.length} neznámých panovníků`);
+      await expect(river.getByTestId("timeline-unknown")).toHaveText(`${kings.length} panovníků čeká na objevení`);
       await expect(river.getByRole("link")).toHaveCount(0);
       await expect(river.getByRole("button")).toHaveCount(0);
       await expect(river.getByRole("listitem")).toHaveCount(0);
@@ -103,7 +103,7 @@ for (const path of ["/", "/sbirka"]) {
       await expect(river.getByRole("listitem")).toContainText(rudolf.name);
       await expect(river.getByRole("listitem")).toContainText(rudolfReign);
       await expect(river.getByTestId("timeline-unknown")).toHaveText(
-        `a ještě ${kings.length - 1} neznámých panovníků`,
+        `${kings.length - 1} panovníků čeká na objevení`,
       );
       const text = await river.innerText();
       for (const king of kings.filter((k) => k.slug !== rudolf.slug)) {

@@ -35,7 +35,7 @@ function byReign(kings: KingSummary[]): KingSummary[] {
  * `full` (Moje sbírka): vertical on mobile, horizontal from `lg`.
  * `compact` (home page): one horizontal strip that scrolls on its own.
  * Only collected kings are shown (portrait + name + years, click = chronicle).
- * The rest is one line "a ještě X neznámých panovníků" – no names, links or
+ * The rest is one line "X panovníků čeká na objevení" – no names, links or
  * order, so the river can't be used to answer "Kdo vládl dřív?".
  * The most recently collected king carries a "Nový" badge until the player
  * has seen it here once (see `useNewBadge`).
@@ -188,15 +188,11 @@ function useNewBadge(kings: KingSummary[], collected: readonly string[], compact
   return { newSlug, newStopRef, scrollerRef };
 }
 
-/** "a ještě 3 neznámí panovníci" (Czech plural forms, including an empty collection). */
+/** "3 panovníci čekají na objevení" (Czech plural forms, including an empty collection). */
 function unknownLabel(count: number): string {
-  const noun =
-    count === 1
-      ? "neznámý panovník"
-      : count >= 2 && count <= 4
-        ? "neznámí panovníci"
-        : "neznámých panovníků";
-  return `a ještě ${count} ${noun}`;
+  if (count === 1) return "1 panovník čeká na objevení";
+  if (count >= 2 && count <= 4) return `${count} panovníci čekají na objevení`;
+  return `${count} panovníků čeká na objevení`;
 }
 
 function TimelineStop({

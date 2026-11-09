@@ -1030,7 +1030,7 @@ export const kings: SeedKing[] = [
     isLegend: false,
     dynasty: "Habsbursko-Lotrinští",
     shortBio:
-      "Poslední český král, který vládl v době první světové války.",
+      "Poslední český král, který vládl v době první světové války. Jako český král byl Karlem III.",
     order: 18,
     imageUrl: "/kings/karel-i.webp",
     sourceUrl: "https://www.newworldencyclopedia.org/entry/Charles_I_of_Austria",
@@ -1121,7 +1121,7 @@ export const kings: SeedKing[] = [
     order: 3,
     title: "král",
     isLegend: false,
-    imageUrl: null,
+    imageUrl: "/kings/vratislav-ii.webp",
     sourceUrl: "https://cs.wikipedia.org/wiki/Vratislav_II.",
     questions: [
       {
@@ -1199,7 +1199,7 @@ export const kings: SeedKing[] = [
     order: 9,
     title: "král",
     isLegend: false,
-    imageUrl: null,
+    imageUrl: "/kings/vaclav-iv.webp",
     sourceUrl: "https://cs.wikipedia.org/wiki/V%C3%A1clav_IV.",
     questions: [
       {
@@ -1277,7 +1277,7 @@ export const kings: SeedKing[] = [
     order: 11,
     title: "král",
     isLegend: false,
-    imageUrl: null,
+    imageUrl: "/kings/vladislav-ii-jagellonsky.webp",
     sourceUrl: "https://cs.wikipedia.org/wiki/Vladislav_Jagellonsk%C3%BD",
     questions: [
       {
@@ -1355,7 +1355,7 @@ export const kings: SeedKing[] = [
     order: 12,
     title: "král",
     isLegend: false,
-    imageUrl: null,
+    imageUrl: "/kings/ferdinand-i.webp",
     sourceUrl: "https://cs.wikipedia.org/wiki/Ferdinand_I._Habsbursk%C3%BD",
     questions: [
       {
@@ -1433,7 +1433,7 @@ export const kings: SeedKing[] = [
     order: 14,
     title: "král",
     isLegend: false,
-    imageUrl: null,
+    imageUrl: "/kings/fridrich-falcky.webp",
     sourceUrl: "https://cs.wikipedia.org/wiki/Fridrich_Falck%C3%BD",
     questions: [
       {
@@ -1511,7 +1511,7 @@ export const kings: SeedKing[] = [
     order: 17,
     title: "král",
     isLegend: false,
-    imageUrl: null,
+    imageUrl: "/kings/frantisek-josef-i.webp",
     sourceUrl: "https://cs.wikipedia.org/wiki/Franti%C5%A1ek_Josef_I.",
     questions: [
       {
