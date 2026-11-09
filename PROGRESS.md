@@ -14,8 +14,8 @@ Pořadí mergování: #39 → #40 → B → C → D (každý je založený na p�
 
 ## Další konkrétní krok (PR C)
 1. ✅ Automatický posun (commit „feat: auto-advance…“): kvíz po správné odpovědi 1,2 s, Kdo vládl dřív? po správné volbě; vypnuto při „omezit pohyb“; test `e2e/auto-advance.spec.ts`.
-2. ⏳ `GameSession` + API hotové (server: `src/lib/game-server.ts`, `/api/game/start|answer|best|leaderboard`); zbývá klient: Rychlovka, Kdo vládl dřív?, nový režim Řeka času `/reka-casu`.
-3. Stránka `/zebricky` (týden / celkem), osobní rekord Rychlovky.
+2. ✅ GameSession + API + klient: Rychlovka (`quick-game`), Kdo vládl dřív? (sezení na serveru), Řeka času `/reka-casu`, `/zebricky`, odkaz Žebříčky v hlavičce.
+3. ⏳ Testy pro žebříčky her (podvržené skóre, týden/celkem, osobní rekord), CLAUDE.md, celá sada, PR.
 4. Testy, CLAUDE.md, PR „mergovat až po #41“.
 
 ## Poznámky pro obnovení

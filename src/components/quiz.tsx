@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState, useTransition, type RefObject } from "react";
+import { useCallback, useEffect, useRef, useState, useTransition, type ReactNode, type RefObject } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { ArrowRight, Check, ExternalLink, Lock, RotateCcw, X } from "lucide-react";
@@ -63,7 +63,16 @@ type QuizProps =
         };
     }
   | { mode: "golden"; questions: QuizQuestion[]; king: QuizKing }
-  | { mode: "quick"; questions: QuizQuestion[] }
+  | {
+      mode: "quick";
+      questions: QuizQuestion[];
+      /** Checks (and records) the answer on the server – scored mode. */
+      check?: (questionId: number, answerId: number) => Promise<AnswerResult>;
+      /** A new game is started by the caller (new server session). */
+      onRestart?: () => void;
+      /** Shown on the result card (personal record, leaderboard…). */
+      resultExtra?: ReactNode;
+    }
   | {
       /** Daily challenge: resumable, every answer is reported, results are shown by the caller. */
       mode: "daily";
@@ -133,7 +142,7 @@ export function Quiz(props: QuizProps) {
     startTransition(async () => {
       try {
         const result =
-          props.mode === "daily" && props.check
+          (props.mode === "daily" || props.mode === "quick") && props.check
             ? await props.check(question.id, answerId)
             : await checkAnswer(question.id, answerId);
         if (!result.ok) {
@@ -222,6 +231,10 @@ export function Quiz(props: QuizProps) {
   });
 
   function restart() {
+    if (props.mode === "quick" && props.onRestart) {
+      props.onRestart();
+      return;
+    }
     focusQuestions.current = true;
     setIndex(0);
     setScore(0);
@@ -615,6 +628,7 @@ function Results(
               ? "Bez jediné chyby, klobouk dolů!"
               : "Dobrá práce! Dáš příště víc?"}
         </p>
+        {props.mode === "quick" && props.resultExtra}
         {props.mode === "quick" && props.marks.length === total && (
           <ShareButton
             text={quickShareText(props.marks)}

@@ -4,7 +4,7 @@ import { connection } from "next/server";
 import { Zap } from "lucide-react";
 
 import { CardCorners, OrnamentDivider } from "@/components/ornaments";
-import { Quiz } from "@/components/quiz";
+import { QuickGame } from "@/components/quick-game";
 import { QUICK_ROUND_QUESTIONS } from "@/lib/game-rules";
 import { getRandomQuestions } from "@/lib/questions";
 
@@ -25,7 +25,7 @@ export default function QuickRoundPage() {
         <OrnamentDivider />
         <p className="max-w-sm text-parchment/85">
           {QUICK_ROUND_QUESTIONS} náhodných otázek napříč všemi králi. Kolik jich
-          dáš? Do sbírky se nepočítá, jde jen o skóre.
+          dáš? Rozhoduje počet správných, při shodě čas. Do sbírky se nepočítá.
         </p>
       </header>
 
@@ -41,5 +41,6 @@ export default function QuickRoundPage() {
 async function QuickRound() {
   await connection();
   const questions = await getRandomQuestions(QUICK_ROUND_QUESTIONS);
-  return <Quiz mode="quick" questions={questions} />;
+  // Fallback questions for playing without the server score.
+  return <QuickGame fallbackQuestions={questions} />;
 }

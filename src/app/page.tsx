@@ -51,7 +51,15 @@ async function HomeContent() {
         <DailyHomeButton />
       </section>
 
-      <ReignTimeline variant="compact" kings={kings} />
+      <div className="flex flex-col gap-2">
+        <ReignTimeline variant="compact" kings={kings} />
+        <Link
+          href="/reka-casu"
+          className="self-center text-sm font-semibold text-navy underline decoration-gold underline-offset-4 hover:decoration-2"
+        >
+          <span aria-hidden>🌊 </span>Hraj Řeku času: seřaď panovníky
+        </Link>
+      </div>
 
       {/* Today's first place in the daily challenge. */}
       {ruler && (

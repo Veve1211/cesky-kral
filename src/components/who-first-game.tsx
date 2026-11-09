@@ -1,15 +1,18 @@
 "use client";
 
-import { useEffect, useState, useTransition } from "react";
+import { useEffect, useRef, useState, useTransition } from "react";
 import Link from "next/link";
 import { ArrowRight, RotateCcw } from "lucide-react";
 
 import { checkWhoFirst } from "@/app/actions/who-first";
+import { GameFinish } from "@/components/game-finish";
 import { KingPortrait } from "@/components/king-portrait";
 import { KofiButton } from "@/components/kofi-button";
 import { CardCorners } from "@/components/ornaments";
 import { Button } from "@/components/ui/button";
 import { AUTO_ADVANCE_MS, useAutoAdvanceAllowed } from "@/lib/auto-advance";
+import { sendAnswer, startScoredGame, type Finish } from "@/lib/game-client";
+import { useCollectionReady } from "@/lib/collection";
 import { kingInitial } from "@/lib/king-initial";
 import { cn } from "@/lib/utils";
 import {
@@ -37,7 +40,15 @@ export function WhoFirstGame({
   initialPair: WhoFirstPair | null;
   variant: "full" | "teaser";
 }) {
-  const [pair, setPair] = useState(initialPair);
+  const toSlugs = (indices: WhoFirstPair | null) => (indices ? ([kings[indices[0]].slug, kings[indices[1]].slug] as const) : null);
+  const [pair, setPair] = useState<readonly [string, string] | null>(() => (variant === "full" ? null : toSlugs(initialPair)));
+  // `full`: scored on the server (it picks every pair and counts the streak).
+  const [session, setSession] = useState<{ token: string; sessionId: string } | null>(null);
+  const [offline, setOffline] = useState(false);
+  const [round, setRound] = useState(0);
+  const [nextFromServer, setNextFromServer] = useState<readonly [string, string] | null>(null);
+  const [finish, setFinish] = useState<Finish | null>(null);
+  const ready = useCollectionReady();
   const [chosen, setChosen] = useState<string | null>(null);
   const [feedback, setFeedback] = useState<Feedback | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -47,20 +58,42 @@ export function WhoFirstGame({
   const full = variant === "full";
 
   // A right pick shows the years for a moment, then the next pair comes by itself.
+  useEffect(() => {
+    if (variant !== "full" || !ready) return;
+    let cancelled = false;
+    void startScoredGame("who-first").then((started) => {
+      if (cancelled) return;
+      if (!started || started.game.slugs.length !== 2) {
+        setOffline(true);
+        setPair(toSlugs(initialPair));
+        return;
+      }
+      setSession({ token: started.token, sessionId: started.game.sessionId });
+      setPair([started.game.slugs[0], started.game.slugs[1]]);
+    });
+    return () => {
+      cancelled = true;
+    };
+    // Only on start and on "Hrát znovu" (round).
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [variant, ready, round]);
+
   const autoAdvanceAllowed = useAutoAdvanceAllowed();
   const autoNext = autoAdvanceAllowed && full && feedback?.correct === true;
   useEffect(() => {
     if (!autoNext) return;
-    const timer = window.setTimeout(() => {
-      setPair((current) => pickPair(kings.length, current));
-      setChosen(null);
-      setFeedback(null);
-      setError(null);
-    }, AUTO_ADVANCE_MS);
+    const timer = window.setTimeout(() => nextPairRef.current(), AUTO_ADVANCE_MS);
     return () => window.clearTimeout(timer);
-  }, [autoNext, kings.length]);
+  }, [autoNext]);
+  const nextPairRef = useRef<() => void>(() => {});
+  useEffect(() => {
+    nextPairRef.current = nextPair;
+  });
 
   if (!pair) {
+    if (variant === "full" && !offline && kings.length >= 2) {
+      return <div aria-busy="true" aria-label="Připravuji dvojici" className="parchment h-72 animate-pulse rounded-2xl" />;
+    }
     return (
       <p className="text-center text-muted-foreground">
         Na tuhle hru jsou potřeba aspoň dva panovníci.
@@ -68,7 +101,9 @@ export function WhoFirstGame({
     );
   }
 
-  const options = [kings[pair[0]], kings[pair[1]]];
+  const bySlug = (slug: string) => kings.find((king) => king.slug === slug);
+  const options = [bySlug(pair[0]), bySlug(pair[1])].filter((king): king is WhoFirstKing => king !== undefined);
+  if (options.length !== 2) return <p className="text-center text-muted-foreground">Dvojici se nepodařilo načíst.</p>;
   const locked = isPending || feedback !== null;
   const gameOver = feedback !== null && !feedback.correct;
 
@@ -79,7 +114,17 @@ export function WhoFirstGame({
     setError(null);
     startTransition(async () => {
       try {
-        const result = await checkWhoFirst(first.slug, second.slug, slug);
+        let result: WhoFirstResult;
+        if (session) {
+          const scored = await sendAnswer("who-first", session, { choice: slug });
+          if (scored.ok) {
+            setNextFromServer(scored.next ? [scored.next[0], scored.next[1]] : null);
+            if (scored.finish) setFinish(scored.finish);
+          }
+          result = scored.ok ? { ok: true, correct: scored.correct, earlierSlug: scored.earlierSlug, reigns: scored.reigns } : scored;
+        } else {
+          result = await checkWhoFirst(first.slug, second.slug, slug);
+        }
         if (!result.ok) {
           setError(result.error);
           setChosen(null);
@@ -100,7 +145,15 @@ export function WhoFirstGame({
   }
 
   function nextPair() {
-    setPair((current) => pickPair(kings.length, current));
+    if (session) {
+      if (nextFromServer) setPair(nextFromServer);
+      setNextFromServer(null);
+    } else {
+      setPair((current) => {
+        const indices = current ? ([kings.findIndex((k) => k.slug === current[0]), kings.findIndex((k) => k.slug === current[1])] as const) : null;
+        return toSlugs(pickPair(kings.length, indices && indices[0] >= 0 && indices[1] >= 0 ? indices : null));
+      });
+    }
     setChosen(null);
     setFeedback(null);
     setError(null);
@@ -108,6 +161,17 @@ export function WhoFirstGame({
 
   function restart() {
     setStreak(0);
+    setFinish(null);
+    if (session) {
+      // A new scored game: new session, new first pair from the server.
+      setSession(null);
+      setPair(null);
+      setChosen(null);
+      setFeedback(null);
+      setError(null);
+      setRound((r) => r + 1);
+      return;
+    }
     nextPair();
   }
 
@@ -261,6 +325,7 @@ export function WhoFirstGame({
             </Button>
           </div>
         )}
+        {gameOver && full && session && <GameFinish mode="who-first" finish={finish} />}
         {gameOver && full && <KofiButton className="max-w-sm" />}
 
         {feedback && !full && (
