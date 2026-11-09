@@ -38,10 +38,12 @@ S nastavením „omezit pohyb“ v systému se nic samo neposouvá.
 
 **Můj erb** (`/muj-erb`) – editor vlastního erbu (vše vlastní SVG): tvar štítu, dělení, barvy podle
 **pravidla tinktur** (kov na barvu, barva na kov – editor vysvětlí proč), figura (lev, orlice, koruna,
-věž, lilie…) a heslo pod štítem (s filtrem sprostých slov). Základní díly hned, další za bronzové,
+věž, lilie…) a heslo pod štítem (s filtrem sprostých slov). Základní díly hned, další za karty ve sbírce a za bronzové,
 stříbrné a zlaté koruny učenosti, nejvzácnější (hermelín, královský štít) za zlato u všech panovníků.
 Erb se ukazuje vedle přezdívky v žebříčcích (na server jdou jen parametry), dá se stáhnout jako PNG
-a sdílet odkazem (`/erb?…`) s výzvou „Vytvoř si vlastní erb“.
+a sdílet odkazem (`/erb?…`) s výzvou „Vytvoř si vlastní erb“ – i spolu s výsledkem Denní výzvy a Rychlovky.
+Erb je vidět na úvodu hned u hodnosti, nahoře v Moje sbírka a v hlavičce; když nová karta nebo koruna
+odemkne díl, oslava nabídne „Ozdobit erb“.
 
 **Bez registrace**
 - Postup (sbírka, koruny, výzva, série, erb) je v prohlížeči (localStorage, verzovaná data čtená defenzivně).
