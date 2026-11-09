@@ -6,6 +6,7 @@ import { ArrowRight, RotateCcw } from "lucide-react";
 
 import { checkWhoFirst } from "@/app/actions/who-first";
 import { KingPortrait } from "@/components/king-portrait";
+import { KofiButton } from "@/components/kofi-button";
 import { CardCorners } from "@/components/ornaments";
 import { Button } from "@/components/ui/button";
 import { kingInitial } from "@/lib/king-initial";
@@ -242,6 +243,7 @@ export function WhoFirstGame({
             </Button>
           </div>
         )}
+        {gameOver && full && <KofiButton className="max-w-sm" />}
 
         {feedback && !full && (
           <Button asChild variant="accent">

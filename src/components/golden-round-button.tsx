@@ -33,7 +33,7 @@ export function GoldenRoundButton({
       <div className={cn("flex flex-col items-center gap-1", className)}>
         <Button variant="outline" size="lg" disabled aria-disabled>
           <Lock aria-hidden />
-          ✨ Zlaté kolo
+          ✨ Mistrovské kolo
         </Button>
         <p className="text-xs text-muted-foreground">
           Odemkne se, až získáš kartu.
@@ -46,7 +46,7 @@ export function GoldenRoundButton({
     <div className={cn("flex flex-col items-center gap-2", className)}>
       {isGolden && <GoldenBadge />}
       <Button asChild variant="default" size="lg" className="text-gold">
-        <Link href={`/kral/${slug}/zlate-kolo`}>✨ Zlaté kolo</Link>
+        <Link href={`/kral/${slug}/zlate-kolo`}>✨ Mistrovské kolo</Link>
       </Button>
     </div>
   );

@@ -102,10 +102,10 @@ export function KingCard({ king, index }: { king: KingCardData; index: number })
         goldenAction={
           <Link
             href={`/kral/${king.slug}/zlate-kolo`}
-            aria-label={`Zlaté kolo: ${king.name}`}
+            aria-label={`Mistrovské kolo: ${king.name}`}
             className="relative z-10 w-full rounded-lg border border-gold-dark/60 bg-navy px-2 py-1.5 text-center text-xs font-bold text-gold shadow-sm outline-none transition-colors hover:bg-navy/90 focus-visible:ring-4 focus-visible:ring-ring/60 sm:text-sm"
           >
-            ✨ Zlaté kolo
+            ✨ Mistrovské kolo
           </Link>
         }
       />

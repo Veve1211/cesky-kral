@@ -31,14 +31,14 @@ export const RANKS = [
   "Panoš",
   "Rytíř",
   "Šlechtic",
-  "Český král / Česká královna",
+  "Pán / Paní erbovní knihy",
 ] as const;
 export type Rank = (typeof RANKS)[number];
 
 /**
  * Rank from the share of collected kings:
  * none → Panoš, under half → Rytíř, half or more → Šlechtic,
- * all → Český král / Česká královna.
+ * all → Pán / Paní erbovní knihy (renamed from "Český král", the name of the game).
  */
 export function getRank(collected: number, total: number): Rank {
   if (collected <= 0 || total <= 0) return RANKS[0];

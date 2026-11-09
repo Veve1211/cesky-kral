@@ -6,7 +6,7 @@ import { useCollectionReady } from "@/lib/collection";
 import { DAILY_QUESTIONS, dailyDateKey, formatStreakDays } from "@/lib/daily";
 import { currentStreak, marksFor, useDailyProgress } from "@/lib/daily-progress";
 
-/** Main call to action on the home page: today's challenge and its state. */
+/** Second choice on the home page (under "Začni hrát"): today's challenge and its state. */
 export function DailyHomeButton() {
   const ready = useCollectionReady();
   const progress = useDailyProgress();
@@ -30,18 +30,18 @@ export function DailyHomeButton() {
   }
 
   return (
-    <div className="flex w-full max-w-sm flex-col items-center gap-2">
+    <div className="flex w-full max-w-sm flex-col items-center gap-1.5">
       <Link
         href="/vyzva"
         aria-describedby="daily-home-status"
-        className="gilt group relative flex w-full items-center justify-center gap-3 rounded-2xl px-6 py-4 text-navy shadow-lg ring-2 ring-gold-dark/60 transition-[background-position,translate] duration-700 outline-none hover:bg-right hover:-translate-y-0.5 focus-visible:ring-4 focus-visible:ring-ring/60"
+        className="flex w-full items-center gap-3 rounded-2xl bg-navy px-4 py-2.5 text-parchment shadow-md ring-1 ring-gold/70 transition-colors outline-none hover:bg-navy/90 focus-visible:ring-4 focus-visible:ring-ring/60"
       >
-        <span aria-hidden className="flex size-11 shrink-0 items-center justify-center rounded-full bg-navy text-2xl shadow-inner ring-2 ring-gold">
+        <span aria-hidden className="flex size-9 shrink-0 items-center justify-center rounded-full bg-gold/15 text-xl ring-1 ring-gold">
           👑
         </span>
-        <span className="flex flex-col items-start text-left">
-          <span className="font-heading text-2xl leading-tight font-bold">Denní výzva</span>
-          <span className="text-xs font-semibold tracking-[0.15em] uppercase">{action}</span>
+        <span className="flex flex-1 flex-col items-start text-left">
+          <span className="font-heading text-xl leading-tight font-bold">Denní výzva</span>
+          <span className="text-[11px] font-semibold tracking-[0.15em] text-gold uppercase">{action}</span>
         </span>
       </Link>
       <p id="daily-home-status" className="min-h-5 text-center text-sm text-muted-foreground">
