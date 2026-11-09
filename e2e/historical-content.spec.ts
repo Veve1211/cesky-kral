@@ -14,9 +14,9 @@ function chronicleText(slug: string): string {
   return [chronicle.intro, ...chronicle.sections.map((s) => s.text), ...chronicle.facts].join(" ");
 }
 
-test("historický obsah: 12 panovníků, 108 otázek a jedna správná možnost", () => {
-  expect(kings).toHaveLength(12);
-  expect(kings.flatMap((king) => king.questions)).toHaveLength(108);
+test("historický obsah: 18 panovníků, 162 otázek a jedna správná možnost", () => {
+  expect(kings).toHaveLength(18);
+  expect(kings.flatMap((king) => king.questions)).toHaveLength(162);
   for (const king of kings) {
     expect(king.questions).toHaveLength(9);
     for (const level of [1, 2, 3]) {

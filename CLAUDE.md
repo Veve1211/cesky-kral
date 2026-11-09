@@ -58,7 +58,7 @@
 ## Pravidla
 
 ### Obsah
-- NIKDY si nevymýšlej historická fakta, otázky ani odpovědi. Používej jen obsah ze seed souboru, který dodá uživatel.
+- NIKDY si nevymýšlej historická fakta, otázky ani odpovědi. Používej jen obsah ze seed souboru, který dodá uživatel; nový obsah jen na výslovný pokyn uživatele a jen s ověřeným zdrojem (URL) u každé otázky – co nejde ověřit, vynech (viz `docs/historical-content.md`).
 - Obrázky jen vlastní, generované nebo s volnou licencí (public domain). Dokud nejsou, použij dekorativní placeholder (iniciála krále v erbu).
 
 ### Prostředí
@@ -119,11 +119,11 @@ Pokud NODE_ENV=production:
 - CI: `.github/workflows/e2e.yml` u každého PR do dev i main (Postgres service, lint, build, seed, testy; při chybě artefakt `playwright-report`)
 - Novou funkci pokryj testem; při změně textů v UI uprav i testy
 
-- Historický obsah: ověřené opravy a zdroje v `docs/historical-content.md`; regrese `e2e/historical-content.spec.ts` hlídá fakta, zdroje a všech 108 otázek.
+- Historický obsah: ověřené opravy a zdroje v `docs/historical-content.md`; regrese `e2e/historical-content.spec.ts` hlídá fakta, zdroje a všech 162 otázek; `e2e/new-rulers.spec.ts` dávku 6.
 
 - Přístupnost kvízu: po změně otázky a výsledku fokus na nadpis (s pořadím/skóre pro čtečky), bez dalšího kroku v tabulátoru; regrese `e2e/quiz-accessibility.spec.ts`. Velké nadpisy na pergamenu používají `gilt-text gilt-text-ink` (WCAG AA ≥ 3 : 1), světlé zlato zůstává na tmavém pozadí.
 
-- Stabilita a 404: `e2e/loading-and-not-found.spec.ts` kontroluje pozdní načtení písem na úvodu, ve sbírce a ve hře; GET/HEAD 404 obou herních URL a HTTP 200 pro všech 12 panovníků i zlatá kola.
+- Stabilita a 404: `e2e/loading-and-not-found.spec.ts` kontroluje pozdní načtení písem na úvodu, ve sbírce a ve hře; GET/HEAD 404 obou herních URL a HTTP 200 pro všech 18 panovníků i zlatá kola.
 
 ## Rozhodnutí
 - 2026-11-08: všechna tři písma se dál přednačítají; `display: optional` brání pozdní výměně písma a poskakování stránky. Na pomalé síti může v daném zobrazení zůstat náhradní písmo. `src/proxy.ts` před streamováním ověřuje existenci panovníka pro skutečné HTTP 404; běžné stránky dál streamují. Zbývající vývojová zranitelnost a důvod neprovedení rizikového upgradu jsou v `security_warnings.md`.
@@ -163,6 +163,7 @@ Pokud NODE_ENV=production:
 - 2026-11-08: štítek „Nový“ v Řece času: naposledy získaný = poslední v pořadí sbírky; „viděno“ = zastávka aspoň z 60 % na obrazovce, štítek vydrží do konce návštěvy, zmizí při další; v pruhu na / se zastávka sama posune do zorného pole; test `e2e/timeline-new.spec.ts`
 - 2026-11-08: Denní výzva – den a otázky určuje server (Europe/Prague) při každém požadavku; výběr nezávisí na id (seed je mění), jen na datu a obsahu; série se prodlouží jen dohráním; „hrát jednou“ hlídá jen prohlížeč (stejně jako sbírka); v hlavičce zatím bez odkazu (vstup je hlavní tlačítko na úvodu); test `e2e/daily.spec.ts`
 - 2026-11-09: koruny učenosti – vlastní klíč v localStorage vedle sbírky (stejný způsob ukládání, sbírka v2 beze změny); otázka se počítá podle stabilního klíče (id se mění se seedem); oslava se uloží spolu s odpovědí, takže po obnovení stránky už nepřijde; E2E pomocník `settleAnswer` / `dismissCelebration` zavírá oslavu ve starších testech; test `e2e/knowledge-crowns.spec.ts`
+- 2026-11-09: panovníci podle doby (order 1–18): Libuše, Svatý Václav, Vratislav II., Přemysl Otakar I., Přemysl Otakar II., Václav II., Jan Lucemburský, Karel IV., Václav IV., Jiří z Poděbrad, Vladislav II. Jagellonský, Ferdinand I., Rudolf II., Fridrich Falcký, Marie Terezie, Josef II., František Josef I., Karel I.; dávka 6 (6 nových) na pokyn uživatele s ověřením v české Wikipedii, zatím bez obrázků a kronik
 
 ## Údržba tohoto souboru
 - Aktualizuj po každé strukturální změně, novém pravidlu nebo rozhodnutí
