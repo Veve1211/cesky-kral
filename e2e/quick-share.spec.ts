@@ -32,8 +32,11 @@ test("po Rychlovce jde výsledek sdílet a neprozradí otázky ani odpovědi", a
   const shared = await page.evaluate(() => (window as unknown as { shared: string }).shared);
   const origin = new URL(page.url()).origin;
   expect(shared).toBe(`Český král 👑 Rychlovka 8/10\n👑👑⚔️👑👑👑⚔️👑👑👑\n${origin}/rychlovka`);
+  // The exact match above already rules out any extra text; this states the
+  // intent. Very short answers (e.g. a lone number like "8") are skipped –
+  // they can appear in the score itself.
   for (const question of asked) {
-    for (const text of [question.text, question.correct, ...question.wrong]) {
+    for (const text of [question.text, question.correct, ...question.wrong].filter((t) => t.length >= 4)) {
       expect(shared).not.toContain(text);
     }
   }

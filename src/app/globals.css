@@ -9,6 +9,10 @@
   --brand-gold-light: #e8cf74;
   --brand-gold-dark: #8a6d14;
   --brand-ink: #2b2118;
+  /* "groš" green for the Ko-fi button: parchment text on it = 7 : 1 (WCAG AA/AAA);
+     darker than --success, so it never reads as "correct answer". */
+  --brand-grosh: #1e5b3c;
+  --brand-grosh-dark: #174a30;
 
   --radius: 1rem;
   --background: #efe4c8;
@@ -70,6 +74,8 @@
   --color-gold-dark: var(--brand-gold-dark);
   --color-parchment: var(--brand-parchment);
   --color-ink: var(--brand-ink);
+  --color-grosh: var(--brand-grosh);
+  --color-grosh-dark: var(--brand-grosh-dark);
 
   --font-sans: var(--font-inter);
   --font-heading: var(--font-gothic);

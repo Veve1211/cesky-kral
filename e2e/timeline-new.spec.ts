@@ -75,6 +75,8 @@ test("po výhře nového panovníka má štítek Nový on, ne ten dřív viděn�
   await expect(timeline(page).getByTestId("new-badge")).toHaveCount(1);
   await expect(stop(page, karel.name).getByTestId("new-badge")).toBeVisible();
   await expect(stop(page, rudolf.name).getByTestId("new-badge")).toHaveCount(0);
+  // The river may start below the fold (e.g. under the Ko-fi card) – "seen" means scrolled to.
+  await stop(page, karel.name).scrollIntoViewIfNeeded();
   await waitUntilSeen(page, karel.slug);
 
   await open(page, "/");
