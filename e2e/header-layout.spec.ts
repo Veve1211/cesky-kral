@@ -1,13 +1,13 @@
 // Header on every width: the logo stays whole and nothing overflows.
-// Every menu item is icon-only below 768 px (`md`, with an aria-label) and
-// shows icon + text from 768 px. Everything shares one line from 320 px; with
+// Every menu item is icon-only below 1024 px (`lg`, with an aria-label) and
+// shows icon + text from 1024 px. Everything shares one line from 320 px; with
 // larger text the menu may wrap onto a second line instead of cutting anything.
 // No Ko-fi button in the header.
 import { expect, type Page, test } from "@playwright/test";
 
 import { open } from "./helpers/game";
 
-const WIDTHS = [320, 340, 360, 375, 390, 414, 430, 460, 480, 640, 767, 768, 1024, 1280];
+const WIDTHS = [320, 340, 360, 375, 390, 414, 430, 460, 480, 640, 768, 1023, 1024, 1280];
 
 async function headerState(page: Page) {
   return page.evaluate(() => {
@@ -51,7 +51,7 @@ test.describe("hlavička na úzkých displejích", () => {
   // the page keeps the wider fallback fonts, so check both cases.
   for (const fonts of ["webová písma", "náhradní písma"] as const) {
     for (const width of WIDTHS) {
-      const wide = width >= 768;
+      const wide = width >= 1024;
       test(`${width} px, ${fonts}: logo celé, menu ${wide ? "ikona + text" : "jen ikony"}, jeden řádek`, async ({ page }) => {
         if (fonts === "náhradní písma") await page.route(/\.(woff2?|ttf)(\?|$)/, (route) => route.abort());
         await page.setViewportSize({ width, height: 700 });
@@ -66,7 +66,7 @@ test.describe("hlavička na úzkých displejích", () => {
           logoWhole: true,
           linksInside: true,
           noPageScroll: true,
-          linkCount: 5,
+          linkCount: 6,
           allNamed: true,
           iconsInside: true,
           allTextVisible: wide,

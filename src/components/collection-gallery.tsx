@@ -9,6 +9,7 @@ import {
   KingGrid,
   useCollectionSummary,
 } from "@/components/collection-summary";
+import { MyCrestCard } from "@/components/my-crest-card";
 import { RoyalCelebration } from "@/components/royal-celebration";
 import { Button } from "@/components/ui/button";
 import type { KingSummary } from "@/lib/kings";
@@ -44,6 +45,9 @@ export function CollectionGallery({ kings }: { kings: KingSummary[] }) {
           }
         />
       )}
+
+      {/* Right next to the rank: the player's crest (or an invitation to make one). */}
+      <MyCrestCard kingSlugs={kings.map((king) => king.slug)} className="-mt-4 sm:-mt-6" />
 
       <section aria-labelledby="gallery-heading" className="flex flex-col gap-5">
         <h2 id="gallery-heading" className="text-center text-4xl font-bold sm:text-left">

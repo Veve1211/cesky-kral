@@ -36,6 +36,8 @@ export function MyCollection({ kings }: { kings: KingSummary[] }) {
 
   return (
     <>
+      <MyCrestCard kingSlugs={kings.map((king) => king.slug)} />
+
       {complete ? (
         <RoyalCelebration total={total}>
           <GoldenCount golden={golden} total={total} />
@@ -81,8 +83,6 @@ export function MyCollection({ kings }: { kings: KingSummary[] }) {
           <KingGrid cards={missing} />
         </section>
       )}
-
-      <MyCrestCard />
 
       <PlayerPanel />
 
