@@ -7,8 +7,8 @@ Aktualizováno: 2026-11-09 20:19 (Praha). STOP pravidlo: v 6:00 práci ukončit.
 | PR 0 – bezpečnost + README | `chore/security-readme` | #39 | hotovo, testy lokálně zelené (274) |
 | PR A – úvod, groš, hlavička, odměny | `feat/home-rewards` (z PR 0) | #40 | hotovo, testy lokálně zelené (280) |
 | PR B – žebříčky, Denní výzva, přenos | `feat/leaderboards` (z PR A) | #41 | hotovo, lokálně 297 zelených, CI zelené |
-| PR C – plynulé režimy, další žebříčky | `feat/smooth-modes` (z PR B) | #42 | hotovo, lokálně 314 zelených |
-| PR D – vlastní erb + README novinky | `feat/crest` (z PR C) | #43 | hotovo, lokálně 329 zelených, CI běží |
+| PR C – plynulé režimy, další žebříčky | `feat/smooth-modes` (z PR B) | #42 | hotovo, lokálně 314 zelených, CI zelené |
+| PR D – vlastní erb + README novinky | `feat/crest` (z PR C) | #43 | hotovo, lokálně 329 zelených, CI zelené |
 
 Pořadí mergování: #39 → #40 → B → C → D (každý je založený na předchozím).
 
@@ -19,7 +19,7 @@ Pořadí mergování: #39 → #40 → B → C → D (každý je založený na p�
 4. ✅ Celá sada 314 zelených; PR C.
 
 ## Další krok
-- Všech pět PR vytvořeno. Zbývá jen hlídat CI u #42 a #43; nic se nemerguje (merguje Veve).
+- Všech pět PR vytvořeno, CI všude zelené. Nic dalšího k udělání; merguje Veve v pořadí #39 → #40 → #41 → #42 → #43.
 
 ## Poznámky pro obnovení
 - Lokální testy: `service postgresql start`, `.env.local` s `E2E_DATABASE_URL` (DB `cesky_kral_test`, uživatel `kral`), build s `NEXT_PUBLIC_KOFI_URL=https://ko-fi.com/cesky-kral-test`, pak `E2E_SKIP_BUILD=1 npm run test:e2e`.
