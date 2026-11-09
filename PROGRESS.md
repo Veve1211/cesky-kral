@@ -1,7 +1,7 @@
 # Průběh práce – erb viditelně (PR „Erb všude“)
 
 Aktualizováno: 2026-11-09 21:50 (Praha). STOP pravidlo: v 6:00 práci ukončit.
-Větev `feat/crest-visible` z dev (PR #39–#43 už v dev). PR: zatím ne.
+Větev `feat/crest-visible` z dev (PR #39–#43 už v dev). PR: #44 (CI běží).
 
 ## Kroky
 1. ✅ Odemykání i za karty (klíč 1, zaoblený štít 3, dělený 6 karet); oslava karty / koruny ukáže nové díly + „Ozdobit erb“.
