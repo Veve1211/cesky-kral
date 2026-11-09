@@ -7,7 +7,7 @@ import { CrestSvg } from "@/components/crest-svg";
 import { ShareButton } from "@/components/share-button";
 import { Button } from "@/components/ui/button";
 import { useCollectionReady } from "@/lib/collection";
-import { readSavedCrest, saveCrest, useSavedCrest } from "@/lib/crest-progress";
+import { readSavedCrest, saveCrest } from "@/lib/crest-progress";
 import { downloadCrestPng } from "@/lib/crest-png";
 import {
   CHARGE_NAMES,
@@ -67,9 +67,9 @@ function fixDesign(design: CrestDesign, counts: CrownCounts): CrestDesign {
  */
 export function CrestEditor({ kingSlugs }: { kingSlugs: string[] }) {
   const ready = useCollectionReady();
-  const saved = useSavedCrest();
   if (!ready) return <div aria-busy="true" aria-label="Načítám erb" className="parchment h-96 animate-pulse rounded-2xl" />;
-  return <Editor key={saved ? "saved" : "new"} kingSlugs={kingSlugs} initial={readSavedCrest() ?? DEFAULT_CREST} />;
+  // Read once: later saves must not reset the editor.
+  return <Editor kingSlugs={kingSlugs} initial={readSavedCrest() ?? DEFAULT_CREST} />;
 }
 
 function Editor({ kingSlugs, initial }: { kingSlugs: string[]; initial: CrestDesign }) {
