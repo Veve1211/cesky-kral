@@ -3,6 +3,7 @@ import type { ReactNode } from "react";
 import Link from "next/link";
 import { Swords } from "lucide-react";
 
+import { KofiButton } from "@/components/kofi-button";
 import { CardCorners, OrnamentDivider } from "@/components/ornaments";
 import { Button } from "@/components/ui/button";
 import { DAILY_QUESTIONS } from "@/lib/daily";
@@ -12,6 +13,7 @@ import {
   QUICK_ROUND_QUESTIONS,
   RANKS,
 } from "@/lib/game-rules";
+import { TIER_SHORT, tierThresholds } from "@/lib/mastery";
 
 export const metadata: Metadata = {
   title: "Jak hrát",
@@ -41,9 +43,46 @@ const MODES: { icon: string; name: string; href: string; text: string }[] = [
   },
   {
     icon: "✨",
-    name: "Zlaté kolo",
+    name: "Mistrovské kolo",
     href: "/sbirka",
-    text: "Mistrovská úroveň pro panovníka, kterého už máš. Čekají tě všechny jeho těžké otázky. Když odpovíš správně na každou, karta se změní ve zlatou.",
+    text: "Pro panovníka, kterého už máš ve sbírce. Čekají tě všechny jeho těžké otázky. Když odpovíš správně na každou, získáš zlatou kartu.",
+  },
+];
+
+// Example thresholds for a ruler with nine questions (every ruler has nine).
+const [BRONZE, SILVER, GOLD] = tierThresholds(9);
+
+/** Every reward has one meaning and one way to get it. */
+const REWARDS: { icon: string; name: string; what: string; how: string }[] = [
+  {
+    icon: "🃏",
+    name: "Karta panovníka",
+    what: "Panovník je ve tvé sbírce. Odemkne se jeho kronika a roky vlády.",
+    how: `Ve hře o kartu odpověz správně aspoň na ${CORRECT_TO_COLLECT} z ${QUESTIONS_PER_KING} otázek.`,
+  },
+  {
+    icon: "👑",
+    name: "Koruna učenosti",
+    what: `Ukazuje, kolik toho o panovníkovi víš: ${TIER_SHORT[1]} → ${TIER_SHORT[2]} → ${TIER_SHORT[3]}. Nasadí se na jeho portrét.`,
+    how: `Každá jeho otázka zodpovězená správně v jakémkoli režimu se počítá jednou. Bronz za ${BRONZE}, stříbro za ${SILVER}, zlato za všech ${GOLD}.`,
+  },
+  {
+    icon: "✨",
+    name: "Zlatá karta",
+    what: "Mistrovství nad panovníkem: karta dostane zlatý třpytivý rám.",
+    how: "V mistrovském kole odpověz správně na všechny jeho těžké otázky. Hraje se jen o panovníka ve sbírce.",
+  },
+  {
+    icon: "🛡️",
+    name: "Hodnost",
+    what: "Jak daleko jsi s celou sbírkou.",
+    how: `Podle počtu karet: ${RANKS[0]} (žádná) → ${RANKS[1]} (méně než polovina) → ${RANKS[2]} (aspoň polovina) → ${RANKS[3]} (všichni panovníci).`,
+  },
+  {
+    icon: "🔥",
+    name: "Série",
+    what: "Tvoje vytrvalost.",
+    how: "V Denní výzvě dny v řadě s dohranou výzvou, v Kdo vládl dřív? trefy za sebou.",
   },
 ];
 
@@ -56,7 +95,7 @@ const FAQ: { question: string; answer: ReactNode }[] = [
   {
     question: "Můžu hru o kartu zkusit znovu?",
     answer:
-      "Ano, kolikrát chceš. Otázky i odpovědi se pokaždé zamíchají. I u získaného panovníka si můžeš zahrát znovu nebo zkusit zlaté kolo.",
+      "Ano, kolikrát chceš. Otázky i odpovědi se pokaždé zamíchají. I u získaného panovníka si můžeš zahrát znovu nebo zkusit mistrovské kolo.",
   },
   {
     question: "Proč u některých panovníků nevidím roky vlády?",
@@ -184,6 +223,30 @@ export default function HowToPlayPage() {
         </Step>
       </ol>
 
+      <section aria-labelledby="rewards-heading" className="flex flex-col gap-3">
+        <h2 id="rewards-heading" className="text-center text-4xl font-bold sm:text-left">
+          Přehled odměn
+        </h2>
+        <ul className="flex flex-col gap-3">
+          {REWARDS.map((reward) => (
+            <li key={reward.name} className="parchment relative flex gap-4 rounded-2xl p-5" data-testid="reward">
+              <span aria-hidden className="text-3xl leading-none">
+                {reward.icon}
+              </span>
+              <div className="flex min-w-0 flex-col gap-1.5">
+                <h3 className="font-heading text-2xl leading-tight font-bold">{reward.name}</h3>
+                <p>
+                  <strong>Co to je:</strong> {reward.what}
+                </p>
+                <p>
+                  <strong>Jak ji získám:</strong> {reward.how}
+                </p>
+              </div>
+            </li>
+          ))}
+        </ul>
+      </section>
+
       <section aria-labelledby="faq-heading" className="flex flex-col gap-3">
         <h2 id="faq-heading" className="text-center text-4xl font-bold sm:text-left">
           Časté otázky
@@ -215,6 +278,8 @@ export default function HowToPlayPage() {
           </Link>
         </Button>
       </div>
+
+      <KofiButton />
     </div>
   );
 }

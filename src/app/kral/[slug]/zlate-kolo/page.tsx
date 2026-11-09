@@ -21,7 +21,7 @@ export async function generateMetadata({
   const king = await getKingBySlug(slug);
   if (!king) return { title: "Král nenalezen" };
   return {
-    title: `Zlaté kolo: ${king.name}`,
+    title: `Mistrovské kolo: ${king.name}`,
     description: `Mistrovská úroveň: všechny těžké otázky o panovníkovi ${king.name}.`,
   };
 }
@@ -70,7 +70,7 @@ async function GoldenRound({ params }: { params: Promise<{ slug: string }> }) {
           />
         </div>
         <p className="text-xs font-semibold tracking-[0.3em] text-gold uppercase">
-          ✨ Zlaté kolo · mistrovská úroveň
+          ✨ Mistrovské kolo · o zlatou kartu
         </p>
         <h1 className="text-4xl leading-tight font-bold sm:text-5xl">{king.name}</h1>
         {king.isLegend && (
@@ -97,7 +97,7 @@ async function GoldenRound({ params }: { params: Promise<{ slug: string }> }) {
 
 function GoldenSkeleton() {
   return (
-    <div aria-busy="true" aria-label="Načítám zlaté kolo" className="flex flex-col gap-6">
+    <div aria-busy="true" aria-label="Načítám mistrovské kolo" className="flex flex-col gap-6">
       <div className="h-72 animate-pulse rounded-2xl bg-navy/80" />
       <div className="parchment h-80 animate-pulse rounded-2xl" />
     </div>

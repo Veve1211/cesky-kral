@@ -3,10 +3,10 @@ import { connection } from "next/server";
 
 import { CollectionGallery } from "@/components/collection-gallery";
 import { DailyHomeButton } from "@/components/daily-home-button";
-import { KofiButton } from "@/components/kofi-button";
 import { IlluminatedInitial } from "@/components/illuminated-initial";
 import { CardCorners, OrnamentDivider } from "@/components/ornaments";
 import { ReignTimeline } from "@/components/reign-timeline";
+import { StartButton, StartButtonSkeleton } from "@/components/start-button";
 import { WhoFirstGame } from "@/components/who-first-game";
 import { getKings, toWhoFirstKings } from "@/lib/kings";
 import { pickPair } from "@/lib/who-first";
@@ -22,8 +22,6 @@ export default function HomePage() {
           Erbovní kniha <span className="gilt-text gilt-text-ink animate-shimmer">českých panovníků</span>
         </h1>
         <OrnamentDivider />
-        <DailyHomeButton />
-        <KofiButton variant="hero" />
       </section>
 
       {/* Static shell above renders instantly; everything below streams in with one DB query. */}
@@ -42,6 +40,12 @@ async function HomeContent() {
 
   return (
     <>
+      {/* One main button; the daily challenge is a smaller second choice. */}
+      <section aria-label="Hrát" className="-mt-4 flex flex-col items-center gap-4 sm:-mt-6">
+        <StartButton kings={kings.map(({ slug, name }) => ({ slug, name }))} />
+        <DailyHomeButton />
+      </section>
+
       <ReignTimeline variant="compact" kings={kings} />
 
       {duelKings.length >= 2 && (
@@ -63,8 +67,8 @@ async function HomeContent() {
       <p className="mx-auto max-w-xl text-left text-ink/85 sm:text-lg">
         <IlluminatedInitial letter="V" />
         <span className="sr-only">V</span>yber si panovníka a odpověz na pět otázek. Když trefíš aspoň
-        čtyři, jeho karta je tvoje. Sbírej dál a stoupej od panoše až k titulu Český král nebo
-        Česká královna.
+        čtyři, jeho karta je tvoje. Sbírej dál a stoupej od panoše až k titulu Pán nebo Paní erbovní
+        knihy.
       </p>
 
       {/* Collected state lives in localStorage, so the client components read it. */}
@@ -76,6 +80,9 @@ async function HomeContent() {
 function HomeSkeleton() {
   return (
     <div aria-busy="true" aria-label="Načítám" className="flex flex-col gap-8 sm:gap-10">
+      <div className="-mt-4 flex justify-center sm:-mt-6">
+        <StartButtonSkeleton />
+      </div>
       <div className="parchment h-28 animate-pulse rounded-2xl" />
       <div className="parchment mx-auto h-64 w-full max-w-xl animate-pulse rounded-2xl" />
       <div className="parchment h-28 animate-pulse rounded-2xl" />

@@ -15,16 +15,16 @@ function Hourglass({ className }: { className?: string; "aria-hidden"?: boolean 
   );
 }
 
-// `labelClass` hides the visible label where the header is too narrow; the
-// label stays for screen readers (and every link has an aria-label), so each
-// link keeps its name. On phones (below `sm`) all links are icons only, as
-// "Jak hrát" was before #30. If logo and menu still don't fit on one line, the
-// header wraps the menu onto a second line (see SiteHeader) instead of cutting the logo.
+// On phones and small tablets (below `md`, 768 px) every link is an icon only;
+// the label stays for screen readers and every link has an aria-label. From
+// `md` every link shows its icon and text. If logo and menu still don't fit on
+// one line (larger text), the header wraps the menu onto a second line (see
+// SiteHeader) instead of cutting the logo.
 const ITEMS = [
-  { href: "/sbirka", label: "Moje sbírka", Icon: BookOpen, className: "", labelClass: "max-sm:sr-only" },
-  { href: "/kdo-driv", label: "Kdo vládl dřív?", Icon: Hourglass, className: "", labelClass: "sr-only" },
-  { href: "/rychlovka", label: "Rychlovka", Icon: Zap, className: "text-gold", labelClass: "max-sm:sr-only" },
-  { href: "/jak-hrat", label: "Jak hrát", Icon: CircleQuestionMark, className: "", labelClass: "max-sm:sr-only" },
+  { href: "/sbirka", label: "Moje sbírka", Icon: BookOpen, className: "" },
+  { href: "/kdo-driv", label: "Kdo vládl dřív?", Icon: Hourglass, className: "" },
+  { href: "/rychlovka", label: "Rychlovka", Icon: Zap, className: "text-gold" },
+  { href: "/jak-hrat", label: "Jak hrát", Icon: CircleQuestionMark, className: "" },
 ] as const;
 
 /** Header navigation; the current page is marked with aria-current="page". */
@@ -36,7 +36,7 @@ export function SiteNav() {
 export function SiteNavLinks({ pathname }: { pathname: string | null }) {
   return (
     <nav aria-label="Hlavní navigace" className="flex shrink-0 items-center gap-0.5 text-sm font-medium min-[460px]:gap-1">
-      {ITEMS.map(({ href, label, Icon, className, labelClass }) => {
+      {ITEMS.map(({ href, label, Icon, className }) => {
         const active = pathname === href;
         return (
           <Link
@@ -55,7 +55,7 @@ export function SiteNavLinks({ pathname }: { pathname: string | null }) {
             )}
           >
             <Icon className="size-4 shrink-0" aria-hidden />
-            <span className={labelClass}>{label}</span>
+            <span className="max-md:sr-only">{label}</span>
           </Link>
         );
       })}

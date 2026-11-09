@@ -177,7 +177,7 @@ function DailyResult({
             <Link href="/">Galerie</Link>
           </Button>
         </div>
-        <KofiButton variant="card" className="mt-2" />
+        <KofiButton className="mt-2" />
       </CardContent>
     </Card>
   );

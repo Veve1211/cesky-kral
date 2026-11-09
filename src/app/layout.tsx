@@ -2,7 +2,6 @@ import type { Metadata, Viewport } from "next";
 import Link from "next/link";
 import { Grenze_Gotisch, Inter, Uncial_Antiqua } from "next/font/google";
 
-import { KofiButton } from "@/components/kofi-button";
 import { OrnamentDivider } from "@/components/ornaments";
 import { SiteHeader } from "@/components/site-header";
 import "./globals.css";
@@ -80,7 +79,6 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           {children}
         </main>
         <footer className="flex flex-col items-center gap-2 px-4 pt-4 pb-8 text-center text-xs text-muted-foreground">
-          <KofiButton variant="footer" className="mb-2" />
           <OrnamentDivider className="max-w-[12rem]" />
           <p>
             <span className="font-heading text-sm">Český král</span> ·{" "}

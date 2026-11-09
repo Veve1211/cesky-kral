@@ -431,7 +431,10 @@ function Results(
 
   if (props.mode === "golden") {
     return props.collected ? (
-      <GoldenWin king={props.king} score={score} total={total} headingRef={headingRef} />
+      <div className="flex flex-col gap-6">
+        <GoldenWin king={props.king} score={score} total={total} headingRef={headingRef} />
+        <KofiButton />
+      </div>
     ) : (
       <Card className="animate-card-reveal items-center text-center">
         <CardCorners className="m-1 size-8 text-gold-dark" />
@@ -443,7 +446,7 @@ function Results(
             aria-describedby="quiz-result-score"
             className={cn("font-sans text-xs font-semibold tracking-[0.2em] text-gold-dark uppercase", HEADING_FOCUS)}
           >
-            Konec zlatého kola
+            Konec mistrovského kola
           </h2>
           <p id="quiz-result-score" className="font-heading text-7xl font-bold">
             {score}
@@ -463,6 +466,7 @@ function Results(
               <Link href="/sbirka">Moje sbírka</Link>
             </Button>
           </div>
+          <KofiButton className="mt-2" />
         </CardContent>
       </Card>
     );
@@ -550,6 +554,7 @@ function Results(
             </Button>
           </RoyalCelebration>
         )}
+        <KofiButton />
       </div>
     );
   }
@@ -596,7 +601,7 @@ function Results(
             <Link href="/sbirka">Do sbírky</Link>
           </Button>
         </div>
-        {props.mode === "quick" && <KofiButton variant="card" className="mt-2" />}
+        <KofiButton className="mt-2" />
       </CardContent>
     </Card>
   );
@@ -667,10 +672,10 @@ function GoldenLocked({ king }: { king: QuizKing }) {
         <span className="flex size-14 items-center justify-center rounded-full bg-navy text-gold">
           <Lock className="size-6" aria-hidden />
         </span>
-        <h2 className="text-3xl font-bold">Zlaté kolo je zamčené</h2>
+        <h2 className="text-3xl font-bold">Mistrovské kolo je zamčené</h2>
         <OrnamentDivider />
         <p className="text-muted-foreground">
-          Zlaté kolo se odemkne, až bude {king.name} ve tvé sbírce. Nejdřív
+          Mistrovské kolo se odemkne, až bude {king.name} ve tvé sbírce. Nejdřív
           vyhraj běžnou hru o kartu.
         </p>
         <Button asChild variant="accent" size="lg">

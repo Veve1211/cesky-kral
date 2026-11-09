@@ -95,7 +95,7 @@ async function stubShare(page: Page) {
   });
 }
 
-test("na úvodní stránce je výzva nahoře jako hlavní tlačítko", async ({ page }) => {
+test("na úvodní stránce je výzva hned pod hlavním tlačítkem", async ({ page }) => {
   await open(page, "/");
   const link = page.getByRole("link", { name: /Denní výzva/ });
   await expect(link).toBeVisible();

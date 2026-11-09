@@ -8,7 +8,7 @@ const hardCount = getKing(SLUG).questions.filter((q) => q.difficulty === 3).leng
 
 test("zlaté kolo je bez karty zamčené", async ({ page }) => {
   await open(page, `/kral/${SLUG}/zlate-kolo`);
-  await expect(page.getByRole("heading", { name: "Zlaté kolo je zamčené" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Mistrovské kolo je zamčené" })).toBeVisible();
   await expect(page.getByRole("link", { name: "Hrát o kartu" })).toHaveAttribute("href", `/kral/${SLUG}`);
   await expect(page.getByText(/^Otázka\s*1\s*z/)).toHaveCount(0);
 });
@@ -32,7 +32,7 @@ test("zlaté kolo s chybou zlatou kartu nedá", async ({ page }) => {
   await setCollection(page, [SLUG]);
   await open(page, `/kral/${SLUG}/zlate-kolo`);
   await playRound(page, [false, ...Array<boolean>(hardCount - 1).fill(true)]);
-  await expect(page.getByText("Konec zlatého kola")).toBeVisible();
+  await expect(page.getByText("Konec mistrovského kola")).toBeVisible();
   const stored = await readCollection(page);
   expect(stored?.kings).toEqual([SLUG]);
   expect(stored?.golden).toEqual([]);

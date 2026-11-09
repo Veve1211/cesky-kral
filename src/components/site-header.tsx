@@ -1,7 +1,6 @@
 import { Suspense } from "react";
 import Link from "next/link";
 
-import { KofiButton } from "@/components/kofi-button";
 import { CrownMark } from "@/components/ornaments";
 import { SiteNav, SiteNavLinks } from "@/components/site-nav";
 
@@ -18,13 +17,9 @@ export function SiteHeader() {
           </span>
         </Link>
         {/* The current path is known only per request – stream the active state in. */}
-        <div className="flex items-center gap-1 min-[460px]:gap-2">
-          <Suspense fallback={<SiteNavLinks pathname={null} />}>
-            <SiteNav />
-          </Suspense>
-          {/* External link, so it sits next to the site menu, not inside it. */}
-          <KofiButton variant="header" />
-        </div>
+        <Suspense fallback={<SiteNavLinks pathname={null} />}>
+          <SiteNav />
+        </Suspense>
       </div>
       {/* gilded rule under the header */}
       <div className="gilt h-[3px]" aria-hidden />

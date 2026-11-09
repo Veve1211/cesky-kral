@@ -110,7 +110,7 @@ test("poslední panovník dokončí sbírku až po úspěšném opakování ulo�
   await open(page, `/kral/${SLUG}`);
   await playRound(page, [true, true, true, true, false]);
   await expectSaveFailure(page, 4);
-  const celebration = page.getByRole("region", { name: /Jsi Český král/ });
+  const celebration = page.getByRole("region", { name: /Jsi Pán \/ Paní erbovní knihy/ });
   await expect(celebration).toHaveCount(0);
   expect((await readCollection(page))?.kings).toEqual(owned);
 
