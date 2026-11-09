@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { BookOpen, Zap } from "lucide-react";
+import { BookOpen, CircleQuestionMark, Zap } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 
@@ -15,12 +15,15 @@ function Hourglass({ className }: { className?: string; "aria-hidden"?: boolean 
   );
 }
 
-// `iconOnly`: always just the icon; `iconOnlyOnMobile`: label hidden below `sm`.
-// Both keep the label for screen readers, so the nav fits next to the logo.
+// `labelClass` hides the visible label where the header is too narrow; the
+// label stays for screen readers, so every link keeps its name. "Jak hrát"
+// always keeps its text. When logo and menu don't fit on one line, the header
+// wraps the menu onto a second line (see SiteHeader) instead of cutting the logo.
 const ITEMS = [
-  { href: "/sbirka", label: "Moje sbírka", Icon: BookOpen, className: "", iconOnly: false, iconOnlyOnMobile: false },
-  { href: "/kdo-driv", label: "Kdo vládl dřív?", Icon: Hourglass, className: "", iconOnly: true, iconOnlyOnMobile: true },
-  { href: "/rychlovka", label: "Rychlovka", Icon: Zap, className: "text-gold", iconOnly: false, iconOnlyOnMobile: true },
+  { href: "/sbirka", label: "Moje sbírka", Icon: BookOpen, className: "", labelClass: "max-sm:sr-only" },
+  { href: "/kdo-driv", label: "Kdo vládl dřív?", Icon: Hourglass, className: "", labelClass: "sr-only" },
+  { href: "/rychlovka", label: "Rychlovka", Icon: Zap, className: "text-gold", labelClass: "max-sm:sr-only" },
+  { href: "/jak-hrat", label: "Jak hrát", Icon: CircleQuestionMark, className: "", labelClass: "" },
 ] as const;
 
 /** Header navigation; the current page is marked with aria-current="page". */
@@ -31,27 +34,28 @@ export function SiteNav() {
 /** Links without the active state – used as the Suspense fallback while the path is unknown. */
 export function SiteNavLinks({ pathname }: { pathname: string | null }) {
   return (
-    <nav aria-label="Hlavní navigace" className="flex shrink-0 items-center gap-0.5 text-sm font-medium min-[360px]:gap-1">
-      {ITEMS.map(({ href, label, Icon, className, iconOnly, iconOnlyOnMobile }) => {
+    <nav aria-label="Hlavní navigace" className="flex shrink-0 items-center gap-0.5 text-sm font-medium min-[460px]:gap-1">
+      {ITEMS.map(({ href, label, Icon, className, labelClass }) => {
         const active = pathname === href;
         return (
           <Link
             key={href}
             href={href}
             aria-current={active ? "page" : undefined}
-            aria-label={iconOnlyOnMobile ? label : undefined}
+            aria-label={label}
             className={cn(
-              "relative flex min-h-10 items-center gap-1 rounded-lg px-2 py-2 min-[360px]:px-2.5 whitespace-nowrap transition-colors hover:bg-white/10",
+              "relative flex min-h-10 items-center gap-1 rounded-lg px-2 py-2 min-[460px]:px-2.5 whitespace-nowrap transition-colors hover:bg-white/10",
               className,
-              // Icon-only links get tighter padding on the narrowest phones.
-              iconOnlyOnMobile && "max-[359px]:px-1.5",
+              // Tighter padding on phones, so logo and menu share one line even
+              // before the web fonts load (fallback fonts are wider). Icon-only
+              // links stay at least 24 px wide (WCAG 2.5.8 target size).
+              labelClass === "" ? "max-[459px]:px-1.5" : "max-[459px]:px-1",
               // Active page: lighter background and a gilded underline.
               "aria-[current=page]:bg-white/15 aria-[current=page]:after:absolute aria-[current=page]:after:inset-x-2 aria-[current=page]:after:bottom-1 aria-[current=page]:after:h-0.5 aria-[current=page]:after:rounded-full aria-[current=page]:after:bg-gold",
             )}
           >
-            {/* Below 360 px the text label alone is enough – saves room for the logo. */}
-            <Icon className={cn("size-4 shrink-0", !iconOnlyOnMobile && "max-[359px]:hidden")} aria-hidden />
-            <span className={iconOnly ? "sr-only" : iconOnlyOnMobile ? "max-sm:sr-only" : undefined}>{label}</span>
+            <Icon className="size-4 shrink-0" aria-hidden />
+            <span className={labelClass}>{label}</span>
           </Link>
         );
       })}

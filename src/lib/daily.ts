@@ -4,6 +4,7 @@
 // the calendar date in the Czech time zone, so a new challenge starts at
 // midnight in Prague (DST included).
 import { ROUND_PLAN, type Difficulty } from "@/lib/game-rules";
+import { shareIcons } from "@/lib/share-text";
 
 export const DAILY_TIME_ZONE = "Europe/Prague";
 /** Same shape as a king round: 2 easy, 2 medium, 1 hard. */
@@ -145,7 +146,7 @@ export function pickDailyQuestions<T extends DailyCandidate>(dateKey: string, po
 /** "Český král – výzva 8. 11. 4/5 👑👑👑👑⚔️" (+ streak when 2 days or more). */
 export function dailyShareText(dateKey: string, marks: readonly boolean[], streak: number): string {
   const score = marks.filter(Boolean).length;
-  const icons = marks.map((ok) => (ok ? "👑" : "⚔️")).join("");
+  const icons = shareIcons(marks);
   const streakText = streak >= 2 ? ` 🔥 ${formatStreakDays(streak)}` : "";
   return `Český král – výzva ${formatDailyDate(dateKey)} ${score}/${marks.length} ${icons}${streakText}`;
 }

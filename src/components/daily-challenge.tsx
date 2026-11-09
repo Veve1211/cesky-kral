@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { RotateCcw, Zap } from "lucide-react";
 
+import { KofiButton } from "@/components/kofi-button";
 import { CardCorners, OrnamentDivider } from "@/components/ornaments";
 import { Quiz } from "@/components/quiz";
 import { ShareButton } from "@/components/share-button";
@@ -176,6 +177,7 @@ function DailyResult({
             <Link href="/">Galerie</Link>
           </Button>
         </div>
+        <KofiButton variant="card" className="mt-2" />
       </CardContent>
     </Card>
   );

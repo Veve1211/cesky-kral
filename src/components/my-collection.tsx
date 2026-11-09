@@ -9,6 +9,7 @@ import {
   KingGrid,
   useCollectionSummary,
 } from "@/components/collection-summary";
+import { KofiButton } from "@/components/kofi-button";
 import { CardCorners } from "@/components/ornaments";
 import { ReignTimeline } from "@/components/reign-timeline";
 import { RoyalCelebration } from "@/components/royal-celebration";
@@ -41,6 +42,8 @@ export function MyCollection({ kings }: { kings: KingSummary[] }) {
       ) : (
         <CollectionStatus rank={rank} collected={collected} golden={golden} total={total} />
       )}
+
+      <KofiButton variant="card" />
 
       <ReignTimeline variant="full" kings={kings} />
 

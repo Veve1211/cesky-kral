@@ -3,6 +3,7 @@ import { connection } from "next/server";
 
 import { CollectionGallery } from "@/components/collection-gallery";
 import { DailyHomeButton } from "@/components/daily-home-button";
+import { KofiButton } from "@/components/kofi-button";
 import { IlluminatedInitial } from "@/components/illuminated-initial";
 import { CardCorners, OrnamentDivider } from "@/components/ornaments";
 import { ReignTimeline } from "@/components/reign-timeline";
@@ -22,6 +23,7 @@ export default function HomePage() {
         </h1>
         <OrnamentDivider />
         <DailyHomeButton />
+        <KofiButton variant="hero" />
       </section>
 
       {/* Static shell above renders instantly; everything below streams in with one DB query. */}
