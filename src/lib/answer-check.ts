@@ -26,7 +26,7 @@ export async function evaluateAnswer(
     return { ok: false, error: "Neplatná odpověď." };
   }
 
-  const question = await getPrisma().question.findUnique({
+  const [question, rulerCount] = await Promise.all([getPrisma().question.findUnique({
     where: { id: questionId },
     select: {
       text: true,
@@ -43,7 +43,7 @@ export async function evaluateAnswer(
         },
       },
     },
-  });
+  }), getPrisma().king.count()]);
   if (!question) return { ok: false, error: "Otázka neexistuje." };
 
   const chosen = question.answers.find((a) => a.id === answerId);
@@ -70,6 +70,7 @@ export async function evaluateAnswer(
       imageUrl: question.king.imageUrl,
       questionKey: questionKey(question.king.slug, question.text),
       totalQuestions: question.king._count.questions,
+      rulerCount,
     },
   };
 }

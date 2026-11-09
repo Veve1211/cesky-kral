@@ -35,4 +35,6 @@ export type AnswerRuler = {
   questionKey: string;
   /** How many questions the ruler has – crown thresholds scale with it. */
   totalQuestions: number;
+  /** How many rulers the game has (the rarest crest parts need gold for all). */
+  rulerCount: number;
 };

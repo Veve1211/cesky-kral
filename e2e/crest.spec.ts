@@ -19,7 +19,7 @@ import {
   UNLOCKS,
   type CrestDesign,
 } from "../src/lib/heraldry";
-import { open } from "./helpers/game";
+import { open, setCollection } from "./helpers/game";
 import { getKing, kings } from "./helpers/seed-answers";
 
 async function setMastery(page: Page, tiers: Record<string, number>) {
@@ -47,8 +47,11 @@ test.describe("pravidla erbu (bez prohlížeče)", () => {
     expect(chargeProblem({ ...charged, division: "per-pale", second: "gules" })).toBeNull();
 
     const none = crownCounts([0, 0, 0], 3);
-    const some = crownCounts([3, 2, 1], 3);
-    expect(some).toEqual({ bronze: 3, silver: 2, gold: 1, total: 3 });
+    const some = crownCounts([3, 2, 1], 3, 2);
+    expect(some).toEqual({ cards: 2, bronze: 3, silver: 2, gold: 1, total: 3 });
+    expect(isUnlocked(UNLOCKS.charge.key, none)).toBe(false);
+    expect(isUnlocked(UNLOCKS.charge.key, some)).toBe(true);
+    expect(unlockText(UNLOCKS.shape.round, none)).toBe("Odemkne se za 3 karty panovníků ve sbírce (máš 0).");
     expect(isUnlocked(UNLOCKS.charge.star, none)).toBe(true);
     expect(isUnlocked(UNLOCKS.charge.lion, none)).toBe(false);
     expect(isUnlocked(UNLOCKS.charge.eagle, some)).toBe(true);
@@ -76,6 +79,8 @@ test.describe("pravidla erbu (bez prohlížeče)", () => {
 });
 
 test("editor: složení erbu ze základních dílů, uložení a po obnovení stejný", async ({ page }) => {
+  // Three cards unlock the round shield.
+  await setCollection(page, ["libuse", "karel-iv", "josef-ii"]);
   await open(page, "/muj-erb");
   await expect(page.getByTestId("crown-counts")).toContainText("🥉 0 · 🥈 0 · 🥇 0 z 18");
   await group(page, "Tvar štítu").getByRole("button", { name: "Zaoblený štít", exact: true }).click();
@@ -94,7 +99,7 @@ test("editor: složení erbu ze základních dílů, uložení a po obnovení st
   await expect(preview(page)).toHaveAccessibleName(expected);
   // Moje sbírka shows it too.
   await open(page, "/sbirka");
-  await expect(page.getByRole("region", { name: "Můj erb" }).getByRole("img")).toHaveAccessibleName(expected);
+  await expect(page.getByTestId("crest-card").getByRole("img")).toHaveAccessibleName(expected);
   await expect(page.getByRole("link", { name: "Upravit erb" })).toHaveAttribute("href", "/muj-erb");
 });
 
@@ -195,14 +200,23 @@ test("erb vedle přezdívky v žebříčku; server přijme jen platné parametry
 
   const name = `Erbovník ${randomBytes(3).toString("hex")}`;
   await request.post("/api/player/nickname", { data: { token, nickname: name } });
-  // One short game of "Kdo vládl dřív?" via the API puts the player in the board.
+  // A game of "Kdo vládl dřív?" via the API: a long streak puts the player on
+  // top of the board even in a test database full of older games.
   const start = (await (await request.post("/api/game/start", { data: { token, mode: "who-first" } })).json()) as { game: { sessionId: string; slugs: string[] } };
-  const [a, b] = start.game.slugs;
-  const earlier = getKing(a).reignFrom! <= getKing(b).reignFrom! ? a : b;
   const base = { token, mode: "who-first", sessionId: start.game.sessionId };
-  const first = (await (await request.post("/api/game/answer", { data: { ...base, choice: earlier } })).json()) as { result: { next: string[] } };
-  const [c, d] = first.result.next;
-  await request.post("/api/game/answer", { data: { ...base, choice: getKing(c).reignFrom! > getKing(d).reignFrom! ? c : d } });
+  let pair = start.game.slugs;
+  for (let i = 0; i < 25; i++) {
+    const earlier = getKing(pair[0]).reignFrom! <= getKing(pair[1]).reignFrom! ? pair[0] : pair[1];
+    const step = (await (await request.post("/api/game/answer", { data: { ...base, choice: earlier } })).json()) as { result: { next: string[] } };
+    pair = step.result.next;
+  }
+  // Ends the game (a tie in years would count as right – then pick again).
+  for (let i = 0; i < 5; i++) {
+    const later = getKing(pair[0]).reignFrom! > getKing(pair[1]).reignFrom! ? pair[0] : pair[1];
+    const step = (await (await request.post("/api/game/answer", { data: { ...base, choice: later } })).json()) as { result: { next: string[] | null } };
+    if (!step.result.next) break;
+    pair = step.result.next;
+  }
 
   const board = (await (await request.get("/api/game/leaderboard?mode=who-first&period=week")).json()) as {
     entries: { nickname: string; crest: CrestDesign | null }[];

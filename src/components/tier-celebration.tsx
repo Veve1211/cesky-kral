@@ -5,6 +5,7 @@ import { Dialog as DialogPrimitive } from "radix-ui";
 import { Fireworks } from "@/components/fireworks";
 import { KingPortrait } from "@/components/king-portrait";
 import { CardCorners, OrnamentDivider } from "@/components/ornaments";
+import { CrestUnlockText, DecorateCrestButton } from "@/components/crest-unlock-notice";
 import { Button } from "@/components/ui/button";
 import { kingInitial } from "@/lib/king-initial";
 import { TIER_KEYS, TIER_LINES, TIER_NAMES } from "@/lib/mastery";
@@ -50,8 +51,11 @@ export function TierCelebration({
   onClose,
   returnFocusTo,
   celebrationId,
+  unlockedParts = [],
 }: {
   ruler: CelebratedRuler | null;
+  /** Crest parts this crown unlocked ("Ozdobit erb"). */
+  unlockedParts?: readonly string[];
   tier: 1 | 2 | 3 | null;
   onClose: () => void;
   /** Changes for every celebration in a queue (used by tests). */
@@ -171,11 +175,16 @@ export function TierCelebration({
                 {TIER_LINES[tier]}
               </DialogPrimitive.Description>
 
-              <DialogPrimitive.Close asChild>
-                <Button variant="accent" size="lg" className="animate-tier-rise mt-2 min-w-48 [animation-delay:1.1s]">
-                  Pokračovat
-                </Button>
-              </DialogPrimitive.Close>
+              <CrestUnlockText parts={unlockedParts} />
+
+              <div className="animate-tier-rise mt-2 flex flex-wrap justify-center gap-3 [animation-delay:1.1s]">
+                <DialogPrimitive.Close asChild>
+                  <Button variant="accent" size="lg" className="min-w-48">
+                    Pokračovat
+                  </Button>
+                </DialogPrimitive.Close>
+                <DecorateCrestButton parts={unlockedParts} />
+              </div>
             </div>
           )}
         </DialogPrimitive.Content>

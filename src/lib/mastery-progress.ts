@@ -82,6 +82,11 @@ export function useMastery(): Mastery {
   return useSyncExternalStore(subscribe, getSnapshot, () => EMPTY);
 }
 
+/** Current crowns (outside React). */
+export function readMastery(): Mastery {
+  return getSnapshot();
+}
+
 export function tierOf(mastery: Mastery, slug: string): Tier {
   return mastery[slug]?.tier ?? 0;
 }

@@ -249,6 +249,7 @@ function DailyResult({
         <ShareButton
           text={dailyShareText(dateKey, marks, streak, place)}
           url={typeof window === "undefined" ? "" : `${window.location.origin}/vyzva`}
+          withCrest
         />
         <DailyCountdown className="text-muted-foreground" />
         <div className="flex flex-wrap justify-center gap-3">

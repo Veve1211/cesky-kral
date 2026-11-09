@@ -10,9 +10,9 @@ test("Jak hrát: odkaz v menu, pět kroků, časté otázky a tlačítko Hrát",
   const nav = page.getByRole("navigation", { name: "Hlavní navigace" });
   const link = nav.getByRole("link", { name: "Jak hrát" });
   await expect(link).toBeVisible();
-  // Text from 768 px; on phones an icon with the aria-label "Jak hrát".
+  // Text from 1024 px; below an icon with the aria-label "Jak hrát".
   const labelWidth = await link.getByText("Jak hrát", { exact: true }).evaluate((el) => el.getBoundingClientRect().width);
-  if ((page.viewportSize()?.width ?? 0) >= 768) expect(labelWidth).toBeGreaterThan(30);
+  if ((page.viewportSize()?.width ?? 0) >= 1024) expect(labelWidth).toBeGreaterThan(30);
   else expect(labelWidth).toBeLessThanOrEqual(1);
   await expect(link).toHaveAttribute("aria-label", "Jak hrát");
   await link.click();
@@ -41,7 +41,7 @@ test("Jak hrát: odkaz v menu, pět kroků, časté otázky a tlačítko Hrát",
 
   // Overview of every reward: what it is and how to get it.
   const rewards = page.getByRole("region", { name: "Přehled odměn" });
-  const names = ["Karta panovníka", "Koruna učenosti", "Zlatá karta", "Hodnost", "Díly erbu", "Série"];
+  const names = ["Karta panovníka", "Koruna učenosti", "Zlatá karta", "Hodnost", "Díly erbu", "Dnešní vládce", "Série"];
   await expect(rewards.getByTestId("reward")).toHaveCount(names.length);
   for (const name of names) {
     const item = rewards.getByTestId("reward").filter({ has: page.getByRole("heading", { level: 3, name, exact: true }) });
