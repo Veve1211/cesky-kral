@@ -2,7 +2,7 @@
 // Source rationale: docs/historical-content.md. No external network is needed in CI.
 import { expect, test } from "@playwright/test";
 
-import { currentQuestion, open, setCollection, settleAnswer } from "./helpers/game";
+import { currentQuestion, goNext, open, setCollection, settleAnswer } from "./helpers/game";
 import { chronicles, getKing, kings } from "./helpers/seed-answers";
 
 const EYE_SOURCE = "https://dvojka.rozhlas.cz/120-schuzka-soukroma-podobizna-ceskeho-krale-jana-lucemburskeho-7939911";
@@ -133,7 +133,7 @@ test("Janova otázka ve zlatém kole ponechává ověřenou odpověď a vysvětl
       await expect(feedback.getByRole("link", { name: "Zdroj" })).toHaveAttribute("href", EYE_SOURCE);
       checkedEyeQuestion = true;
     }
-    await page.getByRole("button", { name: i < 2 ? "Další otázka" : "Zobrazit výsledek" }).click();
+    await goNext(page, i + 1, 3);
   }
   expect(checkedEyeQuestion).toBe(true);
 });

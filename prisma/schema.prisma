@@ -71,6 +71,7 @@ model Player {
   createdAt     DateTime       @default(now())
   dailyAttempts DailyAttempt[]
   transferCodes TransferCode[]
+  gameSessions  GameSession[]
 }
 
 /// One "Denní výzva" attempt per player and day. Scored only by the server.
@@ -106,4 +107,25 @@ model TransferCode {
   createdAt DateTime  @default(now())
 
   @@index([expiresAt])
+}
+
+/// One game of Rychlovka, "Kdo vládl dřív?" or "Řeka času", scored only by
+/// the server. `state` holds what the server asked (question ids / rulers).
+model GameSession {
+  id         Int       @id @default(autoincrement())
+  /// Random public id the browser uses (never the numeric id)
+  publicId   String    @unique
+  playerId   Int
+  player     Player    @relation(fields: [playerId], references: [id], onDelete: Cascade)
+  /// quick / who-first / timeline (CHECK constraint in migration)
+  mode       String
+  state      Json
+  answered   Int       @default(0)
+  score      Int       @default(0)
+  startedAt  DateTime  @default(now())
+  finishedAt DateTime?
+  durationMs Int?
+
+  @@index([mode, finishedAt])
+  @@index([playerId, mode])
 }

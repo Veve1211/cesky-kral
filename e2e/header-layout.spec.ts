@@ -66,7 +66,7 @@ test.describe("hlavička na úzkých displejích", () => {
           logoWhole: true,
           linksInside: true,
           noPageScroll: true,
-          linkCount: 4,
+          linkCount: 5,
           allNamed: true,
           iconsInside: true,
           allTextVisible: wide,

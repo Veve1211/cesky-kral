@@ -33,13 +33,25 @@ const MODES: { icon: string; name: string; href: string; text: string }[] = [
     icon: "⚡",
     name: "Rychlovka",
     href: "/rychlovka",
-    text: `${QUICK_ROUND_QUESTIONS} náhodných otázek napříč všemi panovníky, od lehkých po těžké. Do sbírky se nepočítá, jde jen o skóre.`,
+    text: `${QUICK_ROUND_QUESTIONS} náhodných otázek napříč všemi panovníky, od lehkých po těžké. Do sbírky se nepočítá; hraješ o osobní rekord a místo v žebříčku.`,
   },
   {
     icon: "⏳",
     name: "Kdo vládl dřív?",
     href: "/kdo-driv",
     text: "Dva panovníci, klepni na toho, kdo začal vládnout dřív. Každá trefa prodlouží sérii, jedna chyba hru ukončí. Tvoje nejlepší série se pamatuje.",
+  },
+  {
+    icon: "🌊",
+    name: "Řeka času",
+    href: "/reka-casu",
+    text: "Seřaď čtyři panovníky od toho, kdo začal vládnout nejdřív. Každé správné kolo se počítá, jedna chyba hru ukončí.",
+  },
+  {
+    icon: "🏆",
+    name: "Žebříčky",
+    href: "/zebricky",
+    text: "Kdo vládl dřív?, Řeka času a Rychlovka mají týdenní i celkový žebříček, Denní výzva svého Dnešního vládce. Stačí přezdívka.",
   },
   {
     icon: "✨",
@@ -100,7 +112,7 @@ const STORED: { where: string; items: string[] }[] = [
     where: "Na serveru",
     items: [
       "přezdívka, jen když si ji zvolíš (pro žebříčky)",
-      "výsledky Denní výzvy: počet správných odpovědí a čas",
+      "výsledky Denní výzvy, Rychlovky, Kdo vládl dřív? a Řeky času: skóre a čas",
       "jen otisk anonymního klíče, ne klíč samotný",
       "kód pro přenos postupu – smaže se po použití, nejpozději za 30 minut",
     ],

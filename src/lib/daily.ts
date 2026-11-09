@@ -63,6 +63,25 @@ export function msUntilNextDaily(now: Date = new Date()): number {
   return Math.max(0, utcMidnight - now.getTime());
 }
 
+/** The instant when the Prague calendar day `key` starts (local midnight). */
+export function pragueDayStart(key: string): Date {
+  const [y, m, d] = key.split("-").map(Number);
+  const utcMidnight = Date.UTC(y, m - 1, d);
+  // Prague is UTC+1 or UTC+2: local midnight is 1–2 hours before UTC midnight.
+  for (let hours = 3; hours >= 0; hours--) {
+    const candidate = new Date(utcMidnight - hours * 60 * 60 * 1000);
+    if (dailyDateKey(candidate) === key) return candidate;
+  }
+  return new Date(utcMidnight);
+}
+
+/** Monday of the week (Prague calendar) that contains `key`. */
+export function weekStartKey(key: string): string {
+  const [y, m, d] = key.split("-").map(Number);
+  const weekday = new Date(Date.UTC(y, m - 1, d)).getUTCDay(); // 0 = Sunday
+  return shiftDateKey(key, -((weekday + 6) % 7));
+}
+
 /** "05:12:33" */
 export function formatCountdown(ms: number): string {
   const total = Math.max(0, Math.ceil(ms / 1000));

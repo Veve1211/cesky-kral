@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { BookOpen, CircleQuestionMark, Zap } from "lucide-react";
+import { BookOpen, CircleQuestionMark, Trophy, Zap } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 
@@ -24,6 +24,7 @@ const ITEMS = [
   { href: "/sbirka", label: "Moje sbírka", Icon: BookOpen, className: "" },
   { href: "/kdo-driv", label: "Kdo vládl dřív?", Icon: Hourglass, className: "" },
   { href: "/rychlovka", label: "Rychlovka", Icon: Zap, className: "text-gold" },
+  { href: "/zebricky", label: "Žebříčky", Icon: Trophy, className: "" },
   { href: "/jak-hrat", label: "Jak hrát", Icon: CircleQuestionMark, className: "" },
 ] as const;
 

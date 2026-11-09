@@ -86,6 +86,7 @@
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
 
+  --animate-auto-advance: auto-advance var(--auto-advance-ms, 1200ms) linear both;
   --animate-card-reveal: card-reveal 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) both;
   --animate-answer-pulse: answer-pulse 0.9s ease-out both;
   --animate-answer-shake: answer-shake 0.45s ease-in-out both;
@@ -143,6 +144,16 @@
     to {
       opacity: 1;
       transform: none;
+    }
+  }
+
+  /* Bar under "Další" that runs out before the next question comes by itself. */
+  @keyframes auto-advance {
+    from {
+      transform: scaleX(1);
+    }
+    to {
+      transform: scaleX(0);
     }
   }
 

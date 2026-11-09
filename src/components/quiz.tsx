@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState, useTransition, type RefObject } from "react";
+import { useCallback, useEffect, useRef, useState, useTransition, type ReactNode, type RefObject } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { ArrowRight, Check, ExternalLink, Lock, RotateCcw, X } from "lucide-react";
@@ -29,6 +29,7 @@ import {
   useCollectionReady,
 } from "@/lib/collection";
 import type { Chronicle } from "@/lib/chronicle";
+import { AUTO_ADVANCE_MS, useAutoAdvanceAllowed } from "@/lib/auto-advance";
 import { CORRECT_TO_COLLECT } from "@/lib/game-rules";
 import type { AnswerResult, QuizQuestion } from "@/lib/quiz-types";
 import { recordCorrectAnswer } from "@/lib/mastery-progress";
@@ -62,7 +63,16 @@ type QuizProps =
         };
     }
   | { mode: "golden"; questions: QuizQuestion[]; king: QuizKing }
-  | { mode: "quick"; questions: QuizQuestion[] }
+  | {
+      mode: "quick";
+      questions: QuizQuestion[];
+      /** Checks (and records) the answer on the server – scored mode. */
+      check?: (questionId: number, answerId: number) => Promise<AnswerResult>;
+      /** A new game is started by the caller (new server session). */
+      onRestart?: () => void;
+      /** Shown on the result card (personal record, leaderboard…). */
+      resultExtra?: ReactNode;
+    }
   | {
       /** Daily challenge: resumable, every answer is reported, results are shown by the caller. */
       mode: "daily";
@@ -132,7 +142,7 @@ export function Quiz(props: QuizProps) {
     startTransition(async () => {
       try {
         const result =
-          props.mode === "daily" && props.check
+          (props.mode === "daily" || props.mode === "quick") && props.check
             ? await props.check(question.id, answerId)
             : await checkAnswer(question.id, answerId);
         if (!result.ok) {
@@ -173,6 +183,18 @@ export function Quiz(props: QuizProps) {
     return saved;
   }
 
+  // A right answer moves on by itself after a short moment (not while a
+  // celebration is open – it starts again after "Pokračovat"). A wrong one
+  // waits for "Další", so the right answer and the explanation can be read.
+  const nextRef = useRef<() => void>(() => {});
+  const autoAdvanceAllowed = useAutoAdvanceAllowed();
+  const autoAdvance = autoAdvanceAllowed && feedback?.correct === true && celebrations.length === 0 && !finished;
+  useEffect(() => {
+    if (!autoAdvance) return;
+    const timer = window.setTimeout(() => nextRef.current(), AUTO_ADVANCE_MS);
+    return () => window.clearTimeout(timer);
+  }, [autoAdvance, index]);
+
   function next() {
     if (!feedback) return;
     if (index + 1 < total) {
@@ -204,7 +226,15 @@ export function Quiz(props: QuizProps) {
     setFinished(true);
   }
 
+  useEffect(() => {
+    nextRef.current = next;
+  });
+
   function restart() {
+    if (props.mode === "quick" && props.onRestart) {
+      props.onRestart();
+      return;
+    }
     focusQuestions.current = true;
     setIndex(0);
     setScore(0);
@@ -405,9 +435,16 @@ export function Quiz(props: QuizProps) {
                   <ExternalLink className="size-3" aria-hidden />
                 </a>
               )}
-              <Button id="quiz-next" onClick={next} autoFocus className="self-end">
+              <Button id="quiz-next" onClick={next} autoFocus className="relative self-end overflow-hidden">
                 {index + 1 < total ? "Další otázka" : "Zobrazit výsledek"}
                 <ArrowRight aria-hidden />
+                {autoAdvance && (
+                  <span
+                    aria-hidden
+                    data-testid="auto-advance"
+                    className="animate-auto-advance absolute inset-x-0 bottom-0 h-1 origin-left bg-gold"
+                  />
+                )}
               </Button>
             </div>
           )}
@@ -591,6 +628,7 @@ function Results(
               ? "Bez jediné chyby, klobouk dolů!"
               : "Dobrá práce! Dáš příště víc?"}
         </p>
+        {props.mode === "quick" && props.resultExtra}
         {props.mode === "quick" && props.marks.length === total && (
           <ShareButton
             text={quickShareText(props.marks)}
