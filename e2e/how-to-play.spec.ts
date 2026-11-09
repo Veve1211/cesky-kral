@@ -41,7 +41,7 @@ test("Jak hrát: odkaz v menu, pět kroků, časté otázky a tlačítko Hrát",
 
   // Overview of every reward: what it is and how to get it.
   const rewards = page.getByRole("region", { name: "Přehled odměn" });
-  const names = ["Karta panovníka", "Koruna učenosti", "Zlatá karta", "Hodnost", "Díly erbu", "Série"];
+  const names = ["Karta panovníka", "Koruna učenosti", "Zlatá karta", "Hodnost", "Díly erbu", "Dnešní vládce", "Série"];
   await expect(rewards.getByTestId("reward")).toHaveCount(names.length);
   for (const name of names) {
     const item = rewards.getByTestId("reward").filter({ has: page.getByRole("heading", { level: 3, name, exact: true }) });

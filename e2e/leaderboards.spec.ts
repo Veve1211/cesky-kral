@@ -290,8 +290,9 @@ test("přenos postupu kódem: sbírka i přezdívka na druhém zařízení, kód
 
 test("Jak hrát vysvětluje, co se ukládá", async ({ page }) => {
   await open(page, "/jak-hrat");
-  const stored = page.getByRole("region", { name: "Co se ukládá" });
-  await expect(stored).toContainText("Žádná registrace, žádný e-mail ani jméno.");
+  const stored = page.getByRole("region", { name: "Žebříčky a přezdívka" });
+  await expect(stored).toContainText("Žádná registrace, žádný e-mail ani jméno");
+  await expect(stored).toContainText("jen přezdívka, skóre (a čas) a parametry erbu");
   await expect(stored).toContainText("V tvém prohlížeči");
   await expect(stored).toContainText("Na serveru");
   await expect(stored).toContainText("Skóre počítá vždy server");
