@@ -2,6 +2,8 @@ import Image from "next/image";
 
 import { Crest } from "@/components/crest";
 import { CardCorners } from "@/components/ornaments";
+import { TierCrown } from "@/components/tier-crown";
+import type { Tier } from "@/lib/mastery";
 import { safeKingImage } from "@/lib/king-image";
 import { cn } from "@/lib/utils";
 
@@ -9,6 +11,7 @@ import { cn } from "@/lib/utils";
  * King portrait in a gilded, illuminated-manuscript frame.
  * Locked kings are shown as a dark silhouette with a question mark.
  * Without an image a decorative crest with the initial is used.
+ * `crown` puts the ruler's "koruna učenosti" on top of the frame (on the head).
  */
 export function KingPortrait({
   name,
@@ -17,6 +20,8 @@ export function KingPortrait({
   locked = false,
   priority = false,
   sizes = "(max-width: 640px) 45vw, 260px",
+  crown = 0,
+  crownClassName,
   className,
 }: {
   name: string;
@@ -25,6 +30,9 @@ export function KingPortrait({
   locked?: boolean;
   priority?: boolean;
   sizes?: string;
+  crown?: Tier;
+  /** E.g. the descending animation on the celebration screen. */
+  crownClassName?: string;
   className?: string;
 }) {
   const src = safeKingImage(imageUrl);
@@ -70,6 +78,15 @@ export function KingPortrait({
           </div>
         )}
       </div>
+      {crown > 0 && (
+        <TierCrown
+          tier={crown as 1 | 2 | 3}
+          className={cn(
+            "pointer-events-none absolute top-0 left-1/2 z-10 w-[46%] max-w-28 -translate-x-1/2 -translate-y-[55%]",
+            crownClassName,
+          )}
+        />
+      )}
     </div>
   );
 }

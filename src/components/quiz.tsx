@@ -16,6 +16,7 @@ import { LegendBadge } from "@/components/legend-badge";
 import { CardCorners, OrnamentDivider } from "@/components/ornaments";
 import { RoyalCelebration } from "@/components/royal-celebration";
 import { ShareButton } from "@/components/share-button";
+import { TierCelebration, type CelebratedRuler } from "@/components/tier-celebration";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
@@ -29,6 +30,7 @@ import {
 import type { Chronicle } from "@/lib/chronicle";
 import { CORRECT_TO_COLLECT } from "@/lib/game-rules";
 import type { AnswerResult, QuizQuestion } from "@/lib/quiz-types";
+import { recordCorrectAnswer } from "@/lib/mastery-progress";
 import { quickShareText } from "@/lib/share-text";
 import { cn } from "@/lib/utils";
 
@@ -74,6 +76,8 @@ export function Quiz(props: QuizProps) {
   /** Right/wrong per answered question, in order (for sharing the result). */
   const [marks, setMarks] = useState<boolean[]>([]);
   const [selectedId, setSelectedId] = useState<number | null>(null);
+  /** A new "koruna učenosti" reached by the last answer – shown right away. */
+  const [celebration, setCelebration] = useState<{ ruler: CelebratedRuler; tier: 1 | 2 | 3 } | null>(null);
   const [feedback, setFeedback] = useState<Feedback | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [finished, setFinished] = useState(false);
@@ -113,6 +117,11 @@ export function Quiz(props: QuizProps) {
         setFeedback(result);
         if (result.correct) setScore((s) => s + 1);
         setMarks((current) => [...current, result.correct]);
+        if (result.correct) {
+          const { ruler } = result;
+          const reached = recordCorrectAnswer(ruler.slug, ruler.questionKey, ruler.totalQuestions);
+          if (reached) setCelebration({ ruler, tier: reached });
+        }
         if (props.mode === "daily") props.onAnswered(index, result.correct);
       } catch {
         setError("Nepodařilo se ověřit odpověď. Zkus to znovu.");
@@ -323,7 +332,7 @@ export function Quiz(props: QuizProps) {
                   <ExternalLink className="size-3" aria-hidden />
                 </a>
               )}
-              <Button onClick={next} autoFocus className="self-end">
+              <Button id="quiz-next" onClick={next} autoFocus className="self-end">
                 {index + 1 < total ? "Další otázka" : "Zobrazit výsledek"}
                 <ArrowRight aria-hidden />
               </Button>
@@ -331,6 +340,12 @@ export function Quiz(props: QuizProps) {
           )}
         </CardContent>
       </Card>
+      <TierCelebration
+        ruler={celebration?.ruler ?? null}
+        tier={celebration?.tier ?? null}
+        onClose={() => setCelebration(null)}
+        returnFocusTo="quiz-next"
+      />
     </div>
   );
 }

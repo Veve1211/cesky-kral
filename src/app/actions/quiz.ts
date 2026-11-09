@@ -1,5 +1,6 @@
 "use server";
 
+import { questionKey } from "@/lib/mastery";
 import { getPrisma } from "@/lib/prisma";
 import type { AnswerResult } from "@/lib/quiz-types";
 
@@ -27,9 +28,19 @@ export async function checkAnswer(
   const question = await getPrisma().question.findUnique({
     where: { id: questionId },
     select: {
+      text: true,
       explanation: true,
       sourceUrl: true,
       answers: { select: { id: true, isCorrect: true } },
+      king: {
+        select: {
+          slug: true,
+          name: true,
+          title: true,
+          imageUrl: true,
+          _count: { select: { questions: true } },
+        },
+      },
     },
   });
   if (!question) return { ok: false, error: "Otázka neexistuje." };
@@ -51,5 +62,13 @@ export async function checkAnswer(
     correctAnswerId: correct.id,
     explanation: question.explanation,
     sourceUrl,
+    ruler: {
+      slug: question.king.slug,
+      name: question.king.name,
+      title: question.king.title,
+      imageUrl: question.king.imageUrl,
+      questionKey: questionKey(question.king.slug, question.text),
+      totalQuestions: question.king._count.questions,
+    },
   };
 }

@@ -34,3 +34,23 @@ neuvádějí sporný rok ani pevný počet let slepoty. Přesná diagnóza se ne
   otázku ve zlatém kole na desktopu i mobilu.
 - Regresní testy běží bez externí sítě. Odkazy byly při této revizi zkontrolovány
   samostatně; testy nezaručují jejich budoucí dostupnost ani nenahrazují historickou revizi.
+
+## Dávka 6: šest nových panovníků (9. 11. 2026)
+
+Přidáno na výslovný pokyn majitele projektu (úkol 2). Každý fakt v otázce,
+odpovědi i vysvětlení byl ověřen v uvedeném článku české Wikipedie (staženo
+9. 11. 2026); co v článku nebylo, do otázek nešlo. Špatné odpovědi jsou
+zvolené tak, aby byly podle zdroje jednoznačně nesprávné. Obrázky zatím nejsou
+(erb s iniciálou), dokud se neověří volné dílo na Commons.
+
+| Panovník | Roky vlády (Čechy) | Otázky | Zdroj |
+| --- | --- | --- | --- |
+| Vratislav II. | 1061–1092 (kníže, od 1085 král) | 9 (3/3/3) | https://cs.wikipedia.org/wiki/Vratislav_II. |
+| Václav IV. | 1378–1419 | 9 (3/3/3) | https://cs.wikipedia.org/wiki/V%C3%A1clav_IV. |
+| Vladislav II. Jagellonský | 1471–1516 | 9 (3/3/3) | https://cs.wikipedia.org/wiki/Vladislav_Jagellonsk%C3%BD |
+| Ferdinand I. | 1526–1564 | 9 (3/3/3) | https://cs.wikipedia.org/wiki/Ferdinand_I._Habsbursk%C3%BD |
+| Fridrich Falcký | 1619–1620 | 9 (3/3/3) | https://cs.wikipedia.org/wiki/Fridrich_Falck%C3%BD |
+| František Josef I. | 1848–1916 | 9 (3/3/3) | https://cs.wikipedia.org/wiki/Franti%C5%A1ek_Josef_I. |
+
+Celkem 18 panovníků a 162 otázek. Regrese `e2e/new-rulers.spec.ts` hlídá
+roky, strukturu, zdroje, duplicity napříč všemi otázkami a pořadí podle doby.

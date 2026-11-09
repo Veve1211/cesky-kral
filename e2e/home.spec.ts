@@ -8,7 +8,7 @@ test("úvodní stránka: galerie se všemi panovníky, Řeka času a Kdo vládl 
 
   const gallery = page.getByRole("region", { name: "Galerie panovníků" });
   await expect(gallery.getByRole("listitem")).toHaveCount(kings.length);
-  expect(kings).toHaveLength(12);
+  expect(kings).toHaveLength(18);
   for (const king of kings) {
     await expect(gallery.getByRole("heading", { name: king.name, exact: true })).toBeVisible();
   }
@@ -17,7 +17,7 @@ test("úvodní stránka: galerie se všemi panovníky, Řeka času a Kdo vládl 
   await expect(timeline.getByRole("heading", { name: "Řeka času" })).toBeVisible();
   // Empty collection: no stops on the river, just the count of unknown rulers.
   await expect(timeline.getByRole("listitem")).toHaveCount(0);
-  await expect(timeline.getByTestId("timeline-unknown")).toHaveText("a ještě 12 neznámých panovníků");
+  await expect(timeline.getByTestId("timeline-unknown")).toHaveText(`a ještě ${kings.length} neznámých panovníků`);
 
   const whoFirst = page.getByRole("region", { name: "Kdo vládl dřív?" });
   await expect(whoFirst.getByRole("group", { name: "Kdo začal vládnout dřív?" }).getByRole("button")).toHaveCount(2);
