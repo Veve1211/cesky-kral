@@ -656,7 +656,8 @@ function Results(
           <ShareButton
             text={quickShareText(props.marks)}
             url={`${window.location.origin}/rychlovka`}
-          />
+            withCrest
+        />
         )}
         <div className="flex flex-wrap justify-center gap-3">
           <Button onClick={onRestart} size="lg" variant={isKing ? "accent" : "default"}>

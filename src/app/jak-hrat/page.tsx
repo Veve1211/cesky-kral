@@ -13,6 +13,7 @@ import {
   QUICK_ROUND_QUESTIONS,
   RANKS,
 } from "@/lib/game-rules";
+import { unlockTable } from "@/lib/heraldry";
 import { TIER_SHORT, tierThresholds } from "@/lib/mastery";
 
 export const metadata: Metadata = {
@@ -81,11 +82,11 @@ const REWARDS: { icon: string; name: string; what: string; how: string }[] = [
   {
     icon: "✨",
     name: "Zlatá karta",
-    what: "Mistrovství nad panovníkem: karta dostane zlatý třpytivý rám.",
+    what: "Mistrovství nad panovníkem: karta dostane zlatý třpytivý rám. (Mistrovskému kolu se dřív říkalo zlaté kolo.)",
     how: "V mistrovském kole odpověz správně na všechny jeho těžké otázky. Hraje se jen o panovníka ve sbírce.",
   },
   {
-    icon: "🛡️",
+    icon: "🎖️",
     name: "Hodnost",
     what: "Jak daleko jsi s celou sbírkou.",
     how: `Podle počtu karet: ${RANKS[0]} (žádná) → ${RANKS[1]} (méně než polovina) → ${RANKS[2]} (aspoň polovina) → ${RANKS[3]} (všichni panovníci).`,
@@ -93,8 +94,14 @@ const REWARDS: { icon: string; name: string; what: string; how: string }[] = [
   {
     icon: "🛡️",
     name: "Díly erbu",
-    what: "Vzácnější tvary štítu, barvy a figury pro tvůj vlastní erb (Moje sbírka → Můj erb).",
-    how: "Korunami učenosti: základ hned, další za bronzové, stříbrné a zlaté koruny, nejvzácnější za zlatou korunu u všech panovníků.",
+    what: "Vzácnější tvary štítu, barvy a figury pro tvůj vlastní erb.",
+    how: "Základ hned, další za karty ve sbírce a za bronzové, stříbrné a zlaté koruny učenosti, nejvzácnější za zlatou korunu u všech panovníků. Přehled je níž v části Tvůj erb.",
+  },
+  {
+    icon: "👑",
+    name: "Dnešní vládce",
+    what: "První místo v dnešním žebříčku Denní výzvy – ukazuje se velké na Denní výzvě i na úvodní stránce.",
+    how: "Dohraj Denní výzvu s co nejvíc správnými odpověďmi, při shodě rozhoduje rychlejší čas. Do žebříčku stačí přezdívka.",
   },
   {
     icon: "🔥",
@@ -109,7 +116,7 @@ const STORED: { where: string; items: string[] }[] = [
   {
     where: "V tvém prohlížeči",
     items: [
-      "sbírka karet, zlaté karty a koruny učenosti",
+      "sbírka karet, zlaté karty, koruny učenosti a tvůj erb",
       "postup Denní výzvy, série 🔥 a nejlepší série v Kdo vládl dřív?",
       "náhodný anonymní klíč, podle kterého server pozná tvoje výsledky",
     ],
@@ -117,9 +124,8 @@ const STORED: { where: string; items: string[] }[] = [
   {
     where: "Na serveru",
     items: [
-      "přezdívka a erb (jen jeho díly), když si je zvolíš – pro žebříčky",
-      "výsledky Denní výzvy, Rychlovky, Kdo vládl dřív? a Řeky času: skóre a čas",
-      "jen otisk anonymního klíče, ne klíč samotný",
+      "jen přezdívka, skóre (a čas) a parametry erbu – nic dalšího o tobě",
+      "otisk anonymního klíče, ne klíč samotný",
       "kód pro přenos postupu – smaže se po použití, nejpozději za 30 minut",
     ],
   },
@@ -129,7 +135,7 @@ const FAQ: { question: string; answer: ReactNode }[] = [
   {
     question: "Kde se ukládá můj postup?",
     answer:
-      "Přímo v tvém prohlížeči, bez účtu a bez přihlašování. Na jiné zařízení ho přeneseš krátkým kódem v Moje sbírce. Po smazání dat prohlížeče bez kódu začínáš od začátku.",
+      "Sbírka, koruny, Denní výzva, série i erb jsou přímo v tvém prohlížeči, bez účtu a bez přihlašování. Na serveru je jen přezdívka, skóre do žebříčků a parametry erbu. Na jiné zařízení postup přeneseš krátkým kódem (Moje sbírka → Hraješ i jinde?): platí 30 minut a jen jednou a nic se při tom neztratí. Po smazání dat prohlížeče bez kódu začínáš od začátku.",
   },
   {
     question: "Můžu hru o kartu zkusit znovu?",
@@ -286,18 +292,52 @@ export default function HowToPlayPage() {
         </ul>
       </section>
 
+      <section aria-labelledby="crest-heading" className="parchment relative flex flex-col gap-3 rounded-2xl p-5 sm:p-6">
+        <CardCorners className="m-1 size-7 text-gold-dark" />
+        <h2 id="crest-heading" className="text-3xl font-bold">
+          <span aria-hidden>🛡️ </span>Tvůj erb
+        </h2>
+        <p>
+          V <Link href="/muj-erb" className={linkClass}>heraldické dílně</Link> (v hlavičce ikona štítu, na úvodu i v
+          Moje sbírce karta Tvůj erb) si složíš vlastní erb: tvar štítu, dělení, barvy, figuru a heslo pod štítem.
+        </p>
+        <p>
+          Barvy se řídí <strong>pravidlem tinktur</strong>: kov (zlato, stříbro) patří na barvu a barva na kov. Co pravidlo
+          poruší, editor nedovolí a vysvětlí proč. Erb se ukáže vedle tvé přezdívky v žebříčcích a můžeš ho stáhnout
+          jako obrázek nebo poslat odkazem.
+        </p>
+        <h3 className="font-semibold">Jak se odemykají díly</h3>
+        <p className="text-sm text-ink/85">
+          Když nová karta nebo koruna učenosti odemkne díl, oslava ti to řekne a nabídne <strong>Ozdobit erb</strong>.
+        </p>
+        <dl className="flex flex-col gap-1.5 text-sm" data-testid="crest-unlock-table">
+          {unlockTable().map((row) => (
+            <div key={row.requirement} className="flex flex-col sm:flex-row sm:gap-2">
+              <dt className="shrink-0 font-semibold sm:w-64">{row.requirement}</dt>
+              <dd>{row.parts.join(", ")}</dd>
+            </div>
+          ))}
+        </dl>
+      </section>
+
       <section aria-labelledby="stored-heading" className="parchment relative flex flex-col gap-3 rounded-2xl p-5 sm:p-6">
         <CardCorners className="m-1 size-7 text-gold-dark" />
         <h2 id="stored-heading" className="text-3xl font-bold">
-          Co se ukládá
+          <span aria-hidden>🏆 </span>Žebříčky a přezdívka
         </h2>
         <p>
-          Žádná registrace, žádný e-mail ani jméno. Do žebříčků stačí vymyšlená přezdívka (3–16 znaků, bez
-          sprostých slov).
+          <Link href="/zebricky" className={linkClass}>Žebříčky</Link> má Denní výzva (Dnešní vládce), Kdo vládl dřív?,
+          Řeka času a Rychlovka (tento týden a celkově). Žádná registrace, žádný e-mail ani jméno: stačí vymyšlená
+          přezdívka (3–16 znaků, bez sprostých slov), kterou zadáš po hře nebo v Moje sbírce.
         </p>
+        <p>
+          <strong>Skóre počítá vždy server, ne prohlížeč</strong> – sám vybírá otázky, kontroluje odpovědi a měří čas.
+          Žebříček je tak férový pro všechny.
+        </p>
+        <h3 className="font-semibold">Co se ukládá</h3>
         {STORED.map((group) => (
           <div key={group.where}>
-            <h3 className="font-semibold">{group.where}</h3>
+            <h4 className="text-sm font-semibold">{group.where}</h4>
             <ul className="ml-5 list-disc">
               {group.items.map((item) => (
                 <li key={item}>{item}</li>
@@ -305,9 +345,6 @@ export default function HowToPlayPage() {
             </ul>
           </div>
         ))}
-        <p className="text-sm text-muted-foreground">
-          Skóre počítá vždy server, ne prohlížeč, takže žebříček je férový pro všechny.
-        </p>
       </section>
 
       <section aria-labelledby="faq-heading" className="flex flex-col gap-3">
