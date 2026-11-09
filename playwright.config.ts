@@ -69,6 +69,10 @@ export default defineConfig({
       DATABASE_URL: process.env.E2E_DATABASE_URL ?? "",
       // Built into the app, so the Ko-fi button shows in the tests.
       NEXT_PUBLIC_KOFI_URL: TEST_KOFI_URL,
+      // Hundreds of games come from this one machine; requests from the
+      // local machine skip the rate limit (never set in production). The
+      // rate-limit test uses its own fake client address.
+      E2E_RATE_LIMIT_LOOPBACK_EXEMPT: "1",
     },
   },
 });

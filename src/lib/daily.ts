@@ -143,10 +143,19 @@ export function pickDailyQuestions<T extends DailyCandidate>(dateKey: string, po
 
 // --- share text --------------------------------------------------------------
 
-/** "Český král – výzva 8. 11. 4/5 👑👑👑👑⚔️" (+ streak when 2 days or more). */
-export function dailyShareText(dateKey: string, marks: readonly boolean[], streak: number): string {
+/**
+ * "Český král – výzva 8. 11. 4/5 👑👑👑👑⚔️" (+ streak when 2 days or more,
+ * + place in today's leaderboard when the player is in it).
+ */
+export function dailyShareText(
+  dateKey: string,
+  marks: readonly boolean[],
+  streak: number,
+  place: { rank: number; total: number } | null = null,
+): string {
   const score = marks.filter(Boolean).length;
   const icons = shareIcons(marks);
   const streakText = streak >= 2 ? ` 🔥 ${formatStreakDays(streak)}` : "";
-  return `Český král – výzva ${formatDailyDate(dateKey)} ${score}/${marks.length} ${icons}${streakText}`;
+  const placeText = place ? ` 🏆 ${place.rank}. místo z ${place.total}` : "";
+  return `Český král – výzva ${formatDailyDate(dateKey)} ${score}/${marks.length} ${icons}${streakText}${placeText}`;
 }

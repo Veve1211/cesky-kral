@@ -1,13 +1,17 @@
 import { Suspense } from "react";
+import Link from "next/link";
 import { connection } from "next/server";
 
 import { CollectionGallery } from "@/components/collection-gallery";
 import { DailyHomeButton } from "@/components/daily-home-button";
+import { TodayRulerCard } from "@/components/daily-leaderboard";
 import { IlluminatedInitial } from "@/components/illuminated-initial";
 import { CardCorners, OrnamentDivider } from "@/components/ornaments";
 import { ReignTimeline } from "@/components/reign-timeline";
 import { StartButton, StartButtonSkeleton } from "@/components/start-button";
 import { WhoFirstGame } from "@/components/who-first-game";
+import { dailyDateKey } from "@/lib/daily";
+import { getDailyLeaderboard } from "@/lib/daily-server";
 import { getKings, toWhoFirstKings } from "@/lib/kings";
 import { pickPair } from "@/lib/who-first";
 
@@ -35,7 +39,8 @@ export default function HomePage() {
 async function HomeContent() {
   // Data comes from the DB on each request (never at build time).
   await connection();
-  const kings = await getKings();
+  const [kings, board] = await Promise.all([getKings(), getDailyLeaderboard(dailyDateKey(), 1)]);
+  const ruler = board.entries[0];
   const duelKings = toWhoFirstKings(kings);
 
   return (
@@ -47,6 +52,17 @@ async function HomeContent() {
       </section>
 
       <ReignTimeline variant="compact" kings={kings} />
+
+      {/* Today's first place in the daily challenge. */}
+      {ruler && (
+        <Link
+          href="/vyzva"
+          aria-label={`Dnešní vládce: ${ruler.nickname}, ${ruler.score} z 5 – zobrazit žebříček Denní výzvy`}
+          className="mx-auto w-full max-w-sm rounded-2xl outline-none transition-transform hover:-translate-y-0.5 focus-visible:ring-4 focus-visible:ring-ring/60"
+        >
+          <TodayRulerCard entry={ruler} className="py-3" />
+        </Link>
+      )}
 
       {duelKings.length >= 2 && (
         <section
