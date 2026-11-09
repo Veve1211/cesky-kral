@@ -81,7 +81,15 @@ test.describe("API", () => {
     expect((await answer(request, { ...base, choice: later })).status).toBe(409);
 
     for (const period of ["week", "all"] as const) {
-      expect(await board(request, "who-first", period)).toContainEqual(expect.objectContaining({ nickname: name, score: 3 }));
+      const entries = await board(request, "who-first", period);
+      // In a long-lived local test database the top ten may already be full of
+      // equal or better (earlier) results – then the board is simply full.
+      if (!entries.some((entry) => entry.nickname === name)) {
+        expect(entries).toHaveLength(10);
+        expect(entries.at(-1)!.score).toBeGreaterThanOrEqual(3);
+      } else {
+        expect(entries).toContainEqual(expect.objectContaining({ nickname: name, score: 3 }));
+      }
     }
     // Another session of someone else can't be used.
     const stranger = await newPlayer(request);
