@@ -109,3 +109,27 @@ export function recordCorrectAnswer(slug: string, key: string, total: number): 1
   listeners.forEach((listener) => listener());
   return tier > current.tier ? (tier as 1 | 2 | 3) : null;
 }
+
+/**
+ * "Přenos postupu": merges crowns from another device (raw text of this
+ * storage key) – known questions are joined, the higher tier wins.
+ */
+export function mergeMasteryFrom(raw: unknown): boolean {
+  if (typeof raw !== "string") return true;
+  const incoming = parse(raw);
+  const all: Record<string, KingMastery> = { ...getSnapshot() };
+  for (const [slug, theirs] of Object.entries(incoming)) {
+    const mine = all[slug] ?? { known: [], tier: 0 as Tier };
+    all[slug] = {
+      known: [...new Set([...mine.known, ...theirs.known])].slice(0, MAX_KNOWN),
+      tier: Math.max(mine.tier, theirs.tier) as Tier,
+    };
+  }
+  try {
+    window.localStorage.setItem(STORAGE_KEY, JSON.stringify({ version: 1, kings: all }));
+  } catch {
+    return false;
+  }
+  listeners.forEach((listener) => listener());
+  return true;
+}

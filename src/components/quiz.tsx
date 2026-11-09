@@ -71,6 +71,8 @@ type QuizProps =
       startScore: number;
       onAnswered: (index: number, correct: boolean) => void;
       onFinished: () => void;
+      /** Checks (and records) the answer on the server – scored mode. */
+      check?: (questionId: number, answerId: number) => Promise<AnswerResult>;
     };
 
 export function Quiz(props: QuizProps) {
@@ -129,7 +131,10 @@ export function Quiz(props: QuizProps) {
     setError(null);
     startTransition(async () => {
       try {
-        const result = await checkAnswer(question.id, answerId);
+        const result =
+          props.mode === "daily" && props.check
+            ? await props.check(question.id, answerId)
+            : await checkAnswer(question.id, answerId);
         if (!result.ok) {
           setError(result.error);
           setSelectedId(null);

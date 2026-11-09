@@ -170,3 +170,18 @@ export function useCollectionReady(): boolean {
     () => false,
   );
 }
+
+/**
+ * "Přenos postupu": merges a collection from another device (raw text of
+ * this storage key). Nothing is lost on either side – union of kings and
+ * golden cards. Returns false when nothing could be saved.
+ */
+export function mergeCollectionFrom(raw: unknown): boolean {
+  if (typeof raw !== "string") return true;
+  const incoming = parse(raw)?.collection;
+  if (!incoming) return true;
+  const current = getSnapshot();
+  const kings = [...new Set([...current.kings, ...incoming.kings])].slice(0, MAX_KINGS);
+  const golden = [...new Set([...current.golden, ...incoming.golden])];
+  return write(freeze(kings, golden));
+}

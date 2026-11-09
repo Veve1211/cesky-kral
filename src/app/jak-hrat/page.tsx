@@ -86,11 +86,32 @@ const REWARDS: { icon: string; name: string; what: string; how: string }[] = [
   },
 ];
 
+/** What is stored where – short and honest. */
+const STORED: { where: string; items: string[] }[] = [
+  {
+    where: "V tvém prohlížeči",
+    items: [
+      "sbírka karet, zlaté karty a koruny učenosti",
+      "postup Denní výzvy, série 🔥 a nejlepší série v Kdo vládl dřív?",
+      "náhodný anonymní klíč, podle kterého server pozná tvoje výsledky",
+    ],
+  },
+  {
+    where: "Na serveru",
+    items: [
+      "přezdívka, jen když si ji zvolíš (pro žebříčky)",
+      "výsledky Denní výzvy: počet správných odpovědí a čas",
+      "jen otisk anonymního klíče, ne klíč samotný",
+      "kód pro přenos postupu – smaže se po použití, nejpozději za 30 minut",
+    ],
+  },
+];
+
 const FAQ: { question: string; answer: ReactNode }[] = [
   {
     question: "Kde se ukládá můj postup?",
     answer:
-      "Přímo v tvém prohlížeči, bez účtu a bez přihlašování. Na jiném zařízení nebo po smazání dat prohlížeče proto začínáš od začátku.",
+      "Přímo v tvém prohlížeči, bez účtu a bez přihlašování. Na jiné zařízení ho přeneseš krátkým kódem v Moje sbírce. Po smazání dat prohlížeče bez kódu začínáš od začátku.",
   },
   {
     question: "Můžu hru o kartu zkusit znovu?",
@@ -245,6 +266,30 @@ export default function HowToPlayPage() {
             </li>
           ))}
         </ul>
+      </section>
+
+      <section aria-labelledby="stored-heading" className="parchment relative flex flex-col gap-3 rounded-2xl p-5 sm:p-6">
+        <CardCorners className="m-1 size-7 text-gold-dark" />
+        <h2 id="stored-heading" className="text-3xl font-bold">
+          Co se ukládá
+        </h2>
+        <p>
+          Žádná registrace, žádný e-mail ani jméno. Do žebříčků stačí vymyšlená přezdívka (3–16 znaků, bez
+          sprostých slov).
+        </p>
+        {STORED.map((group) => (
+          <div key={group.where}>
+            <h3 className="font-semibold">{group.where}</h3>
+            <ul className="ml-5 list-disc">
+              {group.items.map((item) => (
+                <li key={item}>{item}</li>
+              ))}
+            </ul>
+          </div>
+        ))}
+        <p className="text-sm text-muted-foreground">
+          Skóre počítá vždy server, ne prohlížeč, takže žebříček je férový pro všechny.
+        </p>
       </section>
 
       <section aria-labelledby="faq-heading" className="flex flex-col gap-3">
