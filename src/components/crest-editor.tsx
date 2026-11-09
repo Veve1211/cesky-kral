@@ -1,6 +1,6 @@
 "use client";
 
-import { useId, useMemo, useState, type ReactNode } from "react";
+import { useId, useState, type ReactNode } from "react";
 import { Download, Lock, Save } from "lucide-react";
 
 import { CrestSvg } from "@/components/crest-svg";
@@ -15,7 +15,6 @@ import {
   chargeProblem,
   cleanMotto,
   crestToQuery,
-  crownCounts,
   DEFAULT_CREST,
   DIVISION_NAMES,
   DIVISIONS,
@@ -36,7 +35,7 @@ import {
   type Tincture,
   type Unlock,
 } from "@/lib/heraldry";
-import { tierOf, useMastery } from "@/lib/mastery-progress";
+import { useCrestCounts } from "@/lib/crest-unlocks";
 import { announceLeaderboardChange, ensurePlayer, postJson } from "@/lib/player";
 import { cn } from "@/lib/utils";
 
@@ -44,6 +43,7 @@ import { cn } from "@/lib/utils";
 function shortLock(unlock: Unlock): string {
   if (unlock.kind === "free") return "";
   if (unlock.kind === "all-gold") return "vše zlaté";
+  if (unlock.kind === "cards") return unlock.count === 1 ? "1 karta" : unlock.count <= 4 ? `${unlock.count} karty` : `${unlock.count} karet`;
   return `${unlock.count}× ${unlock.tier === "bronze" ? "bronz" : unlock.tier === "silver" ? "stříbro" : "zlato"}`;
 }
 
@@ -73,11 +73,7 @@ export function CrestEditor({ kingSlugs }: { kingSlugs: string[] }) {
 }
 
 function Editor({ kingSlugs, initial }: { kingSlugs: string[]; initial: CrestDesign }) {
-  const mastery = useMastery();
-  const counts = useMemo(
-    () => crownCounts(kingSlugs.map((slug) => tierOf(mastery, slug)), kingSlugs.length),
-    [kingSlugs, mastery],
-  );
+  const counts = useCrestCounts(kingSlugs);
   const [design, setDesign] = useState<CrestDesign>(initial);
   const [motto, setMotto] = useState(initial.motto);
   const [notice, setNotice] = useState<string | null>(null);
@@ -137,7 +133,7 @@ function Editor({ kingSlugs, initial }: { kingSlugs: string[]; initial: CrestDes
           <CrestSvg design={current} id="crest-preview-svg" />
         </div>
         <p className="text-xs text-muted-foreground" data-testid="crown-counts">
-          Koruny učenosti: 🥉 {counts.bronze} · 🥈 {counts.silver} · 🥇 {counts.gold} z {counts.total}
+          Karty: {counts.cards} · koruny učenosti: 🥉 {counts.bronze} · 🥈 {counts.silver} · 🥇 {counts.gold} z {counts.total}
         </p>
       </div>
 

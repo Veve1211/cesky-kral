@@ -32,6 +32,7 @@ import type { Chronicle } from "@/lib/chronicle";
 import { AUTO_ADVANCE_MS, useAutoAdvanceAllowed } from "@/lib/auto-advance";
 import { CORRECT_TO_COLLECT } from "@/lib/game-rules";
 import type { AnswerResult, QuizQuestion } from "@/lib/quiz-types";
+import { unlockedBy } from "@/lib/crest-unlocks";
 import { recordCorrectAnswer } from "@/lib/mastery-progress";
 import { quickShareText } from "@/lib/share-text";
 import { cn } from "@/lib/utils";
@@ -39,8 +40,8 @@ import { cn } from "@/lib/utils";
 type Feedback = Extract<AnswerResult, { ok: true }>;
 
 type CelebrationInput =
-  | { kind: "crown"; ruler: CelebratedRuler; tier: 1 | 2 | 3 }
-  | { kind: "card"; card: CelebratedCard; firstTime: boolean };
+  | { kind: "crown"; ruler: CelebratedRuler; tier: 1 | 2 | 3; unlocked: string[] }
+  | { kind: "card"; card: CelebratedCard; firstTime: boolean; unlocked: string[] };
 type Celebration = CelebrationInput & { id: number };
 
 const HEADING_FOCUS = "scroll-mt-20 rounded-sm focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-current";
@@ -102,7 +103,7 @@ export function Quiz(props: QuizProps) {
   const [celebrations, setCelebrations] = useState<Celebration[]>([]);
   const celebrationCounter = useRef(0);
   /** Highest crown reached during the current king round (shown at its end). */
-  const pendingCrown = useRef<{ ruler: CelebratedRuler; tier: 1 | 2 | 3 } | null>(null);
+  const pendingCrown = useRef<{ ruler: CelebratedRuler; tier: 1 | 2 | 3; unlocked: string[] } | null>(null);
 
   function queueCelebrations(items: CelebrationInput[]) {
     if (items.length === 0) return;
@@ -155,11 +156,18 @@ export function Quiz(props: QuizProps) {
         setMarks((current) => [...current, result.correct]);
         if (result.correct) {
           const { ruler } = result;
-          const reached = recordCorrectAnswer(ruler.slug, ruler.questionKey, ruler.totalQuestions);
-          if (reached && props.mode === "king") {
-            if (!pendingCrown.current || reached > pendingCrown.current.tier) pendingCrown.current = { ruler, tier: reached };
-          } else if (reached) {
-            queueCelebrations([{ kind: "crown", ruler, tier: reached }]);
+          let reached: 1 | 2 | 3 | null = null;
+          // Crest parts this crown unlocks are shown on its celebration.
+          const unlocked = unlockedBy(rulerTotal(ruler.rulerCount), () => {
+            reached = recordCorrectAnswer(ruler.slug, ruler.questionKey, ruler.totalQuestions);
+          });
+          const tier = reached as 1 | 2 | 3 | null;
+          if (tier && props.mode === "king") {
+            const before = pendingCrown.current;
+            const parts = [...new Set([...(before?.unlocked ?? []), ...unlocked])];
+            pendingCrown.current = !before || tier > before.tier ? { ruler, tier, unlocked: parts } : { ...before, unlocked: parts };
+          } else if (tier) {
+            queueCelebrations([{ kind: "crown", ruler, tier, unlocked }]);
           }
         }
         if (props.mode === "daily") props.onAnswered(index, result.correct);
@@ -168,6 +176,11 @@ export function Quiz(props: QuizProps) {
         setSelectedId(null);
       }
     });
+  }
+
+  /** Rulers in the game: the king round knows them all, other modes ask the server. */
+  function rulerTotal(fromServer: number): number {
+    return props.mode === "king" && props.allKingSlugs.length > 0 ? props.allKingSlugs.length : fromServer;
   }
 
   function saveKing(): boolean {
@@ -216,7 +229,11 @@ export function Quiz(props: QuizProps) {
       const queue: CelebrationInput[] = [];
       if (score >= CORRECT_TO_COLLECT) {
         const ownedBefore = readCollection().kings.includes(props.king.slug);
-        if (saveKing()) queue.push({ kind: "card", card: props.king, firstTime: !ownedBefore });
+        let saved = false;
+        const unlocked = unlockedBy(rulerTotal(0), () => {
+          saved = saveKing();
+        });
+        if (saved) queue.push({ kind: "card", card: props.king, firstTime: !ownedBefore, unlocked });
       }
       // The card first, then the crown reached during the round.
       if (pendingCrown.current) queue.push({ kind: "crown", ...pendingCrown.current });
@@ -259,6 +276,7 @@ export function Quiz(props: QuizProps) {
         <TierCelebration
           ruler={current?.kind === "crown" ? current.ruler : null}
           tier={current?.kind === "crown" ? current.tier : null}
+          unlockedParts={current?.kind === "crown" ? current.unlocked : []}
           celebrationId={current?.id}
           onClose={close}
           returnFocusTo={returnFocusTo}
@@ -266,6 +284,7 @@ export function Quiz(props: QuizProps) {
         <CardCelebration
           card={current?.kind === "card" ? current.card : null}
           firstTime={current?.kind === "card" ? current.firstTime : false}
+          unlockedParts={current?.kind === "card" ? current.unlocked : []}
           celebrationId={current?.id}
           onClose={close}
           returnFocusTo={returnFocusTo}
@@ -310,7 +329,11 @@ export function Quiz(props: QuizProps) {
           if (props.mode !== "king") return;
           // The card may have been saved meanwhile in another tab.
           const ownedBefore = readCollection().kings.includes(props.king.slug);
-          if (saveKing()) queueCelebrations([{ kind: "card", card: props.king, firstTime: !ownedBefore }]);
+          let saved = false;
+          const unlocked = unlockedBy(rulerTotal(0), () => {
+            saved = saveKing();
+          });
+          if (saved) queueCelebrations([{ kind: "card", card: props.king, firstTime: !ownedBefore, unlocked }]);
         }}
         headingRef={resultHeading}
       />

@@ -1,26 +1,15 @@
-# Průběh práce (PR 0, A–D)
+# Průběh práce – erb viditelně (PR „Erb všude“)
 
-Aktualizováno: 2026-11-09 20:19 (Praha). STOP pravidlo: v 6:00 práci ukončit.
+Aktualizováno: 2026-11-09 21:50 (Praha). STOP pravidlo: v 6:00 práci ukončit.
+Větev `feat/crest-visible` z dev (PR #39–#43 už v dev). PR: zatím ne.
 
-| Fáze | Větev | PR | Stav |
-| --- | --- | --- | --- |
-| PR 0 – bezpečnost + README | `chore/security-readme` | #39 | hotovo, testy lokálně zelené (274) |
-| PR A – úvod, groš, hlavička, odměny | `feat/home-rewards` (z PR 0) | #40 | hotovo, testy lokálně zelené (280) |
-| PR B – žebříčky, Denní výzva, přenos | `feat/leaderboards` (z PR A) | #41 | hotovo, lokálně 297 zelených, CI zelené |
-| PR C – plynulé režimy, další žebříčky | `feat/smooth-modes` (z PR B) | #42 | hotovo, lokálně 314 zelených, CI zelené |
-| PR D – vlastní erb + README novinky | `feat/crest` (z PR C) | #43 | hotovo, lokálně 329 zelených, CI zelené |
-
-Pořadí mergování: #39 → #40 → B → C → D (každý je založený na předchozím).
-
-## Další konkrétní krok (PR C)
-1. ✅ Automatický posun (commit „feat: auto-advance…“): kvíz po správné odpovědi 1,2 s, Kdo vládl dřív? po správné volbě; vypnuto při „omezit pohyb“; test `e2e/auto-advance.spec.ts`.
-2. ✅ GameSession + API + klient: Rychlovka (`quick-game`), Kdo vládl dřív? (sezení na serveru), Řeka času `/reka-casu`, `/zebricky`, odkaz Žebříčky v hlavičce.
-3. ✅ Testy `e2e/game-boards.spec.ts`, CLAUDE.md, security_warnings.md.
-4. ✅ Celá sada 314 zelených; PR C.
-
-## Další krok
-- Všech pět PR vytvořeno, CI všude zelené. Nic dalšího k udělání; merguje Veve v pořadí #39 → #40 → #41 → #42 → #43.
+## Kroky
+1. ✅ Odemykání i za karty (klíč 1, zaoblený štít 3, dělený 6 karet); oslava karty / koruny ukáže nové díly + „Ozdobit erb“.
+2. ⏳ Karta „Tvůj erb“ na úvodu u hodnosti a nahoře v Moje sbírka (přezdívka, X z Y dílů).
+3. Hlavička: položka Erb (ověřit šířky).
+4. Sdílení výsledku s odkazem na erb (Denní výzva, Rychlovka).
+5. Jak hrát: odměny (+ Dnešní vládce), sekce Erb, Žebříčky a přezdívka, FAQ.
+6. Testy, celá sada, PR.
 
 ## Poznámky pro obnovení
-- Lokální testy: `service postgresql start`, `.env.local` s `E2E_DATABASE_URL` (DB `cesky_kral_test`, uživatel `kral`), build s `NEXT_PUBLIC_KOFI_URL=https://ko-fi.com/cesky-kral-test`, pak `E2E_SKIP_BUILD=1 npm run test:e2e`.
-- CI na GitHubu se spouští u PR do dev.
+- `service postgresql start`; build s `NEXT_PUBLIC_KOFI_URL=https://ko-fi.com/cesky-kral-test`; `E2E_SKIP_BUILD=1 npm run test:e2e`.

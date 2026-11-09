@@ -170,11 +170,15 @@ export function mottoProblem(raw: string): string | null {
 
 // --- unlocking -----------------------------------------------------------------------
 
-/** What the player has: how many rulers have at least a bronze/silver/gold knowledge crown. */
-export type CrownCounts = { bronze: number; silver: number; gold: number; total: number };
+/**
+ * What the player has: cards in the collection and how many rulers have at
+ * least a bronze/silver/gold knowledge crown (`total` = rulers in the game).
+ */
+export type CrownCounts = { cards: number; bronze: number; silver: number; gold: number; total: number };
 
 export type Unlock =
   | { kind: "free" }
+  | { kind: "cards"; count: number }
   | { kind: "crowns"; tier: "bronze" | "silver" | "gold"; count: number }
   | { kind: "all-gold" };
 
@@ -182,13 +186,14 @@ const BRONZE = (count: number): Unlock => ({ kind: "crowns", tier: "bronze", cou
 const SILVER = (count: number): Unlock => ({ kind: "crowns", tier: "silver", count });
 const GOLD = (count: number): Unlock => ({ kind: "crowns", tier: "gold", count });
 const FREE: Unlock = { kind: "free" };
+const CARDS = (count: number): Unlock => ({ kind: "cards", count });
 
 export const UNLOCKS = {
-  shape: { heater: FREE, round: FREE, french: BRONZE(3), kite: SILVER(3), lozenge: GOLD(3), royal: { kind: "all-gold" } },
+  shape: { heater: FREE, round: CARDS(3), french: BRONZE(3), kite: SILVER(3), lozenge: GOLD(3), royal: { kind: "all-gold" } },
   division: {
     plain: FREE,
     "per-pale": FREE,
-    "per-fess": FREE,
+    "per-fess": CARDS(6),
     chief: BRONZE(1),
     "per-bend": BRONZE(3),
     quarterly: SILVER(1),
@@ -209,7 +214,7 @@ export const UNLOCKS = {
     none: FREE,
     star: FREE,
     cross: FREE,
-    key: FREE,
+    key: CARDS(1),
     tower: BRONZE(1),
     rose: BRONZE(3),
     moon: BRONZE(5),
@@ -228,6 +233,7 @@ export const UNLOCKS = {
 
 export function isUnlocked(unlock: Unlock, counts: CrownCounts): boolean {
   if (unlock.kind === "free") return true;
+  if (unlock.kind === "cards") return counts.cards >= unlock.count;
   if (unlock.kind === "all-gold") return counts.total > 0 && counts.gold >= counts.total;
   return counts[unlock.tier] >= unlock.count;
 }
@@ -238,6 +244,10 @@ const TIER_WORD_ONE = { bronze: "bronzovou", silver: "stříbrnou", gold: "zlato
 /** "Odemkne se za 3 bronzové koruny učenosti (máš 1)." */
 export function unlockText(unlock: Unlock, counts: CrownCounts): string {
   if (unlock.kind === "free") return "";
+  if (unlock.kind === "cards") {
+    const what = unlock.count === 1 ? "první kartu panovníka" : unlock.count <= 4 ? `${unlock.count} karty panovníků` : `${unlock.count} karet panovníků`;
+    return `Odemkne se za ${what} ve sbírce (máš ${counts.cards}).`;
+  }
   if (unlock.kind === "all-gold") {
     return `Nejvzácnější díl: odemkne se za zlatou korunu učenosti u všech panovníků (máš ${counts.gold} z ${counts.total}).`;
   }
@@ -252,8 +262,9 @@ export function unlockText(unlock: Unlock, counts: CrownCounts): string {
 }
 
 /** Counts rulers by their crown tier (a gold crown counts as silver and bronze too). */
-export function crownCounts(tiers: readonly number[], total: number): CrownCounts {
+export function crownCounts(tiers: readonly number[], total: number, cards = 0): CrownCounts {
   return {
+    cards,
     bronze: tiers.filter((t) => t >= 1).length,
     silver: tiers.filter((t) => t >= 2).length,
     gold: tiers.filter((t) => t >= 3).length,
@@ -326,4 +337,37 @@ export function crestFromQuery(params: Record<string, string | string[] | undefi
   const [field, second] = (one("t") ?? "").split(".");
   const [charge, chargeTincture] = (one("c") ?? "").split(".");
   return parseCrest({ shape: one("s"), division: one("d"), field, second, charge, chargeTincture, motto: one("m") ?? "" });
+}
+
+// --- what a reward unlocked -----------------------------------------------------------
+
+const PART_LABELS = {
+  shape: (v: string) => `tvar ${SHAPE_NAMES[v as Shape]}`,
+  division: (v: string) => `dělení ${DIVISION_NAMES[v as Division]}`,
+  tincture: (v: string) => `barva ${TINCTURE_NAMES[v as Tincture]}`,
+  charge: (v: string) => `figura ${CHARGE_NAMES[v as Charge]}`,
+} as const;
+
+/** Every part of the crest, for "X z Y dílů odemčeno". */
+export function unlockedPartCount(counts: CrownCounts): { unlocked: number; total: number } {
+  let unlocked = 0;
+  let total = 0;
+  for (const group of Object.values(UNLOCKS) as Record<string, Unlock>[]) {
+    for (const unlock of Object.values(group)) {
+      total += 1;
+      if (isUnlocked(unlock, counts)) unlocked += 1;
+    }
+  }
+  return { unlocked, total };
+}
+
+/** Parts that `after` unlocks and `before` did not, e.g. ["figura Klíč"]. */
+export function newlyUnlocked(before: CrownCounts, after: CrownCounts): string[] {
+  const parts: string[] = [];
+  for (const [group, items] of Object.entries(UNLOCKS) as [keyof typeof PART_LABELS, Record<string, Unlock>][]) {
+    for (const [value, unlock] of Object.entries(items)) {
+      if (!isUnlocked(unlock, before) && isUnlocked(unlock, after)) parts.push(PART_LABELS[group](value));
+    }
+  }
+  return parts;
 }
