@@ -24,9 +24,21 @@ export async function generateMetadata({
   const { slug } = await params;
   const king = await getKingBySlug(slug);
   if (!king) return { title: "Král nenalezen" };
+  // Own preview for sharing a ruler's link (the image is `opengraph-image.tsx`).
+  const title = `${king.name} – hra o kartu`;
+  const description = `Zahraj si o kartu: ${king.name}. ${king.shortBio}`;
   return {
     title: king.name,
-    description: `Zahraj si o kartu: ${king.name}. ${king.shortBio}`,
+    description,
+    openGraph: {
+      type: "website",
+      locale: "cs_CZ",
+      siteName: "Český král",
+      title,
+      description,
+      url: `/kral/${king.slug}`,
+    },
+    twitter: { card: "summary_large_image", title, description },
   };
 }
 

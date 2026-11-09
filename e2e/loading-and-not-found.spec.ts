@@ -23,7 +23,7 @@ for (const suffix of ["", "/zlate-kolo"]) {
   }
 }
 
-test("všech 12 existujících panovníků i jejich zlatá kola vracejí HTTP 200", async ({ request }) => {
+test("všichni panovníci (18) i jejich zlatá kola vracejí HTTP 200", async ({ request }) => {
   for (const king of kings) {
     for (const suffix of ["", "/zlate-kolo"]) {
       const response = await request.get(`/kral/${king.slug}${suffix}`);

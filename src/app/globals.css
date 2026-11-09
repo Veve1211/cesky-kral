@@ -92,6 +92,59 @@
   --animate-shimmer: shimmer 3.5s ease-in-out infinite;
   --animate-float: float 4s ease-in-out infinite;
   --animate-sparkle: sparkle 2.4s ease-in-out infinite;
+  /* "Koruny učenosti" celebration */
+  --animate-crown-descend: crown-descend 1.5s cubic-bezier(0.22, 1.2, 0.36, 1) 0.35s both;
+  --animate-tier-glow: tier-glow 2.6s ease-in-out infinite;
+  --animate-tier-rays: tier-rays 24s linear infinite;
+  --animate-tier-rise: tier-rise 0.7s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+
+  @keyframes crown-descend {
+    /* only relative motion – the crown's position comes from `translate` */
+    0% {
+      opacity: 0;
+      transform: translateY(-260%) scale(1.6) rotate(-8deg);
+    }
+    55% {
+      opacity: 1;
+      transform: translateY(8%) scale(1) rotate(2deg);
+    }
+    75% {
+      transform: translateY(-8%) scale(1.04) rotate(-1deg);
+    }
+    100% {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  @keyframes tier-glow {
+    0%,
+    100% {
+      opacity: 0.55;
+      transform: scale(0.94);
+    }
+    50% {
+      opacity: 1;
+      transform: scale(1.06);
+    }
+  }
+
+  @keyframes tier-rays {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+  @keyframes tier-rise {
+    from {
+      opacity: 0;
+      transform: translateY(14px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
 
   @keyframes card-reveal {
     from {
@@ -363,6 +416,104 @@
     inset: 0;
     transform: rotateY(180deg);
   }
+}
+
+/* Fireworks on the "koruna učenosti" celebration (top level, not in @theme:
+   Tailwind drops @theme keyframes no utility uses, and these are set inline). One cycle = the rocket
+   rises (0–22 %), bursts, sparks fly out and fall (22–70 %), then a pause. */
+@keyframes firework-rocket {
+  0% {
+    opacity: 0;
+    transform: translateY(var(--rise));
+  }
+  3% {
+    opacity: 1;
+  }
+  21% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  23%,
+  100% {
+    opacity: 0;
+    transform: translateY(0);
+  }
+}
+
+@keyframes firework-flash {
+  0%,
+  21% {
+    opacity: 0;
+    transform: scale(0.2);
+  }
+  24% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  40%,
+  100% {
+    opacity: 0;
+    transform: scale(1.8);
+  }
+}
+
+@keyframes firework-spark {
+  0%,
+  21% {
+    opacity: 0;
+    transform: translate(0, 0) scale(1);
+  }
+  23% {
+    opacity: 1;
+  }
+  55% {
+    opacity: 1;
+  }
+  70%,
+  100% {
+    opacity: 0;
+    transform: translate(var(--dx), calc(var(--dy) + var(--fall))) scale(0.35);
+  }
+}
+
+
+/* The won card flies in from below before it turns face up. */
+@keyframes card-fly-in {
+  0% {
+    opacity: 0;
+    transform: translateY(70vh) rotate(-14deg) scale(0.55);
+  }
+  70% {
+    opacity: 1;
+    transform: translateY(-4%) rotate(2deg) scale(1.04);
+  }
+  100% {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* "Koruny učenosti": colours of the three tiers (crowns, glow, frames). */
+.tier-bronze {
+  --tier: #b8733d;
+  --tier-light: #f0b98a;
+  --tier-dark: #6e3d18;
+}
+.tier-silver {
+  --tier: #b9c2cf;
+  --tier-light: #f4f7fb;
+  --tier-dark: #6b7584;
+}
+.tier-gold {
+  --tier: #d4a82a;
+  --tier-light: #fbe7a1;
+  --tier-dark: #8a6d14;
+}
+.tier-text {
+  background: linear-gradient(100deg, var(--tier-dark), var(--tier-light) 45%, var(--tier) 60%, var(--tier-light));
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
 }
 
 @media (prefers-reduced-motion: reduce) {

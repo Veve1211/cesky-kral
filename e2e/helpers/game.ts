@@ -87,12 +87,12 @@ export async function answer(
   await waitForHydration(button);
   await button.click();
 
-  await expect(
-    page.getByRole("status").filter({ hasText: correctly ? "Správně!" : "Tentokrát vedle." }),
-  ).toBeVisible();
+  await settleAnswer(page, correctly ? "Správně!" : "Tentokrát vedle.");
   await page
     .getByRole("button", { name: index < total ? "Další otázka" : "Zobrazit výsledek" })
     .click();
+  // The end of a won king round opens the card celebration (and maybe a crown after it).
+  if (index === total) await dismissAllCelebrations(page);
   return question;
 }
 
@@ -103,4 +103,68 @@ export async function playRound(page: Page, plan: boolean[]): Promise<KnownQuest
     asked.push(await answer(page, i + 1, plan.length, correctly));
   }
   return asked;
+}
+
+/** The "koruna učenosti" celebration, if one is open right now. */
+export function celebration(page: Page) {
+  return page.getByTestId("tier-celebration");
+}
+
+/** Closes the celebration with "Pokračovat" when it is open; returns its tier or null. */
+export async function dismissCelebration(page: Page): Promise<string | null> {
+  const dialog = celebration(page);
+  if (!(await dialog.isVisible())) return null;
+  const tier = await dialog.getAttribute("data-tier");
+  await dialog.getByRole("button", { name: "Pokračovat" }).click();
+  await expect(dialog).toHaveCount(0);
+  return tier;
+}
+
+/**
+ * Waits for the answer's feedback. A new "koruna učenosti" opens its
+ * celebration in the same moment (as a modal, so the feedback is hidden from
+ * the accessibility tree until it closes) – close it first.
+ * Returns the celebrated tier, if any.
+ */
+export async function settleAnswer(page: Page, feedbackText: string): Promise<string | null> {
+  const feedback = page.getByRole("status").filter({ hasText: feedbackText });
+  await expect(feedback.or(celebration(page))).toBeVisible();
+  const tier = await dismissCelebration(page);
+  await expect(feedback).toBeVisible();
+  return tier;
+}
+
+/** Any celebration dialog: a new card or a new "koruna učenosti". */
+export function anyCelebration(page: Page) {
+  return page.locator('[data-testid="tier-celebration"], [data-testid="card-celebration"]');
+}
+
+export type ShownCelebration = { kind: "card"; firstTime: boolean } | { kind: "crown"; tier: string };
+
+/** Describes the celebration that is open now (or null). */
+export async function openCelebration(page: Page): Promise<(ShownCelebration & { id: string }) | null> {
+  const dialog = anyCelebration(page).first();
+  if (!(await dialog.isVisible())) return null;
+  const id = (await dialog.getAttribute("data-celebration-id")) ?? "";
+  if ((await dialog.getAttribute("data-testid")) === "card-celebration") {
+    return { id, kind: "card", firstTime: (await dialog.getAttribute("data-first-time")) === "true" };
+  }
+  return { id, kind: "crown", tier: (await dialog.getAttribute("data-tier")) ?? "" };
+}
+
+/**
+ * Closes every queued celebration with "Pokračovat", one after another,
+ * and returns them in the order they were shown.
+ */
+export async function dismissAllCelebrations(page: Page): Promise<ShownCelebration[]> {
+  const shown: ShownCelebration[] = [];
+  for (let i = 0; i < 6; i++) {
+    const current = await openCelebration(page);
+    if (!current) break;
+    const { id, ...rest } = current;
+    shown.push(rest);
+    await anyCelebration(page).first().getByRole("button", { name: "Pokračovat" }).click();
+    await expect(page.locator(`[data-celebration-id="${id}"]`)).toHaveCount(0);
+  }
+  return shown;
 }
