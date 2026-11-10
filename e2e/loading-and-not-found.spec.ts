@@ -50,7 +50,7 @@ for (const path of ["/", "/sbirka", "/kral/rudolf-ii"]) {
       await page.goto(path, { waitUntil: "domcontentloaded" });
       await waitForHydration(page.getByRole("navigation", { name: "Hlavní navigace" }).getByRole("link").first());
       if (path.startsWith("/kral/")) await currentQuestion(page);
-      else await expect(page.getByRole("heading", { name: "Řeka času", exact: true })).toBeVisible();
+      else await expect(page.getByRole("region", { name: "Řeka času", exact: true })).toBeVisible();
       await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
       // Keep font downloads pending beyond the browser's short font block period.
       await page.waitForTimeout(300);

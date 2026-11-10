@@ -20,3 +20,12 @@ Další krok: počkat na CI #48 a #49; po odevzdání body ⏳ z AUDIT.md.
 
 ## Poznámky
 - Ověřování: /tmp/claude-0/facts (stažené zdroje, skripty). Blokované hosty: prague.eu, rozhlas.cz (kromě archiv.radio.cz), newworldencyclopedia, novinky, opava-city.
+
+## Přestavba úvodu (10. 11. odpoledne, větev `feat/home-redesign`)
+Rozhodnutí (herní design):
+- Pořadí: hodnost (malá, hned vidět) → věta + Začni hrát/Pokračuj → Řeka času → galerie → malý erb + „Kdo vládl dřív?“ → groš.
+- Denní výzva zůstala jako malý textový odkaz pod hlavním tlačítkem: je to nejsilnější důvod se denně vracet a ukazuje sérii 🔥, ale už nekonkuruje hlavní hře.
+- Pryč z úvodu: karta erbu, hra Kdo vládl dřív?, karta Dnešního vládce, tlačítko Rychlovka a odkaz „Hraj Řeku času“ – vše je v hlavičce nebo na vlastních stránkách.
+- Řeka času bez nadpisu; po puštění prstu se vrátí na místo (jen dotyk, klávesnice a kolečko myši ji nechají, kde je – kvůli přístupnosti).
+- Hodnost je malý štítek s odkazem na Moje sbírku (celý panel zůstává na /sbirka).
+- Test serverové akce checkWhoFirst běží nově na /kdo-driv bez herního serveru (náhradní cesta, kterou akce obsluhuje).

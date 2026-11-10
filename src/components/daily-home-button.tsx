@@ -6,7 +6,7 @@ import { useCollectionReady } from "@/lib/collection";
 import { DAILY_QUESTIONS, dailyDateKey, formatStreakDays } from "@/lib/daily";
 import { currentStreak, marksFor, useDailyProgress } from "@/lib/daily-progress";
 
-/** Second choice on the home page (under "Začni hrát"): today's challenge and its state. */
+/** Small second choice on the home page (under "Začni hrát"): today's challenge and its state. */
 export function DailyHomeButton() {
   const ready = useCollectionReady();
   const progress = useDailyProgress();
@@ -29,22 +29,17 @@ export function DailyHomeButton() {
     }
   }
 
+  // A small text link: the main game button above stays the one big choice.
   return (
-    <div className="flex w-full max-w-sm flex-col items-center gap-1.5">
+    <div className="flex flex-col items-center gap-0.5 text-center">
       <Link
         href="/vyzva"
         aria-describedby="daily-home-status"
-        className="flex w-full items-center gap-3 rounded-2xl bg-navy px-4 py-2.5 text-parchment shadow-md ring-1 ring-gold/70 transition-colors outline-none hover:bg-navy/90 focus-visible:ring-4 focus-visible:ring-ring/60"
+        className="text-sm font-semibold text-navy underline decoration-gold underline-offset-4 outline-none hover:decoration-2 focus-visible:ring-4 focus-visible:ring-ring/60"
       >
-        <span aria-hidden className="flex size-9 shrink-0 items-center justify-center rounded-full bg-gold/15 text-xl ring-1 ring-gold">
-          👑
-        </span>
-        <span className="flex flex-1 flex-col items-start text-left">
-          <span className="font-heading text-xl leading-tight font-bold">Denní výzva</span>
-          <span className="text-[11px] font-semibold tracking-[0.15em] text-gold uppercase">{action}</span>
-        </span>
+        <span aria-hidden>👑 </span>Denní výzva · {action}
       </Link>
-      <p id="daily-home-status" className="min-h-5 text-center text-sm text-muted-foreground">
+      <p id="daily-home-status" className="min-h-4 text-xs text-muted-foreground">
         {status}
       </p>
     </div>
