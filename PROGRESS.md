@@ -5,7 +5,7 @@ STOP pravidlo: v 6:00 práci ukončit.
 
 | Fáze | Větev | PR | Stav |
 | --- | --- | --- | --- |
-| PR 1 – audit + fakta | `audit/facts` (z dev) | – | ⏳ fakta opravena, zbývá AUDIT.md + docs |
+| PR 1 – audit + fakta | `audit/facts` (z dev) | (vytváří se) | ✅ hotovo |
 | PR 2 – první dojem | `feat/first-impression` (z PR 1) | – | nezačato |
 | PR 4 – vyleštění + groš (nové zadání) | `chore/final-polish` (z PR 2) | – | nezačato |
 
