@@ -220,7 +220,7 @@ test("Řeka času: seřadit, správné kolo, chyba = konec, zápis do žebříč
 
 test("Žebříčky: stránka se všemi hrami, odkaz v hlavičce", async ({ page }) => {
   await open(page, "/");
-  await page.getByRole("navigation", { name: "Hlavní navigace" }).getByRole("link", { name: "Žebříčky" }).click();
+  await page.getByRole("navigation", { name: "Hlavní navigace" }).getByRole("link", { name: "Žebříček" }).click();
   await expect(page).toHaveURL("/zebricky");
   await expect(page.getByRole("heading", { level: 1, name: "Žebříčky" })).toBeVisible();
   for (const name of ["Kdo vládl dřív?", "Řeka času", "Rychlovka"]) {

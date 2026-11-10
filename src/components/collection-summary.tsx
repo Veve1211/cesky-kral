@@ -1,5 +1,6 @@
 "use client";
 
+import { cn } from "@/lib/utils";
 import type { ReactNode } from "react";
 import { Shield } from "lucide-react";
 
@@ -54,7 +55,9 @@ export function CollectionStatus({
   golden,
   total,
   action,
+  className,
 }: {
+  className?: string;
   rank: Rank;
   collected: number;
   golden: number;
@@ -64,7 +67,7 @@ export function CollectionStatus({
   return (
     <section
       aria-label="Postup sbírky"
-      className="parchment relative flex flex-col gap-4 rounded-2xl p-5 sm:flex-row sm:items-center sm:p-6"
+      className={cn("parchment relative flex flex-col gap-4 rounded-2xl p-5 sm:flex-row sm:items-center sm:p-6", className)}
     >
       <CardCorners className="m-1 size-7 text-gold-dark" />
       <div className="flex items-center gap-3">

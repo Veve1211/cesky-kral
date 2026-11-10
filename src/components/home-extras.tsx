@@ -1,9 +1,9 @@
 "use client";
 
 import Link from "next/link";
-import { Shield } from "lucide-react";
 
-import { useCollectionSummary } from "@/components/collection-summary";
+import { CollectionStatus, useCollectionSummary } from "@/components/collection-summary";
+import { CardCorners } from "@/components/ornaments";
 import { CrestSvg } from "@/components/crest-svg";
 import { useCollectionReady } from "@/lib/collection";
 import { useSavedCrest } from "@/lib/crest-progress";
@@ -11,48 +11,51 @@ import { DEFAULT_CREST } from "@/lib/heraldry";
 import type { KingSummary } from "@/lib/kings";
 
 /**
- * Home page, top: the player's rank as a small pill (links to Moje sbírka).
- * Before hydration the space is kept so nothing jumps.
+ * Home page, top: the rank as a proper block (rank, cards collected, golden
+ * cards). Compact on phones so the main button below stays above the fold.
  */
-export function RankPill({ kings }: { kings: KingSummary[] }) {
-  const ready = useCollectionReady();
-  const { rank, collected, total } = useCollectionSummary(kings);
+export function HomeRank({ kings }: { kings: KingSummary[] }) {
+  const { rank, collected, golden, total } = useCollectionSummary(kings);
   return (
-    <section aria-label="Postup sbírky" className="flex justify-center">
-      <Link
-        href="/sbirka"
-        data-testid="rank-pill"
-        className="parchment flex h-9 items-center gap-2 rounded-full px-3 text-sm ring-1 ring-gold/60 outline-none hover:ring-gold focus-visible:ring-4 focus-visible:ring-ring/60"
-      >
-        <Shield className="size-4 shrink-0 text-gold-dark" aria-hidden />
-        <span className={ready ? undefined : "invisible"}>
-          <strong className="font-heading text-base">{rank}</strong>
-          <span className="text-muted-foreground">
-            {" "}
-            · Ve sbírce: {collected} z {total}
-          </span>
-        </span>
-      </Link>
-    </section>
+    <CollectionStatus
+      rank={rank}
+      collected={collected}
+      golden={golden}
+      total={total}
+      className="w-full max-w-xl gap-2 p-4 text-left max-sm:[&_.font-heading]:text-xl"
+    />
   );
 }
 
-/** Home page, bottom: a small crest emblem (→ Můj erb) next to the "Kdo vládl dřív?" link. */
+/** Home page, bottom: two cards – the player's crest (→ Můj erb) and "Kdo vládl dřív?". */
 export function HomeMoreLinks() {
   const ready = useCollectionReady();
   const saved = useSavedCrest();
   const design = (ready && saved) || DEFAULT_CREST;
-  const linkClass =
-    "flex items-center gap-2 rounded-xl px-3 py-2 text-sm font-semibold text-navy underline decoration-gold underline-offset-4 outline-none hover:decoration-2 focus-visible:ring-4 focus-visible:ring-ring/60";
+  const card =
+    "parchment group relative flex items-center gap-4 rounded-2xl p-4 ring-1 ring-gold/50 outline-none transition-transform hover:-translate-y-0.5 hover:ring-gold focus-visible:ring-4 focus-visible:ring-ring/60";
   return (
-    <nav aria-label="Další na Českém králi" className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2">
-      <Link href="/muj-erb" data-testid="home-crest-link" className={linkClass}>
-        <CrestSvg design={design} withMotto={false} label="" className="h-8 w-auto" />
-        Můj erb
+    <nav aria-label="Další na Českém králi" className="grid gap-4 sm:grid-cols-2">
+      <Link href="/muj-erb" data-testid="home-crest-link" aria-label="Můj erb" className={card}>
+        <CardCorners className="m-1 size-6 text-gold-dark" />
+        <CrestSvg design={design} withMotto={false} label="" className="h-20 w-auto shrink-0 drop-shadow" />
+        <span className="flex flex-col gap-1">
+          <span className="font-heading text-2xl leading-tight font-bold">Můj erb</span>
+          <span className="text-sm text-ink/80">{saved ? "Ozdob svůj štít novými díly." : "Navrhni si vlastní rodový erb."}</span>
+        </span>
       </Link>
-      <Link href="/kdo-driv" className={linkClass}>
-        <span aria-hidden>⏳</span>
-        Kdo vládl dřív?
+      <Link href="/kdo-driv" aria-label="Kdo vládl dřív?" className={card}>
+        <CardCorners className="m-1 size-6 text-gold-dark" />
+        <span
+          aria-hidden
+          className="gilt flex size-20 shrink-0 items-center justify-center rounded-full p-[3px] shadow"
+        >
+          <span className="flex size-full items-center justify-center rounded-full bg-navy text-4xl">⏳</span>
+        </span>
+        <span className="flex flex-col gap-1">
+          <span className="font-heading text-2xl leading-tight font-bold">Kdo vládl dřív?</span>
+          <span className="text-sm text-ink/80">Dva panovníci, jedna otázka: kdo byl první?</span>
+        </span>
       </Link>
     </nav>
   );
