@@ -25,10 +25,10 @@ async function expectSingleInitial(paragraph: Locator, expected: string) {
   expect(text.charAt(0)).not.toBe(text.charAt(1));
 }
 
-test("úvod: ozdobné V se v textu neopakuje", async ({ page }) => {
+test("úvod: dlouhý úvodní odstavec s iniciálou nahradila jedna věta", async ({ page }) => {
   await open(page, "/");
-  const intro = page.locator("p", { hasText: "yber si panovníka a odpověz" });
-  await expectSingleInitial(intro, "Vyber si panovníka a odpověz na pět otázek.");
+  await expect(page.getByText("Odpovídej na otázky o českých panovnících a sbírej je jako karty.")).toBeVisible();
+  await expect(page.locator("p", { hasText: "yber si panovníka a odpověz" })).toHaveCount(0);
 });
 
 test("stránky panovníků: popis začíná jedním písmenem (všech 18)", async ({ page }) => {

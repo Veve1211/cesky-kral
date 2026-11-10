@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState, type ReactNode } from "react";
+import { useEffect, useRef, useState, type ReactNode, type RefObject } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { RotateCcw } from "lucide-react";
@@ -46,6 +46,7 @@ export function ReignTimeline({ kings, variant }: { kings: KingSummary[]; varian
   const golden = new Set(collection.golden);
   const compact = variant === "compact";
   const { newSlug, newStopRef, scrollerRef } = useNewBadge(kings, collection.kings, compact);
+  useSpringBack(scrollerRef, compact);
 
   if (kings.length === 0) return null;
 
@@ -53,23 +54,22 @@ export function ReignTimeline({ kings, variant }: { kings: KingSummary[]; varian
   const unknownCount = kings.length - known.length;
 
   return (
-    <section aria-labelledby={`timeline-${variant}`} className="flex min-w-0 flex-col gap-2">
-      <div className={cn("flex flex-col", compact ? "items-center gap-0.5 text-center sm:items-start sm:text-left" : "items-center gap-1 text-center sm:items-start sm:text-left")}>
-        <h2 id={`timeline-${variant}`} className={cn("font-bold", compact ? "text-2xl" : "text-4xl")}>
-          Řeka času
-        </h2>
-        <p className="text-xs text-muted-foreground sm:text-sm">
-          {known.length === 0 ? (
-            "Získej panovníka a objeví se tu."
-          ) : compact ? (
-            <>
-              <span className="lg:hidden">Posuň do strany. </span>Klepni na panovníka.
-            </>
-          ) : (
-            "Panovníci tak, jak šli po sobě."
-          )}
-        </p>
-      </div>
+    <section
+      aria-labelledby={compact ? undefined : `timeline-${variant}`}
+      aria-label={compact ? "Řeka času" : undefined}
+      className="flex min-w-0 flex-col gap-2"
+    >
+      {/* Home page: no heading or description – the strip speaks for itself. */}
+      {!compact && (
+        <div className="flex flex-col items-center gap-1 text-center sm:items-start sm:text-left">
+          <h2 id={`timeline-${variant}`} className="text-4xl font-bold">
+            Řeka času
+          </h2>
+          <p className="text-xs text-muted-foreground sm:text-sm">
+            {known.length === 0 ? "Získej panovníka a objeví se tu." : "Panovníci tak, jak šli po sobě."}
+          </p>
+        </div>
+      )}
 
       <div
         ref={scrollerRef}
@@ -186,6 +186,55 @@ function useNewBadge(kings: KingSummary[], collected: readonly string[], compact
   }, [newSlug, compact]);
 
   return { newSlug, newStopRef, scrollerRef };
+}
+
+/**
+ * Home strip: a finger can pull the river to the side, and when it lets go
+ * (and the scroll settles) the strip glides back to where it was. Only touch
+ * does this – keyboard and mouse wheel scrolling stay where the player put them.
+ */
+function useSpringBack(scrollerRef: RefObject<HTMLDivElement | null>, enabled: boolean) {
+  useEffect(() => {
+    const el = scrollerRef.current;
+    if (!enabled || !el) return;
+    let home: number | null = null;
+    let touching = false;
+    let timer: ReturnType<typeof setTimeout> | undefined;
+    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const back = () => {
+      if (home === null || touching) return;
+      el.scrollTo({ left: home, behavior: reduced ? "auto" : "smooth" });
+      home = null;
+    };
+    const later = () => {
+      clearTimeout(timer);
+      timer = setTimeout(back, 150);
+    };
+    const onStart = () => {
+      touching = true;
+      clearTimeout(timer);
+      if (home === null) home = el.scrollLeft;
+    };
+    const onEnd = () => {
+      touching = false;
+      later();
+    };
+    // Momentum scrolling continues after the finger lifts: wait until it stops.
+    const onScroll = () => {
+      if (home !== null && !touching) later();
+    };
+    el.addEventListener("touchstart", onStart, { passive: true });
+    el.addEventListener("touchend", onEnd, { passive: true });
+    el.addEventListener("touchcancel", onEnd, { passive: true });
+    el.addEventListener("scroll", onScroll, { passive: true });
+    return () => {
+      clearTimeout(timer);
+      el.removeEventListener("touchstart", onStart);
+      el.removeEventListener("touchend", onEnd);
+      el.removeEventListener("touchcancel", onEnd);
+      el.removeEventListener("scroll", onScroll);
+    };
+  }, [scrollerRef, enabled]);
 }
 
 /** "3 panovníci čekají na objevení" (Czech plural forms, including an empty collection). */

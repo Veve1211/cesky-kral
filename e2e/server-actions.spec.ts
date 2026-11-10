@@ -71,15 +71,15 @@ test("checkAnswer odmítne neplatné vstupy", async ({ page }) => {
 });
 
 test("checkWhoFirst odmítne neplatné vstupy", async ({ page }) => {
-  // The action serves the one-pair teaser on the home page (the full game is scored via /api/game).
+  // The action serves /kdo-driv when the game server is unreachable (normally scored via /api/game).
+  await page.route("**/api/game/**", (route) => route.abort());
   const getAction = await interceptFirstAction(
     page,
-    "/",
+    "/kdo-driv",
     JSON.stringify(["karel-iv", "karel-iv", "karel-iv"]),
   );
-  await open(page, "/");
+  await open(page, "/kdo-driv");
   const option = page
-    .getByRole("region", { name: "Kdo vládl dřív?" })
     .getByRole("group", { name: "Kdo začal vládnout dřív?" })
     .getByRole("button")
     .first();
