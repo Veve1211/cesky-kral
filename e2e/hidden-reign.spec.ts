@@ -2,7 +2,7 @@
 // so no page may show them for kings the player hasn't collected yet.
 import { expect, type Page, test } from "@playwright/test";
 
-import { open, playRound, setCollection } from "./helpers/game";
+import { dismissAllCelebrations, open, playRound, setCollection } from "./helpers/game";
 import { kings } from "./helpers/seed-answers";
 
 const ruledKings = kings.filter((king) => !king.isLegend && king.reignFrom !== null);
@@ -58,6 +58,7 @@ test("stránka panovníka skrývá roky do získání a po výhře je ukáže", 
   await expect(reign).not.toContainText(String(rudolf.reignTo));
 
   await playRound(page, [true, true, true, true, true]);
+  await dismissAllCelebrations(page); // a late celebration would hide the result heading
   await expect(page.getByRole("heading", { name: "Král je ve tvé sbírce!" })).toBeVisible();
   // The header updates right after the win…
   await expect(reign).toContainText(rudolfReign);

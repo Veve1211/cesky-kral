@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import { Lock } from "lucide-react";
 
 import { GoldenBadge } from "@/components/golden-badge";
 import { Button } from "@/components/ui/button";
@@ -22,26 +21,13 @@ export function GoldenRoundButton({
   const isClient = useCollectionReady();
   const { kings, golden } = useCollection();
 
-  // Collection is unknown until hydration – keep the space, show nothing.
-  if (!isClient) return <div className={cn("min-h-12", className)} aria-hidden />;
+  // Nothing before hydration and nothing for an unowned ruler: a newcomer sees the round, not a locked button.
+  if (!isClient) return null;
 
   const owned = kings.includes(slug);
   const isGolden = golden.includes(slug);
 
-  if (!owned) {
-    return (
-      <div className={cn("flex flex-col items-center gap-1", className)}>
-        <Button variant="outline" size="lg" disabled aria-disabled>
-          <Lock aria-hidden />
-          ✨ Mistrovské kolo
-        </Button>
-        <p className="text-xs text-muted-foreground">
-          Odemkne se, až získáš kartu.
-        </p>
-      </div>
-    );
-  }
-
+  if (!owned) return null;
   return (
     <div className={cn("flex flex-col items-center gap-2", className)}>
       {isGolden && <GoldenBadge />}
@@ -66,7 +52,7 @@ export function GoldenHeaderFrame({
     <div className={cn("rounded-2xl", isGolden && "golden-frame")}>
       <header
         className={cn(
-          "relative flex flex-col items-center gap-4 rounded-2xl p-5 text-center sm:p-6",
+          "relative flex flex-col items-center gap-2 rounded-2xl p-4 text-center sm:gap-3 sm:p-5",
           isGolden ? "golden-sheet golden-sheen rounded-[12px]" : "parchment",
         )}
       >
