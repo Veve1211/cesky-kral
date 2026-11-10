@@ -1,3 +1,4 @@
+import { KOFI_URL } from "@/lib/kofi";
 import type { Metadata, Viewport } from "next";
 import Link from "next/link";
 import { Grenze_Gotisch, Inter, Uncial_Antiqua } from "next/font/google";
@@ -90,6 +91,22 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
               Zdroje obrázků a písem
             </Link>{" "}
             · {SITE_YEAR}
+            {KOFI_URL && (
+              <>
+                {" "}·{" "}
+                {/* Small footer link, not a groš button (those are at most one per page). */}
+                <a
+                  href={KOFI_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  data-testid="kofi-footer-link"
+                  className="underline underline-offset-4 hover:text-foreground"
+                >
+                  <span aria-hidden>🪙 </span>Hoď groš
+                  <span className="sr-only"> (Ko-fi, otevře se v novém okně)</span>
+                </a>
+              </>
+            )}
           </p>
         </footer>
       </body>

@@ -1,5 +1,6 @@
 "use client";
 
+import { KofiButton } from "@/components/kofi-button";
 import { Dialog as DialogPrimitive } from "radix-ui";
 
 import { Fireworks } from "@/components/fireworks";
@@ -185,6 +186,7 @@ export function TierCelebration({
                 </DialogPrimitive.Close>
                 <DecorateCrestButton parts={unlockedParts} />
               </div>
+              <KofiButton variant="subtle" className="text-parchment/85" />
             </div>
           )}
         </DialogPrimitive.Content>

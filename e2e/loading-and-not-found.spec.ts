@@ -9,7 +9,7 @@ for (const suffix of ["", "/zlate-kolo"]) {
       const path = `/kral/${slug}${suffix}`;
       const response = await page.goto(path);
       expect(response?.status()).toBe(404);
-      await expect(page.getByRole("heading", { name: "Tohoto krále neznáme", exact: true })).toBeVisible();
+      await expect(page.getByRole("heading", { name: "Tuhle stránku kronika nezná", exact: true })).toBeVisible();
       await expect(page.locator('meta[name="robots"]')).toHaveAttribute("content", /noindex/);
       expect(new URL(page.url()).pathname).toBe(path);
 

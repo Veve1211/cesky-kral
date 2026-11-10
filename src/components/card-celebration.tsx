@@ -1,5 +1,6 @@
 "use client";
 
+import { KofiButton } from "@/components/kofi-button";
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Dialog as DialogPrimitive } from "radix-ui";
@@ -155,6 +156,7 @@ export function CardCelebration({
                 </Button>
                 <DecorateCrestButton parts={unlockedParts} />
               </div>
+              <KofiButton variant="subtle" className="text-parchment/85" />
             </div>
           )}
         </DialogPrimitive.Content>

@@ -5,6 +5,7 @@ import { connection } from "next/server";
 import { CollectionGallery } from "@/components/collection-gallery";
 import { DailyHomeButton } from "@/components/daily-home-button";
 import { TodayRulerCard } from "@/components/daily-leaderboard";
+import { KofiButton } from "@/components/kofi-button";
 import { IlluminatedInitial } from "@/components/illuminated-initial";
 import { CardCorners } from "@/components/ornaments";
 import { ReignTimeline } from "@/components/reign-timeline";
@@ -99,6 +100,9 @@ async function HomeContent() {
 
       {/* Collected state lives in localStorage, so the client components read it. */}
       <CollectionGallery kings={kings} />
+
+      {/* The only groš on the home page: low, after the main content. */}
+      <KofiButton className="mx-auto max-w-sm" />
     </>
   );
 }
