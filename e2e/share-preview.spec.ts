@@ -18,7 +18,9 @@ test("náhled pro sdílení: vlastní titulek, popis a obrázek u všech 18 pano
 
     expect(await meta("og:title")).toBe(`${king.name} – hra o kartu`);
     expect(await meta("og:description")).toContain(king.name);
-    expect(await meta("og:description")).toContain(king.shortBio);
+    // No short bio: it would give away answers of the round.
+    expect(await meta("og:description")).not.toContain(king.shortBio);
+    expect(await meta("og:description")).toContain("Pět otázek");
     expect(await meta("twitter:card")).toBe("summary_large_image");
     expect(await meta("twitter:title")).toBe(`${king.name} – hra o kartu`);
     expect(await meta("og:url")).toMatch(new RegExp(`/kral/${king.slug}$`));
@@ -42,4 +44,16 @@ test("náhled pro sdílení: obrázek panovníka se vykreslí", async ({ page, r
   await page.goto(path);
   const size = await page.locator("img").evaluate((img: HTMLImageElement) => ({ w: img.naturalWidth, h: img.naturalHeight }));
   expect(size).toEqual({ w: 1200, h: 630 });
+});
+
+test("sociální sítě dostanou popis přímo v hlavičce stránky", async ({ request }) => {
+  // Link previews (Facebook, X, Slack…) read only the <head>; Next.js sends
+  // them the metadata there. Browsers get it streamed with the page.
+  for (const agent of ["facebookexternalhit/1.1", "Twitterbot/1.0", "Slackbot-LinkExpanding 1.0"]) {
+    const html = await (await request.get("/kral/karel-iv", { headers: { "user-agent": agent } })).text();
+    const head = html.split("</head>")[0];
+    expect(head, agent).toContain('name="description"');
+    expect(head, agent).toContain("Zahraj si o kartu: Karel IV.");
+    expect(head, agent).toContain('property="og:image"');
+  }
 });

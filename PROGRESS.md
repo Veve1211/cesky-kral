@@ -1,15 +1,10 @@
-# Průběh práce – erb viditelně (PR „Erb všude“)
+# Průběh práce – opravy po kontrole (úniky odpovědí, žebříček, popisy)
 
-Aktualizováno: 2026-11-09 21:50 (Praha). STOP pravidlo: v 6:00 práci ukončit.
-Větev `feat/crest-visible` z dev (PR #39–#43 už v dev). PR: #44 (CI běží).
+Aktualizováno: 2026-11-10 00:10 (Praha). STOP pravidlo: v 6:00 práci ukončit.
+Větev `fix/answer-leaks` z dev (#44 už v dev). PR: #46 (CI běží).
 
-## Kroky
-1. ✅ Odemykání i za karty (klíč 1, zaoblený štít 3, dělený 6 karet); oslava karty / koruny ukáže nové díly + „Ozdobit erb“.
-2. ✅ Karta „Tvůj erb“ na úvodu u hodnosti a nahoře v Moje sbírka (přezdívka, X z Y dílů).
-3. ✅ Hlavička: položka Erb (ověřit šířky).
-4. ✅ Sdílení výsledku s odkazem na erb (Denní výzva, Rychlovka).
-5. ✅ Jak hrát: odměny (+ Dnešní vládce), sekce Erb, Žebříčky a přezdívka, FAQ.
-6. ✅ Celá sada 340 + oprava testu žebříčku (plná místní DB); PR vytvořen.
-
-## Poznámky pro obnovení
-- `service postgresql start`; build s `NEXT_PUBLIC_KOFI_URL=https://ko-fi.com/cesky-kral-test`; `E2E_SKIP_BUILD=1 npm run test:e2e`.
+1. ✅ Úniky odpovědí: 7 otázek přepsáno z ověřených faktů, popis + dynastie až po získání karty, test answer-leaks.
+2. ✅ Žebříček: skóre s jednotkou (žádné „Vevinka117“).
+3. ✅ Popis pro sdílení bez úniku; test, že roboti sociálních sítí dostanou popis v hlavičce.
+4. Ověřeno: filtr přezdívek a délka 3–16 (z #41); hodnosti jednotné; main zatím bez tabulek hráčů (čistá DB).
+5. ✅ Celá sada (345 + opravené testy), PR #46.

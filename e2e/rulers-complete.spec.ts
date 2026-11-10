@@ -77,6 +77,8 @@ test("Karel I.: jako český král Karel III. (popis i kronika)", async ({ page 
   expect(karel.shortBio).toContain("Karlem III.");
   expect(chronicles["karel-i"].sections.map((s) => s.text).join(" ")).toContain("Karlem III.");
   expect(chronicles["karel-i"].sources.map((s) => s.url)).toContain("https://cs.wikipedia.org/wiki/Karel_I.");
+  // The description shows once the card is collected (before, it would give answers away).
+  await setCollection(page, ["karel-i"]);
   await open(page, "/kral/karel-i");
   await expect(page.locator("p", { hasText: "Jako český král byl Karlem III." })).toBeVisible();
 });

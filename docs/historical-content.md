@@ -72,3 +72,20 @@ Zdroj: https://cs.wikipedia.org/wiki/Karel_I. (oddíl o číslování): „Jako
 označení Karel III. se však pro něj v českém prostředí nevžilo. … byl nazýván
 ‚Karel Poslední‘.“ Doplněno do popisu (`shortBio`), do oddílu kroniky „Konec a
 odkaz“, do „Věděli jste, že…“ a do zdrojů kroniky.
+
+## Otázky, které prozrazovalo jméno (9. 11. 2026)
+
+Jméno panovníka je ve hře vždy vidět, proto správná odpověď nesmí být čitelná ze jména.
+Sedm otázek bylo přepsáno **jen pomocí faktů, která už byla v jejich ověřeném vysvětlení
+nebo zdroji** (žádná nová fakta); test `e2e/answer-leaks.spec.ts` to hlídá u všech otázek.
+Popis a dynastie panovníka (často obsahují odpovědi) se nově ukazují až po získání karty.
+
+| Panovník | Dřív | Teď | Zdroj faktu |
+| --- | --- | --- | --- |
+| Vladislav II. | Ze kterého rodu pocházel? → Z Jagellonců | Kdo byl jeho otcem? → Polský král Kazimír IV. | [cs.wikipedia – Vladislav Jagellonský](https://cs.wikipedia.org/wiki/Vladislav_Jagellonsk%C3%BD) (otec Kazimír IV. Jagellonský) |
+| Vladislav II. | Jak se jmenuje zákoník z roku 1500? → Vladislavské zřízení zemské | Čí moc zákoník výrazně omezil? → Moc krále | dosavadní vysvětlení otázky, zdroj panovníka |
+| Jan Lucemburský | Kde se narodil? → V Lucembursku | Na kterém dvoře vyrůstal? → Na francouzském dvoře Filipa Sličného | [cs.wikipedia – Jan Lucemburský](https://cs.wikipedia.org/wiki/Jan_Lucembursk%C3%BD) („Jan vyrůstal na francouzském královském dvoře Filipa Sličného“) |
+| Jan Lucemburský | Kde je pohřben? → V katedrále Notre-Dame v Lucemburku | Kdy byly ostatky přeneseny do katedrály? → Roku 1945 | dosavadní vysvětlení otázky |
+| Rudolf II. | Jak se jmenují tabulky, které dokončil Kepler? → Rudolfinské tabulky | Kde měl Tycho Brahe zámek pro pozorování? → V Benátkách nad Jizerou | [Historický ústav AV ČR – Tycho Brahe](https://biography.hiu.cas.cz/wiki/BRAHE_Tycho_14.12.1546-24.10.1601) („zámek v Benátkách nad Jizerou … observatoř“) |
+| Libuše | Kterou operou bylo otevřeno ND? → Smetanovou Libuší | Kdo složil operu Libuše? → Bedřich Smetana | [Radio Prague](https://english.radio.cz/node/8091287) („the National Theatre was opened by Smetana's 'Libuse'“) |
+| Libuše | Jak poslové Přemysla našli? → Šli za Libušiným bílým koněm | stejná otázka → Šli za jejím bílým koněm | beze změny faktu |
