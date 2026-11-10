@@ -99,7 +99,7 @@ export function ReignTimeline({ kings, variant }: { kings: KingSummary[]; varian
               className={cn(
                 "gilt absolute rounded-full",
                 compact
-                  ? "inset-x-6 top-[32px] h-[3px]"
+                  ? "inset-x-8 top-[46px] h-[3px]"
                   : "top-4 bottom-4 left-[26.5px] w-[3px] lg:inset-x-8 lg:top-[26.5px] lg:bottom-auto lg:h-[3px] lg:w-auto",
               )}
             />
@@ -109,7 +109,7 @@ export function ReignTimeline({ kings, variant }: { kings: KingSummary[]; varian
                 ref={king.slug === newSlug ? newStopRef : undefined}
                 className={cn(
                   "relative",
-                  compact ? "w-[78px] shrink-0" : "lg:min-w-0 lg:flex-1",
+                  compact ? "w-[96px] shrink-0" : "lg:min-w-0 lg:flex-1",
                 )}
               >
                 <TimelineStop
@@ -270,7 +270,7 @@ function TimelineStop({
       <span
         className={cn(
           "relative flex shrink-0 items-center justify-center",
-          compact ? "h-11 w-full" : "h-14 w-14 lg:w-full",
+          compact ? "h-[68px] w-full" : "h-14 w-14 lg:w-full",
         )}
       >
         <Portrait king={king} golden={golden} compact={compact} />
@@ -280,7 +280,7 @@ function TimelineStop({
         <span
           className={cn(
             "font-heading leading-tight font-bold text-balance group-hover:underline",
-            compact ? "text-[13px]" : "text-lg lg:text-sm",
+            compact ? "text-sm" : "text-lg lg:text-sm",
           )}
         >
           {king.name}
@@ -333,7 +333,7 @@ function Portrait({ king, golden, compact }: { king: KingSummary; golden: boolea
   return (
     <Ring golden={golden} compact={compact}>
       {src ? (
-        <Image src={src} alt="" fill sizes={compact ? "44px" : "56px"} className="object-cover object-top" />
+        <Image src={src} alt="" fill sizes={compact ? "68px" : "56px"} className="object-cover object-top" />
       ) : (
         <span className="font-initial text-xl text-gold">{kingInitial(king.name)}</span>
       )}
@@ -347,7 +347,7 @@ function Ring({ golden, compact, children }: { golden: boolean; compact: boolean
     <span
       className={cn(
         "relative block shrink-0 rounded-full transition-transform duration-300 group-hover:scale-105",
-        compact ? "size-11" : "size-14",
+        compact ? "size-[68px]" : "size-14",
         golden ? "golden-frame p-[3px]" : "gilt p-[2px] shadow-md",
       )}
     >

@@ -96,3 +96,27 @@ test("Řeka času na úvodu: posune se prstem a po puštění se vrátí na pův
   await strip.evaluate((el) => el.dispatchEvent(new Event("touchend")));
   await expect.poll(() => strip.evaluate((el) => Math.round(el.scrollLeft))).toBe(Math.round(start));
 });
+
+test("úvod: Denní výzva jako karta pod Začni hrát a hned pod ní Řeka času s většími portréty", async ({ page }) => {
+  await setCollection(page, kings.slice(0, 3).map((king) => king.slug));
+  await open(page, "/");
+  const start = page.getByTestId("start-button");
+  const daily = page.getByTestId("daily-home-card");
+  await expect(start).toBeVisible();
+  await expect(daily).toContainText("Denní výzva");
+  await expect(daily).toContainText("Dnes ještě nedohráno");
+  await expect(daily).toContainText("Hrát");
+  await expect(daily).toHaveAttribute("href", "/vyzva");
+  const timeline = page.getByRole("region", { name: "Řeka času", exact: true });
+  await expect(timeline.getByRole("listitem")).toHaveCount(3);
+  const [s, d, t] = [await start.boundingBox(), await daily.boundingBox(), await timeline.boundingBox()];
+  // Smaller than the main button, right under it, the river right under the card.
+  expect(d!.height).toBeLessThan(s!.height);
+  expect(d!.width).toBeLessThanOrEqual(s!.width);
+  expect(d!.y).toBeGreaterThan(s!.y + s!.height);
+  expect(t!.y).toBeGreaterThan(d!.y + d!.height);
+  expect(t!.y - (d!.y + d!.height)).toBeLessThan(48);
+  // Bigger portraits on the river.
+  const portrait = timeline.getByRole("listitem").first().locator("img").first();
+  expect((await portrait.boundingBox())!.width).toBeGreaterThanOrEqual(60);
+});
