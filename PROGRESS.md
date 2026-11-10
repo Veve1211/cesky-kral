@@ -1,10 +1,16 @@
-# Průběh práce – opravy po kontrole (úniky odpovědí, žebříček, popisy)
+# Průběh práce – audit (PR 1), první dojem (PR 2), vyleštění (PR 4)
 
-Aktualizováno: 2026-11-10 00:10 (Praha). STOP pravidlo: v 6:00 práci ukončit.
-Větev `fix/answer-leaks` z dev (#44 už v dev). PR: #46 (CI běží).
+Aktualizováno: 2026-11-10 (Praha). PR 3 (víc otázek) se na pokyn uživatelky nedělá.
+STOP pravidlo: v 6:00 práci ukončit.
 
-1. ✅ Úniky odpovědí: 7 otázek přepsáno z ověřených faktů, popis + dynastie až po získání karty, test answer-leaks.
-2. ✅ Žebříček: skóre s jednotkou (žádné „Vevinka117“).
-3. ✅ Popis pro sdílení bez úniku; test, že roboti sociálních sítí dostanou popis v hlavičce.
-4. Ověřeno: filtr přezdívek a délka 3–16 (z #41); hodnosti jednotné; main zatím bez tabulek hráčů (čistá DB).
-5. ✅ Celá sada (345 + opravené testy), PR #46.
+| Fáze | Větev | PR | Stav |
+| --- | --- | --- | --- |
+| PR 1 – audit + fakta | `audit/facts` (z dev) | – | ⏳ fakta opravena, zbývá AUDIT.md + docs |
+| PR 2 – první dojem | `feat/first-impression` (z PR 1) | – | nezačato |
+| PR 4 – vyleštění + groš (nové zadání) | `chore/final-polish` (z PR 2) | – | nezačato |
+
+## Groš v PR 4 (nové zadání uživatelky)
+úvod 1× nenápadně dole; po dohrání každého režimu; oslava karty a koruny pod Pokračovat; konec Jak hrát; patička malý odkaz „🪙 Hoď groš“; nikde víc než 1 tlačítko (patička se nepočítá); test.
+
+## Poznámky
+- Ověřování: /tmp/claude-0/facts (stažené zdroje, skripty). Blokované hosty: prague.eu, rozhlas.cz (kromě archiv.radio.cz), newworldencyclopedia, novinky, opava-city.

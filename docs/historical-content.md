@@ -88,4 +88,4 @@ Popis a dynastie panovníka (často obsahují odpovědi) se nově ukazují až p
 | Jan Lucemburský | Kde je pohřben? → V katedrále Notre-Dame v Lucemburku | Kdy byly ostatky přeneseny do katedrály? → Roku 1945 | dosavadní vysvětlení otázky |
 | Rudolf II. | Jak se jmenují tabulky, které dokončil Kepler? → Rudolfinské tabulky | Kde měl Tycho Brahe zámek pro pozorování? → V Benátkách nad Jizerou | [Historický ústav AV ČR – Tycho Brahe](https://biography.hiu.cas.cz/wiki/BRAHE_Tycho_14.12.1546-24.10.1601) („zámek v Benátkách nad Jizerou … observatoř“) |
 | Libuše | Kterou operou bylo otevřeno ND? → Smetanovou Libuší | Kdo složil operu Libuše? → Bedřich Smetana | [Radio Prague](https://english.radio.cz/node/8091287) („the National Theatre was opened by Smetana's 'Libuse'“) |
-| Libuše | Jak poslové Přemysla našli? → Šli za Libušiným bílým koněm | stejná otázka → Šli za jejím bílým koněm | beze změny faktu |
+| Libuše | Jak poslové Přemysla našli? → Šli za Libušiným bílým koněm | stejná otázka → Šli za jejím koněm | barva koně ve zdroji není (viz audit 10. 11.) |

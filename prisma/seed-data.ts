@@ -44,7 +44,7 @@ export const kings: SeedKing[] = [
       "Pověstná kněžna a věštkyně, která předpověděla slávu Prahy.",
     order: 1,
     imageUrl: "/kings/libuse.webp",
-    sourceUrl: "https://prague.eu/en/about-libuse-and-premysl/",
+    sourceUrl: "https://cs.wikipedia.org/wiki/Libu%C5%A1e_(kn%C4%9B%C5%BEna)",
     questions: [
       {
         difficulty: 1,
@@ -53,6 +53,7 @@ export const kings: SeedKing[] = [
         wrong: ["Na Karlštejně", "Na Křivoklátě"],
         explanation:
           "Vyšehrad stojí na vysoké skále nad Vltavou.",
+        sourceUrl: "https://cs.wikipedia.org/wiki/Vy%C5%A1ehrad",
       },
       {
         difficulty: 1,
@@ -89,22 +90,22 @@ export const kings: SeedKing[] = [
       {
         difficulty: 2,
         text: "Jak poslové Přemysla našli?",
-        correct: "Šli za jejím bílým koněm",
+        correct: "Šli za jejím koněm",
         wrong: ["Podle mapy", "Přemysl přišel na Vyšehrad sám"],
         explanation:
           "Kůň je dovedl až k poli, kde Přemysl oral.",
       },
       {
         difficulty: 3,
-        text: "Co se podle pověsti stalo s Přemyslovou lískovou holí, když ji zarazil do země?",
-        correct: "Zazelenala se a vyrašily z ní tři větve",
-        wrong: ["Zlomila se", "Proměnila se ve zlaté žezlo"],
+        text: "Do kterého století kladl František Palacký Libušin život, i když její existence není doložena?",
+        correct: "Na počátek 8. století",
+        wrong: ["Do 11. století", "Do 13. století"],
         explanation:
-          "Bylo to zázračné znamení, že Přemysl má vládnout.",
+          "Libuše je postava z pověsti, její existence není historicky doložena. Palacký její život jen hypoteticky kladl na počátek 8. století.",
       },
       {
         difficulty: 3,
-        text: "Kdo Libušino proroctví o Praze poprvé zapsal?",
+        text: "Kdo Libuši vložil do úst slavnou větu „Vidím město veliké, jehož sláva hvězd se dotýká“?",
         correct: "Kronikář Kosmas",
         wrong: ["Alois Jirásek", "Karel IV."],
         explanation:
@@ -992,8 +993,8 @@ export const kings: SeedKing[] = [
         correct: "Stavět modlitebny, které by vypadaly jako kostely",
         wrong: ["Číst knihy", "Nosit zbraně"],
         explanation:
-          "Mohli mít jen modlitebny, které se kostelům nesměly podobat.",
-        sourceUrl: "https://en.wikipedia.org/wiki/Patent_of_Toleration",
+          "Jejich modlitebny nesměly mít věže, zvony ani jiné zjevné prvky kostela.",
+        sourceUrl: "https://cs.wikipedia.org/wiki/Toleran%C4%8Dn%C3%AD_patent",
       },
       {
         difficulty: 3,
@@ -1034,7 +1035,7 @@ export const kings: SeedKing[] = [
       "Poslední český král, který vládl v době první světové války. Jako český král byl Karlem III.",
     order: 18,
     imageUrl: "/kings/karel-i.webp",
-    sourceUrl: "https://www.newworldencyclopedia.org/entry/Charles_I_of_Austria",
+    sourceUrl: "https://cs.wikipedia.org/wiki/Karel_I._Rakousk%C3%BD",
     questions: [
       {
         difficulty: 1,
@@ -1365,6 +1366,7 @@ export const kings: SeedKing[] = [
         correct: "Z Habsburků",
         wrong: ["Z Jagellonců", "Z Přemyslovců"],
         explanation: "Byl synem Filipa I. Sličného a mladším bratrem císaře Karla V.",
+        sourceUrl: "https://biography.hiu.cas.cz/pageid/54928",
       },
       {
         difficulty: 1,
@@ -1372,6 +1374,7 @@ export const kings: SeedKing[] = [
         correct: "Ve Španělsku",
         wrong: ["V Čechách", "V Polsku"],
         explanation: "Narodil se roku 1503 v Alcalá de Henares nedaleko Madridu.",
+        sourceUrl: "https://biography.hiu.cas.cz/pageid/54928",
       },
       {
         difficulty: 1,
@@ -1379,6 +1382,7 @@ export const kings: SeedKing[] = [
         correct: "Anna Jagellonská",
         wrong: ["Marie Terezie", "Eliška Přemyslovna"],
         explanation: "Anna byla dcerou Vladislava II., měli spolu patnáct dětí.",
+        sourceUrl: "https://biography.hiu.cas.cz/pageid/54928",
       },
       {
         difficulty: 2,
@@ -1386,6 +1390,7 @@ export const kings: SeedKing[] = [
         correct: "Po bitvě u Moháče",
         wrong: ["Po bitvě na Bílé hoře", "Po bitvě u Lipan"],
         explanation: "Roku 1526 u Moháče padl Annin bratr, král Ludvík Jagellonský, bez potomka.",
+        sourceUrl: "https://biography.hiu.cas.cz/pageid/54928",
       },
       {
         difficulty: 2,
@@ -1393,6 +1398,7 @@ export const kings: SeedKing[] = [
         correct: "Jezuity",
         wrong: ["Templáře", "Husity"],
         explanation: "Jezuité měli zemi rekatolizovat.",
+        sourceUrl: "https://biography.hiu.cas.cz/pageid/54928",
       },
       {
         difficulty: 2,
@@ -1407,6 +1413,7 @@ export const kings: SeedKing[] = [
         correct: "23. října 1526",
         wrong: ["24. února 1527", "25. července 1564"],
         explanation: "Korunován byl až 24. února 1527 ve svatovítské katedrále.",
+        sourceUrl: "https://biography.hiu.cas.cz/pageid/54928",
       },
       {
         difficulty: 3,
@@ -1414,6 +1421,7 @@ export const kings: SeedKing[] = [
         correct: "Jan Zápolský",
         wrong: ["Matyáš Korvín", "Jiří z Poděbrad"],
         explanation: "Většina uherských stavů zvolila v listopadu 1526 králem sedmihradského vévodu Zápolského.",
+        sourceUrl: "https://biography.hiu.cas.cz/pageid/54928",
       },
       {
         difficulty: 3,
@@ -1421,6 +1429,7 @@ export const kings: SeedKing[] = [
         correct: "Odebral jim politická práva a zbraně",
         wrong: ["Udělil jim nová privilegia", "Osvobodil je od daní"],
         explanation: "Města musela odevzdat všechny střelné zbraně i pozemkový majetek.",
+        sourceUrl: "https://biography.hiu.cas.cz/pageid/54928",
       },
     ],
   },
@@ -1443,6 +1452,7 @@ export const kings: SeedKing[] = [
         correct: "Zimní král",
         wrong: ["Král Bene", "Král železný a zlatý"],
         explanation: "Kvůli tomu, že vládl jen zhruba jeden rok.",
+        sourceUrl: "https://biography.hiu.cas.cz/pageid/55808",
       },
       {
         difficulty: 1,
@@ -1450,6 +1460,7 @@ export const kings: SeedKing[] = [
         correct: "Po bitvě na Bílé hoře",
         wrong: ["Po bitvě u Moháče", "Po bitvě u Kresčaku"],
         explanation: "Bitva proběhla 8. listopadu 1620, rok a čtyři dny po jeho korunovaci.",
+        sourceUrl: "https://biography.hiu.cas.cz/pageid/55808",
       },
       {
         difficulty: 1,
@@ -1457,6 +1468,7 @@ export const kings: SeedKing[] = [
         correct: "Ke kalvinismu",
         wrong: ["Ke katolictví", "K pravoslaví"],
         explanation: "Kalvinismus se poněkud lišil od českého kališnictví.",
+        sourceUrl: "https://biography.hiu.cas.cz/pageid/55808",
       },
       {
         difficulty: 2,
@@ -1464,6 +1476,7 @@ export const kings: SeedKing[] = [
         correct: "Anglického krále Jakuba I.",
         wrong: ["Císaře Ferdinanda II.", "Francouzského krále Ludvíka XIII."],
         explanation: "Stavové proto doufali v pomoc Anglie, ta ale nepřišla.",
+        sourceUrl: "https://biography.hiu.cas.cz/pageid/55808",
       },
       {
         difficulty: 2,
@@ -1485,6 +1498,7 @@ export const kings: SeedKing[] = [
         correct: "4. listopadu 1619",
         wrong: ["8. listopadu 1620", "23. května 1618"],
         explanation: "O tři dny později byla korunována i jeho manželka Alžběta.",
+        sourceUrl: "https://biography.hiu.cas.cz/pageid/55808",
       },
       {
         difficulty: 3,
@@ -1499,6 +1513,7 @@ export const kings: SeedKing[] = [
         correct: "Maxmiliánu Bavorskému",
         wrong: ["Janu Jiřímu Saskému", "Karlu Emanuelovi Savojskému"],
         explanation: "Fridrich přišel o všechna léna a byl uvržen do říšské klatby.",
+        sourceUrl: "https://biography.hiu.cas.cz/pageid/55808",
       },
     ],
   },
@@ -1528,6 +1543,7 @@ export const kings: SeedKing[] = [
         correct: "18",
         wrong: ["8", "40"],
         explanation: "Na trůn nastoupil 2. prosince 1848 po abdikaci svého strýce Ferdinanda.",
+        sourceUrl: "https://biography.hiu.cas.cz/pageid/55665",
       },
       {
         difficulty: 1,
@@ -1535,6 +1551,7 @@ export const kings: SeedKing[] = [
         correct: "V Olomouci",
         wrong: ["V Praze", "V Brně"],
         explanation: "Stalo se tak 2. prosince 1848, v roce revoluce.",
+        sourceUrl: "https://biography.hiu.cas.cz/pageid/55665",
       },
       {
         difficulty: 2,
@@ -1542,6 +1559,7 @@ export const kings: SeedKing[] = [
         correct: "Na českého krále",
         wrong: ["Na uherského krále", "Na římského císaře"],
         explanation: "Uherským králem se nechal korunovat roku 1867, českým nikdy.",
+        sourceUrl: "https://biography.hiu.cas.cz/pageid/55665",
       },
       {
         difficulty: 2,
@@ -1549,6 +1567,7 @@ export const kings: SeedKing[] = [
         correct: "Téměř 68 let",
         wrong: ["Téměř 41 let", "Přesně 20 let"],
         explanation: "Patří k nejdéle vládnoucím panovníkům světových dějin.",
+        sourceUrl: "https://biography.hiu.cas.cz/pageid/55665",
       },
       {
         difficulty: 2,
@@ -1577,6 +1596,7 @@ export const kings: SeedKing[] = [
         correct: "Všeobecné volební právo pro muže",
         wrong: ["Volební právo pro ženy", "Zrušení nevolnictví"],
         explanation: "V národnostní otázce byl konzervativní, tady se ale dokázal době přizpůsobit.",
+        sourceUrl: "https://biography.hiu.cas.cz/pageid/55665",
       },
     ],
   },
