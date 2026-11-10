@@ -52,7 +52,7 @@ export function GoldenHeaderFrame({
     <div className={cn("rounded-2xl", isGolden && "golden-frame")}>
       <header
         className={cn(
-          "relative flex flex-col items-center gap-2 rounded-2xl p-4 text-center sm:gap-4 sm:p-6",
+          "relative flex flex-col items-center gap-2 rounded-2xl p-4 text-center sm:gap-3 sm:p-5",
           isGolden ? "golden-sheet golden-sheen rounded-[12px]" : "parchment",
         )}
       >

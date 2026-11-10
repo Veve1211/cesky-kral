@@ -15,6 +15,8 @@ function stop(page: Page, name: string) {
 
 /** Waits until the river has remembered the badge as seen. */
 async function waitUntilSeen(page: Page, slug: string) {
+  // "Seen" means on screen: on a phone the river starts below the Start button.
+  await timeline(page).scrollIntoViewIfNeeded();
   await expect
     .poll(() => page.evaluate((key) => window.localStorage.getItem(key), SEEN_KEY))
     .toBe(JSON.stringify({ version: 1, slug }));
