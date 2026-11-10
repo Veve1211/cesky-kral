@@ -27,6 +27,10 @@ test("úvodní stránka: hodnost, galerie se všemi panovníky, Řeka času bez 
   const more = page.getByRole("navigation", { name: "Další na Českém králi" });
   await expect(more.getByRole("link", { name: "Kdo vládl dřív?" })).toHaveAttribute("href", "/kdo-driv");
   await expect(more.getByRole("link", { name: "Můj erb" })).toHaveAttribute("href", "/muj-erb");
+  // Two cards with a picture, a name and one sentence; the crest card shows a sample crest for a newcomer.
+  await expect(more.getByRole("link", { name: "Můj erb" })).toContainText("Navrhni si vlastní rodový erb.");
+  await expect(more.getByRole("link", { name: "Můj erb" }).locator("svg").last()).toBeVisible();
+  await expect(more.getByRole("link", { name: "Kdo vládl dřív?" })).toContainText("kdo byl první?");
   // Order: rank → main button → river → gallery → links at the bottom.
   const y = async (l: import("@playwright/test").Locator) => (await l.boundingBox())!.y;
   const order = [

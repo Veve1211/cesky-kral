@@ -66,13 +66,15 @@ test.describe("hlavička na úzkých displejích", () => {
           logoWhole: true,
           linksInside: true,
           noPageScroll: true,
-          linkCount: 6,
+          linkCount: 7,
           allNamed: true,
           iconsInside: true,
           allTextVisible: wide,
           allIconOnly: !wide,
         });
-        await expect(page.getByRole("banner").getByRole("link", { name: /groš/ })).toHaveCount(0);
+        // Only a menu link to the groš page in the header, never a Ko-fi button.
+        await expect(page.getByRole("banner").getByRole("link", { name: /groš/ })).toHaveAttribute("href", "/hod-gros");
+        await expect(page.getByRole("banner").getByTestId("kofi-link")).toHaveCount(0);
         // Normal text size: logo and menu share one line (56 px bar + 3 px gilded rule).
         expect(state.headerHeight).toBeLessThanOrEqual(60);
       });

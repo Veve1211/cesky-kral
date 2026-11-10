@@ -3,7 +3,7 @@ import { connection } from "next/server";
 
 import { CollectionGallery } from "@/components/collection-gallery";
 import { DailyHomeButton } from "@/components/daily-home-button";
-import { HomeMoreLinks, RankPill } from "@/components/home-extras";
+import { HomeMoreLinks, HomeRank } from "@/components/home-extras";
 import { KofiButton } from "@/components/kofi-button";
 import { ReignTimeline } from "@/components/reign-timeline";
 import { StartButton, StartButtonSkeleton } from "@/components/start-button";
@@ -17,16 +17,16 @@ const loadKings = cache(async () => {
 });
 
 /**
- * Home page, top to bottom: rank → one sentence + the main game button →
- * Řeka času strip → gallery → small links (Můj erb, Kdo vládl dřív?) → groš.
+ * Home page, top to bottom: rank block → one sentence + the main game button →
+ * Řeka času strip → gallery → two cards (Můj erb, Kdo vládl dřív?) → groš.
  * Everything else lives on its own page (header menu), so the main game wins.
  */
 export default function HomePage() {
   return (
     <div className="flex flex-col gap-6 sm:gap-8">
       <section className="flex flex-col items-center gap-3 text-center">
-        <Suspense fallback={<div className="h-9" aria-hidden />}>
-          <HomeRank />
+        <Suspense fallback={<div className="parchment h-[136px] w-full max-w-xl animate-pulse rounded-2xl sm:h-24" aria-hidden />}>
+          <HomeRankSection />
         </Suspense>
         <h1 className="text-[2.2rem] leading-[1.05] font-bold min-[400px]:text-[2.6rem] sm:text-6xl">
           Erbovní kniha <span className="gilt-text gilt-text-ink animate-shimmer">českých panovníků</span>
@@ -44,9 +44,9 @@ export default function HomePage() {
   );
 }
 
-async function HomeRank() {
+async function HomeRankSection() {
   const kings = await loadKings();
-  return <RankPill kings={kings} />;
+  return <HomeRank kings={kings} />;
 }
 
 async function HomeContent() {

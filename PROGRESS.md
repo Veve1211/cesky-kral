@@ -29,3 +29,10 @@ Rozhodnutí (herní design):
 - Řeka času bez nadpisu; po puštění prstu se vrátí na místo (jen dotyk, klávesnice a kolečko myši ji nechají, kde je – kvůli přístupnosti).
 - Hodnost je malý štítek s odkazem na Moje sbírku (celý panel zůstává na /sbirka).
 - Test serverové akce checkWhoFirst běží nově na /kdo-driv bez herního serveru (náhradní cesta, kterou akce obsluhuje).
+
+## Úvod, 2. kolo (10. 11., větev `feat/home-round2`)
+- Hodnost zpět jako výrazný blok (hodnost, „Ve sbírce“, ukazatel, zlaté karty), na mobilu kompaktní, aby Začni hrát zůstalo bez posouvání.
+- Menu: Rychlovka, Kdo vládl dřív?, Žebříček, Můj erb, Moje sbírka, Jak hrát, Hoď groš. Hry jsou první, protože jsou nejčastější cíl; groš poslední. Pod 480 px užší okraje ikon, aby se 7 ikon vešlo s logem na řádek.
+- „Hoď groš“ v menu je jen odkaz na novou stránku /hod-gros (ne tlačítko Ko-fi). Položka se ukáže jen s nastavenou adresou Ko-fi, aby nevedla do prázdna. Patička teď vede na stejnou stránku.
+- Stránka /hod-gros: proč hra je, že je zdarma a bez reklam, na co groš půjde (provoz, další panovníci s ověřenými zdroji), jedno tlačítko.
+- Dole na úvodu dvě karty (erb hráče / ukázkový, ⏳ Kdo vládl dřív?) s jednou větou; groš pod nimi jeden.

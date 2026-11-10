@@ -76,19 +76,34 @@ async function expectAtMostOneGrosh(page: Page) {
   return visible;
 }
 
-test("na každé stránce nejvýš jeden groš, v patičce malý odkaz, v hlavičce nic", async ({ page }) => {
-  for (const path of ["/", "/sbirka", "/rychlovka", "/kdo-driv", "/reka-casu", "/zebricky", "/muj-erb", "/zdroje", "/jak-hrat", "/kral/karel-iv", "/vyzva"]) {
+test("na každé stránce nejvýš jeden groš; v menu a v patičce jen odkaz na stránku Hoď groš", async ({ page }) => {
+  for (const path of ["/", "/sbirka", "/rychlovka", "/kdo-driv", "/reka-casu", "/zebricky", "/muj-erb", "/zdroje", "/jak-hrat", "/kral/karel-iv", "/vyzva", "/hod-gros"]) {
     await open(page, path);
-    await expect(page.getByRole("banner").getByRole("link", { name: /groš/ })).toHaveCount(0);
+    // The header has a menu link to the groš page, never a Ko-fi button.
+    const menu = page.getByRole("banner").getByRole("link", { name: /groš/ });
+    await expect(menu).toHaveCount(1);
+    await expect(menu).toHaveAttribute("href", "/hod-gros");
+    await expect(page.getByRole("banner").getByTestId("kofi-link")).toHaveCount(0);
     const footer = page.getByRole("contentinfo").getByTestId("kofi-footer-link");
     await expect(footer).toHaveText(/Hoď groš/);
-    await expect(footer).toHaveAttribute("href", TEST_KOFI_URL);
-    await expect(footer).toHaveAttribute("target", "_blank");
+    await expect(footer).toHaveAttribute("href", "/hod-gros");
     await expectAtMostOneGrosh(page);
   }
   // During a question: no groš at all.
   await open(page, "/kral/karel-iv");
   await expect(page.getByTestId("kofi-card")).toHaveCount(0);
+});
+
+test("stránka Hoď groš: proč hra existuje, na co groš půjde a právě jedno tlačítko", async ({ page }) => {
+  await open(page, "/hod-gros");
+  await expect(page.getByRole("heading", { level: 1 })).toContainText("Hoď groš");
+  await expect(page.getByRole("main")).toContainText("zdarma");
+  await expect(page.getByRole("heading", { name: "Na co groš půjde" })).toBeVisible();
+  await expectKofiCard(page);
+  expect(await expectAtMostOneGrosh(page)).toBe(1);
+  // Menu order: games, boards, own things, help, groš last.
+  const labels = await page.getByRole("navigation", { name: "Hlavní navigace" }).getByRole("link").evaluateAll((links) => links.map((l) => l.getAttribute("aria-label")));
+  expect(labels).toEqual(["Rychlovka", "Kdo vládl dřív?", "Žebříček", "Můj erb", "Moje sbírka", "Jak hrát", "Hoď groš"]);
 });
 
 test("úvod: groš právě jednou, nenápadně pod hlavním obsahem", async ({ page }) => {
