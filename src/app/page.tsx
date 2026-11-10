@@ -6,7 +6,7 @@ import { CollectionGallery } from "@/components/collection-gallery";
 import { DailyHomeButton } from "@/components/daily-home-button";
 import { TodayRulerCard } from "@/components/daily-leaderboard";
 import { IlluminatedInitial } from "@/components/illuminated-initial";
-import { CardCorners, OrnamentDivider } from "@/components/ornaments";
+import { CardCorners } from "@/components/ornaments";
 import { ReignTimeline } from "@/components/reign-timeline";
 import { StartButton, StartButtonSkeleton } from "@/components/start-button";
 import { WhoFirstGame } from "@/components/who-first-game";
@@ -25,7 +25,9 @@ export default function HomePage() {
         <h1 className="text-[2.6rem] leading-[1.05] font-bold min-[400px]:text-5xl sm:text-7xl">
           Erbovní kniha <span className="gilt-text gilt-text-ink animate-shimmer">českých panovníků</span>
         </h1>
-        <OrnamentDivider />
+        <p className="max-w-md text-base text-ink/85 sm:text-lg">
+          Odpovídej na otázky o českých panovnících a sbírej je jako karty.
+        </p>
       </section>
 
       {/* Static shell above renders instantly; everything below streams in with one DB query. */}
@@ -46,7 +48,7 @@ async function HomeContent() {
   return (
     <>
       {/* One main button; the daily challenge is a smaller second choice. */}
-      <section aria-label="Hrát" className="-mt-4 flex flex-col items-center gap-4 sm:-mt-6">
+      <section aria-label="Hrát" className="-mt-2 flex flex-col items-center gap-4 sm:-mt-4">
         <StartButton kings={kings.map(({ slug, name }) => ({ slug, name }))} />
         <DailyHomeButton />
       </section>
@@ -104,7 +106,7 @@ async function HomeContent() {
 function HomeSkeleton() {
   return (
     <div aria-busy="true" aria-label="Načítám" className="flex flex-col gap-8 sm:gap-10">
-      <div className="-mt-4 flex justify-center sm:-mt-6">
+      <div className="-mt-2 flex justify-center sm:-mt-4">
         <StartButtonSkeleton />
       </div>
       <div className="parchment h-28 animate-pulse rounded-2xl" />

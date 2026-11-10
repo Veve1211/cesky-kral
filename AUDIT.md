@@ -3,22 +3,25 @@
 Prošel jsem hru jako nový i vracející se hráč na mobilu (iPhone 13) i desktopu: úvod, hra o kartu,
 mistrovské kolo, Denní výzva, Rychlovka, Kdo vládl dřív?, Řeka času, Žebříčky, Můj erb, Moje sbírka,
 Jak hrát, Zdroje, 404. K tomu kontrola všech 162 otázek a 18 kronik proti zdrojům.
-Stav: ✅ opraveno · 🔧 opravuje se v uvedeném PR · ⏸ vědomě ponecháno (s důvodem).
+Stav: ✅ opraveno · 🔧 opravuje se v uvedeném PR · ⏳ po odevzdání · ⏸ vědomě ponecháno (s důvodem).
 
 ## Vysoká závažnost
 
 1. ✅ (PR 1) **Fakta.** 2 nepřesnosti a 3 neověřitelné detaily v otázkách a kronikách (tabulka v
    `docs/historical-content.md`, část „Audit faktů 10. 11.“).
-2. 🔧 (PR 2) **Hra začíná pod okrajem obrazovky.** Na mobilu je po „Začni hrát“ první otázka až pod velkou
-   hlavičkou panovníka (portrét, štítky, zamčené mistrovské kolo). Stejně u Denní výzvy, Rychlovky,
-   Kdo vládl dřív? a Řeky času – nováček nevidí, co má udělat.
-3. 🔧 (PR 2) **Přehlcený první dojem.** Úvod má sedm bloků (Denní výzva, Řeka času, Kdo vládl dřív?,
-   úvodní text, hodnost, erb, galerie) a hlavička šest ikon; chybí jedna věta, o čem hra je.
+2. ✅ (PR 2) **Hra začíná pod okrajem obrazovky.** Hra o kartu: portrét vedle jména, menší mezery, bez
+   zamčeného tlačítka – první otázka je na mobilu (iPhone 13) i desktopu vidět bez posouvání (test
+   `e2e/first-impression.spec.ts`). ⏳ Po odevzdání: totéž zkontrolovat u Denní výzvy, Rychlovky,
+   Kdo vládl dřív? a Řeky času.
+3. ✅ (PR 2) **Přehlcený první dojem.** Pod nadpisem je jedna věta, o čem hra je, a hned pod ní
+   velké „Začni hrát“ – na mobilu obojí bez posouvání (test). ⏳ Po odevzdání: postupné odhalování
+   (zpočátku jen hra o kartu a galerie, erb a Denní výzva po první kartě, další režimy po několika),
+   menu „Více“ na mobilu, nápověda v prvním kole – větší zásah, který se ve spěchu nedělá.
 
 ## Střední závažnost
 
-4. 🔧 (PR 2) Nezískaný panovník ukazuje zamčené tlačítko „Mistrovské kolo“ – pro nováčka šum navíc.
-5. 🔧 (PR 2) Po první kartě oslava nabízí víc cest (sbírka, kronika, erb, Pokračovat); chybí jeden jasný další krok.
+4. ✅ (PR 2) Nezískaný panovník už neukazuje zamčené tlačítko „Mistrovské kolo“ (u získaného zůstává).
+5. ⏳ Po odevzdání: Po první kartě oslava nabízí víc cest (sbírka, kronika, erb, Pokračovat); chybí jeden jasný další krok.
 6. 🔧 (PR 4) Text „Kdo to byl? … popis i roky vlády se odemknou“ – u pověstí roky nejsou a u kněžny/královny
    „byl“ nesedí (hrají i holky).
 7. 🔧 (PR 4) Stránka 404 říká „Tohoto krále neznáme“ i u adres, které s panovníky nesouvisí.
