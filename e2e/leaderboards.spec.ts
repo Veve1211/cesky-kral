@@ -247,11 +247,9 @@ test("po dohrání: pořadí, co chybělo, zápis přezdívkou, Dnešní vládce
     .poll(() => page.evaluate(() => (window as unknown as { shared?: string }).shared))
     .toMatch(/5\/5 👑👑👑👑👑 🏆 \d+\. místo z \d+/);
 
-  // The home page shows today's ruler too.
+  // The home page keeps only the main game in front: today's ruler lives on /vyzva and /zebricky.
   await open(page, "/");
-  const ruler = page.getByRole("link", { name: /^Dnešní vládce: / });
-  await expect(ruler).toBeVisible();
-  await expect(ruler.getByTestId("today-ruler")).toContainText("Dnešní vládce");
+  await expect(page.getByRole("link", { name: /^Dnešní vládce: / })).toHaveCount(0);
 });
 
 test("přenos postupu kódem: sbírka i přezdívka na druhém zařízení, kód jen jednou", async ({ page, browser }) => {
