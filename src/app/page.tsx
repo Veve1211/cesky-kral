@@ -1,13 +1,17 @@
 import { Suspense } from "react";
+import Link from "next/link";
 import { connection } from "next/server";
 
 import { CollectionGallery } from "@/components/collection-gallery";
 import { DailyHomeButton } from "@/components/daily-home-button";
-import { KofiButton } from "@/components/kofi-button";
+import { TodayRulerCard } from "@/components/daily-leaderboard";
 import { IlluminatedInitial } from "@/components/illuminated-initial";
 import { CardCorners, OrnamentDivider } from "@/components/ornaments";
 import { ReignTimeline } from "@/components/reign-timeline";
+import { StartButton, StartButtonSkeleton } from "@/components/start-button";
 import { WhoFirstGame } from "@/components/who-first-game";
+import { dailyDateKey } from "@/lib/daily";
+import { getDailyLeaderboard } from "@/lib/daily-server";
 import { getKings, toWhoFirstKings } from "@/lib/kings";
 import { pickPair } from "@/lib/who-first";
 
@@ -22,8 +26,6 @@ export default function HomePage() {
           Erbovní kniha <span className="gilt-text gilt-text-ink animate-shimmer">českých panovníků</span>
         </h1>
         <OrnamentDivider />
-        <DailyHomeButton />
-        <KofiButton variant="hero" />
       </section>
 
       {/* Static shell above renders instantly; everything below streams in with one DB query. */}
@@ -37,12 +39,38 @@ export default function HomePage() {
 async function HomeContent() {
   // Data comes from the DB on each request (never at build time).
   await connection();
-  const kings = await getKings();
+  const [kings, board] = await Promise.all([getKings(), getDailyLeaderboard(dailyDateKey(), 1)]);
+  const ruler = board.entries[0];
   const duelKings = toWhoFirstKings(kings);
 
   return (
     <>
-      <ReignTimeline variant="compact" kings={kings} />
+      {/* One main button; the daily challenge is a smaller second choice. */}
+      <section aria-label="Hrát" className="-mt-4 flex flex-col items-center gap-4 sm:-mt-6">
+        <StartButton kings={kings.map(({ slug, name }) => ({ slug, name }))} />
+        <DailyHomeButton />
+      </section>
+
+      <div className="flex flex-col gap-2">
+        <ReignTimeline variant="compact" kings={kings} />
+        <Link
+          href="/reka-casu"
+          className="self-center text-sm font-semibold text-navy underline decoration-gold underline-offset-4 hover:decoration-2"
+        >
+          <span aria-hidden>🌊 </span>Hraj Řeku času: seřaď panovníky
+        </Link>
+      </div>
+
+      {/* Today's first place in the daily challenge. */}
+      {ruler && (
+        <Link
+          href="/vyzva"
+          aria-label={`Dnešní vládce: ${ruler.nickname}, ${ruler.score} z 5 – zobrazit žebříček Denní výzvy`}
+          className="mx-auto w-full max-w-sm rounded-2xl outline-none transition-transform hover:-translate-y-0.5 focus-visible:ring-4 focus-visible:ring-ring/60"
+        >
+          <TodayRulerCard entry={ruler} className="py-3" />
+        </Link>
+      )}
 
       {duelKings.length >= 2 && (
         <section
@@ -63,8 +91,8 @@ async function HomeContent() {
       <p className="mx-auto max-w-xl text-left text-ink/85 sm:text-lg">
         <IlluminatedInitial letter="V" />
         <span className="sr-only">V</span>yber si panovníka a odpověz na pět otázek. Když trefíš aspoň
-        čtyři, jeho karta je tvoje. Sbírej dál a stoupej od panoše až k titulu Český král nebo
-        Česká královna.
+        čtyři, jeho karta je tvoje. Sbírej dál a stoupej od panoše až k titulu Pán nebo Paní erbovní
+        knihy.
       </p>
 
       {/* Collected state lives in localStorage, so the client components read it. */}
@@ -76,6 +104,9 @@ async function HomeContent() {
 function HomeSkeleton() {
   return (
     <div aria-busy="true" aria-label="Načítám" className="flex flex-col gap-8 sm:gap-10">
+      <div className="-mt-4 flex justify-center sm:-mt-6">
+        <StartButtonSkeleton />
+      </div>
       <div className="parchment h-28 animate-pulse rounded-2xl" />
       <div className="parchment mx-auto h-64 w-full max-w-xl animate-pulse rounded-2xl" />
       <div className="parchment h-28 animate-pulse rounded-2xl" />

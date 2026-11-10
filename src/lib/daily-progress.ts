@@ -134,3 +134,40 @@ export function recordDailyAnswer(date: string, index: number, correct: boolean,
   listeners.forEach((listener) => listener());
   return true;
 }
+
+/**
+ * "Přenos postupu": takes the daily state of the other device when it is
+ * newer (later day, or more answers on the same day); the longer living
+ * streak wins.
+ */
+export function mergeDailyFrom(raw: unknown): boolean {
+  if (typeof raw !== "string") return true;
+  const theirs = parse(raw);
+  const mine = getSnapshot();
+  const newerDay =
+    theirs.date !== null &&
+    (mine.date === null || theirs.date > mine.date || (theirs.date === mine.date && theirs.marks.length > mine.marks.length));
+  const day = newerDay ? theirs : mine;
+  const streakFrom =
+    (theirs.lastCompleted ?? "") > (mine.lastCompleted ?? "") ||
+    (theirs.lastCompleted === mine.lastCompleted && theirs.streak > mine.streak)
+      ? theirs
+      : mine;
+  if (day === mine && streakFrom === mine) return true;
+  try {
+    window.localStorage.setItem(
+      STORAGE_KEY,
+      JSON.stringify({
+        version: 1,
+        date: day.date,
+        marks: day.marks,
+        streak: streakFrom.streak,
+        lastCompleted: streakFrom.lastCompleted,
+      }),
+    );
+  } catch {
+    return false;
+  }
+  listeners.forEach((listener) => listener());
+  return true;
+}

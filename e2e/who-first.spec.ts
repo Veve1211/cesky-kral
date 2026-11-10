@@ -3,6 +3,9 @@ import { expect, test, type Page } from "@playwright/test";
 import { open, waitForHydration } from "./helpers/game";
 import { kingByName } from "./helpers/seed-answers";
 
+// Step by step (no automatic next pair); see e2e/auto-advance.spec.ts.
+test.use({ reducedMotion: "reduce" });
+
 /** The two offered kings, the one who reigned first comes back first. */
 async function pairByReign(page: Page) {
   const buttons = page.getByRole("group", { name: "Kdo začal vládnout dřív?" }).getByRole("button");

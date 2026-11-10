@@ -58,3 +58,11 @@ export function saveBestStreak(streak: number): number {
   listeners.forEach((listener) => listener());
   return streak;
 }
+
+/** "Přenos postupu": keeps the better of the two best streaks. */
+export function mergeBestStreakFrom(raw: unknown): boolean {
+  if (typeof raw !== "string") return true;
+  const theirs = parse(raw);
+  if (theirs <= getSnapshot()) return true;
+  return saveBestStreak(theirs) === theirs;
+}

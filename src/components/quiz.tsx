@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState, useTransition, type RefObject } from "react";
+import { useCallback, useEffect, useRef, useState, useTransition, type ReactNode, type RefObject } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { ArrowRight, Check, ExternalLink, Lock, RotateCcw, X } from "lucide-react";
@@ -29,8 +29,10 @@ import {
   useCollectionReady,
 } from "@/lib/collection";
 import type { Chronicle } from "@/lib/chronicle";
+import { AUTO_ADVANCE_MS, useAutoAdvanceAllowed } from "@/lib/auto-advance";
 import { CORRECT_TO_COLLECT } from "@/lib/game-rules";
 import type { AnswerResult, QuizQuestion } from "@/lib/quiz-types";
+import { unlockedBy } from "@/lib/crest-unlocks";
 import { recordCorrectAnswer } from "@/lib/mastery-progress";
 import { quickShareText } from "@/lib/share-text";
 import { cn } from "@/lib/utils";
@@ -38,8 +40,8 @@ import { cn } from "@/lib/utils";
 type Feedback = Extract<AnswerResult, { ok: true }>;
 
 type CelebrationInput =
-  | { kind: "crown"; ruler: CelebratedRuler; tier: 1 | 2 | 3 }
-  | { kind: "card"; card: CelebratedCard; firstTime: boolean };
+  | { kind: "crown"; ruler: CelebratedRuler; tier: 1 | 2 | 3; unlocked: string[] }
+  | { kind: "card"; card: CelebratedCard; firstTime: boolean; unlocked: string[] };
 type Celebration = CelebrationInput & { id: number };
 
 const HEADING_FOCUS = "scroll-mt-20 rounded-sm focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-current";
@@ -62,7 +64,16 @@ type QuizProps =
         };
     }
   | { mode: "golden"; questions: QuizQuestion[]; king: QuizKing }
-  | { mode: "quick"; questions: QuizQuestion[] }
+  | {
+      mode: "quick";
+      questions: QuizQuestion[];
+      /** Checks (and records) the answer on the server – scored mode. */
+      check?: (questionId: number, answerId: number) => Promise<AnswerResult>;
+      /** A new game is started by the caller (new server session). */
+      onRestart?: () => void;
+      /** Shown on the result card (personal record, leaderboard…). */
+      resultExtra?: ReactNode;
+    }
   | {
       /** Daily challenge: resumable, every answer is reported, results are shown by the caller. */
       mode: "daily";
@@ -71,6 +82,8 @@ type QuizProps =
       startScore: number;
       onAnswered: (index: number, correct: boolean) => void;
       onFinished: () => void;
+      /** Checks (and records) the answer on the server – scored mode. */
+      check?: (questionId: number, answerId: number) => Promise<AnswerResult>;
     };
 
 export function Quiz(props: QuizProps) {
@@ -90,7 +103,7 @@ export function Quiz(props: QuizProps) {
   const [celebrations, setCelebrations] = useState<Celebration[]>([]);
   const celebrationCounter = useRef(0);
   /** Highest crown reached during the current king round (shown at its end). */
-  const pendingCrown = useRef<{ ruler: CelebratedRuler; tier: 1 | 2 | 3 } | null>(null);
+  const pendingCrown = useRef<{ ruler: CelebratedRuler; tier: 1 | 2 | 3; unlocked: string[] } | null>(null);
 
   function queueCelebrations(items: CelebrationInput[]) {
     if (items.length === 0) return;
@@ -129,7 +142,10 @@ export function Quiz(props: QuizProps) {
     setError(null);
     startTransition(async () => {
       try {
-        const result = await checkAnswer(question.id, answerId);
+        const result =
+          (props.mode === "daily" || props.mode === "quick") && props.check
+            ? await props.check(question.id, answerId)
+            : await checkAnswer(question.id, answerId);
         if (!result.ok) {
           setError(result.error);
           setSelectedId(null);
@@ -140,11 +156,18 @@ export function Quiz(props: QuizProps) {
         setMarks((current) => [...current, result.correct]);
         if (result.correct) {
           const { ruler } = result;
-          const reached = recordCorrectAnswer(ruler.slug, ruler.questionKey, ruler.totalQuestions);
-          if (reached && props.mode === "king") {
-            if (!pendingCrown.current || reached > pendingCrown.current.tier) pendingCrown.current = { ruler, tier: reached };
-          } else if (reached) {
-            queueCelebrations([{ kind: "crown", ruler, tier: reached }]);
+          let reached: 1 | 2 | 3 | null = null;
+          // Crest parts this crown unlocks are shown on its celebration.
+          const unlocked = unlockedBy(rulerTotal(ruler.rulerCount), () => {
+            reached = recordCorrectAnswer(ruler.slug, ruler.questionKey, ruler.totalQuestions);
+          });
+          const tier = reached as 1 | 2 | 3 | null;
+          if (tier && props.mode === "king") {
+            const before = pendingCrown.current;
+            const parts = [...new Set([...(before?.unlocked ?? []), ...unlocked])];
+            pendingCrown.current = !before || tier > before.tier ? { ruler, tier, unlocked: parts } : { ...before, unlocked: parts };
+          } else if (tier) {
+            queueCelebrations([{ kind: "crown", ruler, tier, unlocked }]);
           }
         }
         if (props.mode === "daily") props.onAnswered(index, result.correct);
@@ -153,6 +176,11 @@ export function Quiz(props: QuizProps) {
         setSelectedId(null);
       }
     });
+  }
+
+  /** Rulers in the game: the king round knows them all, other modes ask the server. */
+  function rulerTotal(fromServer: number): number {
+    return props.mode === "king" && props.allKingSlugs.length > 0 ? props.allKingSlugs.length : fromServer;
   }
 
   function saveKing(): boolean {
@@ -167,6 +195,18 @@ export function Quiz(props: QuizProps) {
     );
     return saved;
   }
+
+  // A right answer moves on by itself after a short moment (not while a
+  // celebration is open – it starts again after "Pokračovat"). A wrong one
+  // waits for "Další", so the right answer and the explanation can be read.
+  const nextRef = useRef<() => void>(() => {});
+  const autoAdvanceAllowed = useAutoAdvanceAllowed();
+  const autoAdvance = autoAdvanceAllowed && feedback?.correct === true && celebrations.length === 0 && !finished;
+  useEffect(() => {
+    if (!autoAdvance) return;
+    const timer = window.setTimeout(() => nextRef.current(), AUTO_ADVANCE_MS);
+    return () => window.clearTimeout(timer);
+  }, [autoAdvance, index]);
 
   function next() {
     if (!feedback) return;
@@ -189,7 +229,11 @@ export function Quiz(props: QuizProps) {
       const queue: CelebrationInput[] = [];
       if (score >= CORRECT_TO_COLLECT) {
         const ownedBefore = readCollection().kings.includes(props.king.slug);
-        if (saveKing()) queue.push({ kind: "card", card: props.king, firstTime: !ownedBefore });
+        let saved = false;
+        const unlocked = unlockedBy(rulerTotal(0), () => {
+          saved = saveKing();
+        });
+        if (saved) queue.push({ kind: "card", card: props.king, firstTime: !ownedBefore, unlocked });
       }
       // The card first, then the crown reached during the round.
       if (pendingCrown.current) queue.push({ kind: "crown", ...pendingCrown.current });
@@ -199,7 +243,15 @@ export function Quiz(props: QuizProps) {
     setFinished(true);
   }
 
+  useEffect(() => {
+    nextRef.current = next;
+  });
+
   function restart() {
+    if (props.mode === "quick" && props.onRestart) {
+      props.onRestart();
+      return;
+    }
     focusQuestions.current = true;
     setIndex(0);
     setScore(0);
@@ -224,6 +276,7 @@ export function Quiz(props: QuizProps) {
         <TierCelebration
           ruler={current?.kind === "crown" ? current.ruler : null}
           tier={current?.kind === "crown" ? current.tier : null}
+          unlockedParts={current?.kind === "crown" ? current.unlocked : []}
           celebrationId={current?.id}
           onClose={close}
           returnFocusTo={returnFocusTo}
@@ -231,6 +284,7 @@ export function Quiz(props: QuizProps) {
         <CardCelebration
           card={current?.kind === "card" ? current.card : null}
           firstTime={current?.kind === "card" ? current.firstTime : false}
+          unlockedParts={current?.kind === "card" ? current.unlocked : []}
           celebrationId={current?.id}
           onClose={close}
           returnFocusTo={returnFocusTo}
@@ -275,7 +329,11 @@ export function Quiz(props: QuizProps) {
           if (props.mode !== "king") return;
           // The card may have been saved meanwhile in another tab.
           const ownedBefore = readCollection().kings.includes(props.king.slug);
-          if (saveKing()) queueCelebrations([{ kind: "card", card: props.king, firstTime: !ownedBefore }]);
+          let saved = false;
+          const unlocked = unlockedBy(rulerTotal(0), () => {
+            saved = saveKing();
+          });
+          if (saved) queueCelebrations([{ kind: "card", card: props.king, firstTime: !ownedBefore, unlocked }]);
         }}
         headingRef={resultHeading}
       />
@@ -400,9 +458,16 @@ export function Quiz(props: QuizProps) {
                   <ExternalLink className="size-3" aria-hidden />
                 </a>
               )}
-              <Button id="quiz-next" onClick={next} autoFocus className="self-end">
+              <Button id="quiz-next" onClick={next} autoFocus className="relative self-end overflow-hidden">
                 {index + 1 < total ? "Další otázka" : "Zobrazit výsledek"}
                 <ArrowRight aria-hidden />
+                {autoAdvance && (
+                  <span
+                    aria-hidden
+                    data-testid="auto-advance"
+                    className="animate-auto-advance absolute inset-x-0 bottom-0 h-1 origin-left bg-gold"
+                  />
+                )}
               </Button>
             </div>
           )}
@@ -431,7 +496,10 @@ function Results(
 
   if (props.mode === "golden") {
     return props.collected ? (
-      <GoldenWin king={props.king} score={score} total={total} headingRef={headingRef} />
+      <div className="flex flex-col gap-6">
+        <GoldenWin king={props.king} score={score} total={total} headingRef={headingRef} />
+        <KofiButton />
+      </div>
     ) : (
       <Card className="animate-card-reveal items-center text-center">
         <CardCorners className="m-1 size-8 text-gold-dark" />
@@ -443,7 +511,7 @@ function Results(
             aria-describedby="quiz-result-score"
             className={cn("font-sans text-xs font-semibold tracking-[0.2em] text-gold-dark uppercase", HEADING_FOCUS)}
           >
-            Konec zlatého kola
+            Konec mistrovského kola
           </h2>
           <p id="quiz-result-score" className="font-heading text-7xl font-bold">
             {score}
@@ -463,6 +531,7 @@ function Results(
               <Link href="/sbirka">Moje sbírka</Link>
             </Button>
           </div>
+          <KofiButton className="mt-2" />
         </CardContent>
       </Card>
     );
@@ -550,6 +619,7 @@ function Results(
             </Button>
           </RoyalCelebration>
         )}
+        <KofiButton />
       </div>
     );
   }
@@ -581,11 +651,13 @@ function Results(
               ? "Bez jediné chyby, klobouk dolů!"
               : "Dobrá práce! Dáš příště víc?"}
         </p>
+        {props.mode === "quick" && props.resultExtra}
         {props.mode === "quick" && props.marks.length === total && (
           <ShareButton
             text={quickShareText(props.marks)}
             url={`${window.location.origin}/rychlovka`}
-          />
+            withCrest
+        />
         )}
         <div className="flex flex-wrap justify-center gap-3">
           <Button onClick={onRestart} size="lg" variant={isKing ? "accent" : "default"}>
@@ -596,7 +668,7 @@ function Results(
             <Link href="/sbirka">Do sbírky</Link>
           </Button>
         </div>
-        {props.mode === "quick" && <KofiButton variant="card" className="mt-2" />}
+        <KofiButton className="mt-2" />
       </CardContent>
     </Card>
   );
@@ -667,10 +739,10 @@ function GoldenLocked({ king }: { king: QuizKing }) {
         <span className="flex size-14 items-center justify-center rounded-full bg-navy text-gold">
           <Lock className="size-6" aria-hidden />
         </span>
-        <h2 className="text-3xl font-bold">Zlaté kolo je zamčené</h2>
+        <h2 className="text-3xl font-bold">Mistrovské kolo je zamčené</h2>
         <OrnamentDivider />
         <p className="text-muted-foreground">
-          Zlaté kolo se odemkne, až bude {king.name} ve tvé sbírce. Nejdřív
+          Mistrovské kolo se odemkne, až bude {king.name} ve tvé sbírce. Nejdřív
           vyhraj běžnou hru o kartu.
         </p>
         <Button asChild variant="accent" size="lg">

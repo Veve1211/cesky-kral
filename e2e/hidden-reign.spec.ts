@@ -52,7 +52,8 @@ test("stránka panovníka skrývá roky do získání a po výhře je ukáže", 
   await open(page, `/kral/${rudolf.slug}`);
   const reign = page.getByTestId("king-reign");
   await expect(reign).toContainText("???? – ????");
-  await expect(reign).toContainText(rudolf.dynasty);
+  // The dynasty answers quiz questions – hidden until the card is won.
+  await expect(reign).not.toContainText(rudolf.dynasty);
   await expect(reign).not.toContainText(String(rudolf.reignFrom));
   await expect(reign).not.toContainText(String(rudolf.reignTo));
 
@@ -60,6 +61,7 @@ test("stránka panovníka skrývá roky do získání a po výhře je ukáže", 
   await expect(page.getByRole("heading", { name: "Král je ve tvé sbírce!" })).toBeVisible();
   // The header updates right after the win…
   await expect(reign).toContainText(rudolfReign);
+  await expect(reign).toContainText(rudolf.dynasty);
 
   // …and stays revealed after a reload.
   await open(page, `/kral/${rudolf.slug}`);

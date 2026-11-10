@@ -9,8 +9,9 @@ import {
   KingGrid,
   useCollectionSummary,
 } from "@/components/collection-summary";
-import { KofiButton } from "@/components/kofi-button";
 import { CardCorners } from "@/components/ornaments";
+import { MyCrestCard } from "@/components/my-crest-card";
+import { PlayerPanel } from "@/components/player-panel";
 import { ReignTimeline } from "@/components/reign-timeline";
 import { RoyalCelebration } from "@/components/royal-celebration";
 import { Button } from "@/components/ui/button";
@@ -35,6 +36,9 @@ export function MyCollection({ kings }: { kings: KingSummary[] }) {
 
   return (
     <>
+      {/* At the top of the page: the player's crest (or an invitation). */}
+      <MyCrestCard kingSlugs={kings.map((king) => king.slug)} compact />
+
       {complete ? (
         <RoyalCelebration total={total}>
           <GoldenCount golden={golden} total={total} />
@@ -42,8 +46,6 @@ export function MyCollection({ kings }: { kings: KingSummary[] }) {
       ) : (
         <CollectionStatus rank={rank} collected={collected} golden={golden} total={total} />
       )}
-
-      <KofiButton variant="card" />
 
       <ReignTimeline variant="full" kings={kings} />
 
@@ -82,6 +84,8 @@ export function MyCollection({ kings }: { kings: KingSummary[] }) {
           <KingGrid cards={missing} />
         </section>
       )}
+
+      <PlayerPanel />
 
       {complete && (
         <div className="flex justify-center">

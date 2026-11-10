@@ -3,6 +3,11 @@ import { expect, test, type Locator, type Page } from "@playwright/test";
 import { anyCelebration, celebration, currentQuestion, dismissAllCelebrations, open, progress, settleAnswer, readCollection, setCollection, STORAGE_KEY, waitForHydration } from "./helpers/game";
 import { findQuestion, kings } from "./helpers/seed-answers";
 
+// Focus and keyboard flow step by step: with "reduce motion" the game never
+// moves on by itself, so every "Další" is the player's choice.
+// (The automatic next question is covered in e2e/auto-advance.spec.ts.)
+test.use({ reducedMotion: "reduce" });
+
 /**
  * End-of-round celebrations (new card, then a crown) with the keyboard only:
  * focus starts on "Pokračovat" and Enter moves on to the next one.
@@ -31,7 +36,7 @@ const modes = [
   { name: "výhra", path: "/kral/rudolf-ii", count: 5, correct: true, heading: "Král je ve tvé sbírce!" },
   { name: "prohra", path: "/kral/rudolf-ii", count: 5, correct: false, heading: "Konec hry", restart: "Zkusit znovu" },
   { name: "zlatá výhra", path: "/kral/rudolf-ii/zlate-kolo", count: 3, correct: true, heading: "Zlatá karta je tvoje!", golden: true },
-  { name: "zlatá prohra", path: "/kral/rudolf-ii/zlate-kolo", count: 3, correct: false, heading: "Konec zlatého kola", golden: true },
+  { name: "zlatá prohra", path: "/kral/rudolf-ii/zlate-kolo", count: 3, correct: false, heading: "Konec mistrovského kola", golden: true },
   { name: "rychlovka", path: "/rychlovka", count: 10, correct: true, heading: "Konec rychlovky" },
 ];
 
@@ -217,6 +222,6 @@ test("WCAG AA: nadpisy s úplnou sbírkou na pergamenu i tmavém pozadí", async
     await open(page, path);
     await page.evaluate(() => document.fonts.ready);
     await expectHeadingContrast(page.getByRole("heading", { level: 1 }).locator("span").first());
-    await expectHeadingContrast(page.getByRole("heading", { name: /Jsi Český král/ }).locator("span").last());
+    await expectHeadingContrast(page.getByRole("heading", { name: /Jsi Pán \/ Paní erbovní knihy/ }).locator("span").last());
   }
 });

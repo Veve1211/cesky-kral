@@ -88,12 +88,22 @@ export async function answer(
   await button.click();
 
   await settleAnswer(page, correctly ? "Správně!" : "Tentokrát vedle.");
-  await page
-    .getByRole("button", { name: index < total ? "Další otázka" : "Zobrazit výsledek" })
-    .click();
+  await goNext(page, index, total, correctly);
   // The end of a won king round opens the card celebration (and maybe a crown after it).
   if (index === total) await dismissAllCelebrations(page);
   return question;
+}
+
+/**
+ * Moves on after the feedback. A right answer moves on by itself after about
+ * a second, so the button may already be gone – click it only if it is there.
+ */
+export async function goNext(page: Page, index: number, total: number, correctly = true) {
+  const next = page.getByRole("button", { name: index < total ? "Další otázka" : "Zobrazit výsledek", exact: true });
+  // A wrong answer never moves on by itself: always click.
+  if (!correctly) await next.click();
+  else await next.click({ timeout: 800 }).catch(() => {});
+  if (index < total) await expect(progress(page, index + 1, total)).toBeVisible();
 }
 
 /** Plays a whole round; `plan[i]` says whether question i+1 is answered right. */

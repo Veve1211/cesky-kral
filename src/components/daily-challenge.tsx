@@ -1,10 +1,11 @@
 "use client";
 
-import { useEffect, useRef, useState, useSyncExternalStore } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { RotateCcw, Zap } from "lucide-react";
+import { Zap } from "lucide-react";
 
+import { DailyCountdown } from "@/components/daily-countdown";
+import { DailyStanding } from "@/components/daily-standing";
 import { KofiButton } from "@/components/kofi-button";
 import { CardCorners, OrnamentDivider } from "@/components/ornaments";
 import { Quiz } from "@/components/quiz";
@@ -12,13 +13,7 @@ import { ShareButton } from "@/components/share-button";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { useCollectionReady } from "@/lib/collection";
-import {
-  dailyShareText,
-  formatCountdown,
-  formatDailyDate,
-  formatStreakDays,
-  msUntilNextDaily,
-} from "@/lib/daily";
+import { dailyShareText, formatDailyDate, formatStreakDays } from "@/lib/daily";
 import {
   currentStreak,
   marksFor,
@@ -26,16 +21,20 @@ import {
   recordDailyAnswer,
   useDailyProgress,
 } from "@/lib/daily-progress";
-import type { QuizQuestion } from "@/lib/quiz-types";
+import type { Standing } from "@/lib/leaderboard";
+import { announceLeaderboardChange, ensurePlayer, postJson } from "@/lib/player";
+import type { AnswerResult, QuizQuestion } from "@/lib/quiz-types";
 import { cn } from "@/lib/utils";
 
 /**
- * "Denní výzva" for one day. Progress lives in localStorage, so nothing is
- * rendered until the client can read it (no flash of a fresh game).
+ * "Denní výzva" for one day. Progress lives in localStorage (streak, resume)
+ * and – for the leaderboard – on the server, which checks and counts every
+ * answer itself. Nothing is rendered until the client can read it (no
+ * flash of a fresh game).
  */
 export function DailyChallenge({ dateKey, questions }: { dateKey: string; questions: QuizQuestion[] }) {
   const ready = useCollectionReady();
-  if (!ready) return <div aria-busy="true" aria-label="Načítám výzvu" className="parchment h-80 animate-pulse rounded-2xl" />;
+  if (!ready) return <DailySkeleton />;
   if (questions.length === 0) {
     return (
       <Card>
@@ -46,22 +45,101 @@ export function DailyChallenge({ dateKey, questions }: { dateKey: string; questi
   return <DailyRound dateKey={dateKey} questions={questions} />;
 }
 
+function DailySkeleton() {
+  return <div aria-busy="true" aria-label="Načítám výzvu" className="parchment h-80 animate-pulse rounded-2xl" />;
+}
+
+type Connection =
+  | { phase: "connecting" }
+  /** Scored on the server; `marks` = answers so far (browser + server). */
+  | { phase: "online"; token: string; marks: boolean[] }
+  /** Server unreachable (or finished earlier without it): plays locally, not ranked. */
+  | { phase: "offline"; marks: boolean[] };
+
 function DailyRound({ dateKey, questions }: { dateKey: string; questions: QuizQuestion[] }) {
   const total = questions.length;
   // Read once: the round resumes after the last answered question.
-  const [initial] = useState(() => [...marksFor(readDailyProgress(), dateKey)].slice(0, total));
+  const [local] = useState(() => [...marksFor(readDailyProgress(), dateKey)].slice(0, total));
+  const [connection, setConnection] = useState<Connection>(() =>
+    local.length >= total ? { phase: "offline", marks: local } : { phase: "connecting" },
+  );
+
+  useEffect(() => {
+    if (connection.phase !== "connecting") return;
+    let cancelled = false;
+    (async () => {
+      const token = await ensurePlayer();
+      const result = token
+        ? await postJson<{ state: { answered: number; marks: boolean[]; finished: boolean } | null }>("/api/daily/start", {
+            token,
+            date: dateKey,
+            offlineAnswered: local.length,
+          })
+        : null;
+      if (cancelled) return;
+      if (!token || !result?.ok || !result.state) {
+        setConnection({ phase: "offline", marks: local });
+        return;
+      }
+      // The server may know more answers (e.g. after moving to this device).
+      const { state } = result;
+      const marks = [...local];
+      for (let i = local.length; i < Math.min(state.answered, total); i++) {
+        marks.push(state.marks[i] ?? false);
+        recordDailyAnswer(dateKey, i, state.marks[i] ?? false, total);
+      }
+      setConnection({ phase: "online", token, marks });
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [connection.phase, dateKey, local, total]);
+
+  if (connection.phase === "connecting") return <DailySkeleton />;
+  return <DailyPlay dateKey={dateKey} questions={questions} connection={connection} resumed={connection.marks.length > 0} />;
+}
+
+function DailyPlay({
+  dateKey,
+  questions,
+  connection,
+  resumed,
+}: {
+  dateKey: string;
+  questions: QuizQuestion[];
+  connection: Exclude<Connection, { phase: "connecting" }>;
+  resumed: boolean;
+}) {
+  const total = questions.length;
+  const initial = connection.marks;
   const [marks, setMarks] = useState<boolean[]>(initial);
   const [finished, setFinished] = useState(initial.length >= total);
   const [justFinished, setJustFinished] = useState(false);
   const [saveFailed, setSaveFailed] = useState(false);
   const progress = useDailyProgress();
 
+  async function check(questionId: number, answerId: number): Promise<AnswerResult> {
+    if (connection.phase !== "online") return { ok: false, error: "Neplatná odpověď." };
+    const result = await postJson<{ result: AnswerResult }>("/api/daily/answer", {
+      token: connection.token,
+      date: dateKey,
+      questionId,
+      answerId,
+    });
+    return result.ok ? result.result : { ok: false, error: result.error };
+  }
+
   if (!finished) {
     return (
       <div className="flex flex-col gap-4">
-        {initial.length > 0 && (
+        {resumed && (
           <p className="rounded-xl bg-navy px-4 py-2 text-center text-sm text-parchment">
             Pokračuješ v rozehrané výzvě. Odpovědi, které už padly, platí.
+          </p>
+        )}
+        {connection.phase === "offline" && (
+          <p className="rounded-xl border border-gold-dark/40 px-4 py-2 text-center text-sm text-muted-foreground">
+            Žebříček je teď nedostupný. Hrát můžeš, výsledek se ale do žebříčku nezapíše.
           </p>
         )}
         <Quiz
@@ -69,6 +147,7 @@ function DailyRound({ dateKey, questions }: { dateKey: string; questions: QuizQu
           questions={questions}
           startIndex={initial.length}
           startScore={initial.filter(Boolean).length}
+          check={connection.phase === "online" ? check : undefined}
           onAnswered={(index, correct) => {
             setMarks((current) => (current.length === index ? [...current, correct] : current));
             if (!recordDailyAnswer(dateKey, index, correct, total)) setSaveFailed(true);
@@ -76,6 +155,7 @@ function DailyRound({ dateKey, questions }: { dateKey: string; questions: QuizQu
           onFinished={() => {
             setJustFinished(true);
             setFinished(true);
+            announceLeaderboardChange();
           }}
         />
       </div>
@@ -108,10 +188,13 @@ function DailyResult({
 }) {
   const heading = useRef<HTMLHeadingElement>(null);
   const score = marks.filter(Boolean).length;
+  const [standing, setStanding] = useState<Standing | null>(null);
 
   useEffect(() => {
     if (focusHeading) heading.current?.focus();
   }, [focusHeading]);
+
+  const place = standing?.ranked ? { rank: standing.rank, total: standing.total } : null;
 
   return (
     <Card className="animate-card-reveal items-center text-center">
@@ -154,6 +237,8 @@ function DailyResult({
           </p>
         )}
 
+        <DailyStanding dateKey={dateKey} onStanding={setStanding} />
+
         {saveFailed && (
           <p role="alert" className="text-sm text-destructive">
             Výsledek se nepodařilo uložit v prohlížeči. Povol ukládání dat, ať ti série nezmizí.
@@ -162,10 +247,11 @@ function DailyResult({
 
         <OrnamentDivider />
         <ShareButton
-          text={dailyShareText(dateKey, marks, streak)}
+          text={dailyShareText(dateKey, marks, streak, place)}
           url={typeof window === "undefined" ? "" : `${window.location.origin}/vyzva`}
+          withCrest
         />
-        <NextChallenge />
+        <DailyCountdown className="text-muted-foreground" />
         <div className="flex flex-wrap justify-center gap-3">
           <Button asChild variant="outline" size="lg">
             <Link href="/rychlovka">
@@ -177,41 +263,8 @@ function DailyResult({
             <Link href="/">Galerie</Link>
           </Button>
         </div>
-        <KofiButton variant="card" className="mt-2" />
+        <KofiButton className="mt-2" />
       </CardContent>
     </Card>
-  );
-}
-
-// Ticks once a second; the server renders no time at all (avoids hydration mismatch).
-function subscribeClock(onTick: () => void) {
-  const timer = window.setInterval(onTick, 1000);
-  return () => window.clearInterval(timer);
-}
-const nowInSeconds = () => Math.floor(Date.now() / 1000);
-
-/** "Další výzva za 05:12:33", then a button to load the new one. */
-function NextChallenge() {
-  const router = useRouter();
-  const seconds = useSyncExternalStore(subscribeClock, nowInSeconds, () => null);
-  if (seconds === null) return <p className="min-h-6" />;
-
-  const left = msUntilNextDaily(new Date(seconds * 1000));
-  if (left <= 1000) {
-    return (
-      <Button onClick={() => router.refresh()} variant="default" size="lg">
-        <RotateCcw aria-hidden />
-        Nová výzva je tu
-      </Button>
-    );
-  }
-  return (
-    <p className="text-sm text-muted-foreground">
-      Další výzva za{" "}
-      {/* Not a live region: a screen reader would read it every second. */}
-      <time dateTime={`PT${Math.ceil(left / 1000)}S`} className="font-semibold text-ink tabular-nums">
-        {formatCountdown(left)}
-      </time>
-    </p>
   );
 }

@@ -1,5 +1,5 @@
 // Data model for Český král.
-// Database is not connected yet (Railway PostgreSQL comes in the next step).
+// PostgreSQL on Railway (one database per environment).
 
 generator client {
   provider = "prisma-client"
@@ -57,4 +57,77 @@ model Answer {
   isCorrect  Boolean  @default(false)
 
   @@index([questionId])
+}
+
+/// Anonymous player – no account, no personal data. The browser keeps a
+/// random token; the server stores only its SHA-256 hash.
+model Player {
+  id            Int            @id @default(autoincrement())
+  tokenHash     String         @unique
+  /// Shown in leaderboards (3–16 chars, filtered); null = not in leaderboards
+  nickname      String?
+  /// Normalized nickname (lowercase, no diacritics/spaces) – unique
+  nicknameKey   String?        @unique
+  /// Own coat of arms – only its parameters (validated), shown next to the nickname
+  crest         Json?
+  createdAt     DateTime       @default(now())
+  dailyAttempts DailyAttempt[]
+  transferCodes TransferCode[]
+  gameSessions  GameSession[]
+}
+
+/// One "Denní výzva" attempt per player and day. Scored only by the server.
+model DailyAttempt {
+  id         Int       @id @default(autoincrement())
+  playerId   Int
+  player     Player    @relation(fields: [playerId], references: [id], onDelete: Cascade)
+  /// Prague calendar date, YYYY-MM-DD
+  date       String
+  /// Right/wrong per answered question, in order
+  marks      Boolean[] @default([])
+  answered   Int       @default(0)
+  score      Int       @default(0)
+  startedAt  DateTime  @default(now())
+  finishedAt DateTime?
+  durationMs Int?
+
+  @@unique([playerId, date])
+  @@index([date, score, durationMs])
+}
+
+/// Short-lived, single-use code to move progress to another device.
+model TransferCode {
+  id        Int       @id @default(autoincrement())
+  /// SHA-256 of the code – the code itself is never stored
+  codeHash  String    @unique
+  playerId  Int
+  player    Player    @relation(fields: [playerId], references: [id], onDelete: Cascade)
+  /// Snapshot of the browser progress (validated, size-limited)
+  payload   Json
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime  @default(now())
+
+  @@index([expiresAt])
+}
+
+/// One game of Rychlovka, "Kdo vládl dřív?" or "Řeka času", scored only by
+/// the server. `state` holds what the server asked (question ids / rulers).
+model GameSession {
+  id         Int       @id @default(autoincrement())
+  /// Random public id the browser uses (never the numeric id)
+  publicId   String    @unique
+  playerId   Int
+  player     Player    @relation(fields: [playerId], references: [id], onDelete: Cascade)
+  /// quick / who-first / timeline (CHECK constraint in migration)
+  mode       String
+  state      Json
+  answered   Int       @default(0)
+  score      Int       @default(0)
+  startedAt  DateTime  @default(now())
+  finishedAt DateTime?
+  durationMs Int?
+
+  @@index([mode, finishedAt])
+  @@index([playerId, mode])
 }

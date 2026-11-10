@@ -1,4 +1,4 @@
-// "🪙 Hoď kronikáři groš": one component, five places, only with NEXT_PUBLIC_KOFI_URL.
+// "🪙 Hoď kronikáři groš": only after a finished game and on /jak-hrat, only with NEXT_PUBLIC_KOFI_URL.
 import { createElement } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import { expect, type Locator, type Page, test } from "@playwright/test";
@@ -6,7 +6,7 @@ import { expect, type Locator, type Page, test } from "@playwright/test";
 import { KofiButton } from "../src/components/kofi-button";
 import { parseKofiUrl } from "../src/lib/kofi";
 import { dailyDateKey } from "../src/lib/daily";
-import { open, playRound, setCollection } from "./helpers/game";
+import { open, playRound, setCollection, waitForHydration } from "./helpers/game";
 import { TEST_KOFI_URL } from "./helpers/kofi";
 
 const NEW_WINDOW = "(Ko-fi, otevře se v novém okně)";
@@ -30,27 +30,30 @@ test("adresa Ko-fi: jen https://ko-fi.com, jinak nic", () => {
   }
 });
 
-test("bez adresy se nevykreslí vůbec nic – na žádném místě", () => {
-  for (const variant of ["header", "hero", "card", "footer"] as const) {
-    expect(renderToStaticMarkup(createElement(KofiButton, { variant, url: null }))).toBe("");
-    expect(renderToStaticMarkup(createElement(KofiButton, { variant, url: TEST_KOFI_URL }))).toContain(
-      `href="${TEST_KOFI_URL}"`,
-    );
-  }
+test("bez adresy se nevykreslí vůbec nic", () => {
+  expect(renderToStaticMarkup(createElement(KofiButton, { url: null }))).toBe("");
+  expect(renderToStaticMarkup(createElement(KofiButton, { url: TEST_KOFI_URL }))).toContain(`href="${TEST_KOFI_URL}"`);
 });
-
-/** A plain link to Ko-fi in a new tab – no pop-up, nothing in front of the game. */
-async function expectKofiLink(link: Locator, name: RegExp) {
-  await expect(link).toBeVisible();
-  await expect(link).toHaveAttribute("href", TEST_KOFI_URL);
-  await expect(link).toHaveAttribute("target", "_blank");
-  await expect(link).toHaveAttribute("rel", "noopener noreferrer");
-  await expect(link).toHaveAccessibleName(name);
-}
 
 const FULL_NAME = new RegExp(`^Hoď kronikáři groš ${NEW_WINDOW.replace(/[()]/g, "\\$&")}$`);
 
-function contrast(page: Page, locator: Locator) {
+/** The groš card: short explanation and a plain link to Ko-fi in a new tab – no pop-up. */
+async function expectKofiCard(page: Page) {
+  const card = page.getByRole("complementary", { name: "Podpora hry" });
+  await expect(card).toBeVisible();
+  await expect(card).toContainText("Baví tě hra?");
+  await expect(card).toContainText("Hoď kronikáři groš a pomůžeš mu psát další kapitoly.");
+  const link = card.getByRole("link");
+  await expect(link).toHaveAttribute("href", TEST_KOFI_URL);
+  await expect(link).toHaveAttribute("target", "_blank");
+  await expect(link).toHaveAttribute("rel", "noopener noreferrer");
+  await expect(link).toHaveAccessibleName(FULL_NAME);
+  // WCAG AA for normal text.
+  expect(await contrast(link)).toBeGreaterThanOrEqual(4.5);
+  return card;
+}
+
+function contrast(locator: Locator) {
   return locator.evaluate((el) => {
     const rgb = (value: string) => value.match(/\d+(\.\d+)?/g)!.slice(0, 3).map(Number);
     const lum = ([r, g, b]: number[]) => {
@@ -63,77 +66,72 @@ function contrast(page: Page, locator: Locator) {
   });
 }
 
-test("úvod: pod Denní výzvou, menší než ona, čitelná zelená", async ({ page }) => {
-  await open(page, "/");
-  const hero = page.getByTestId("kofi-hero");
-  await expectKofiLink(hero, FULL_NAME);
-  const daily = page.getByRole("link", { name: /Denní výzva/ });
-  const [heroBox, dailyBox] = [await hero.boundingBox(), await daily.boundingBox()];
-  expect(heroBox!.y).toBeGreaterThan(dailyBox!.y + dailyBox!.height);
-  expect(heroBox!.width * heroBox!.height).toBeLessThan(dailyBox!.width * dailyBox!.height);
-  // WCAG AA for normal text.
-  expect(await contrast(page, hero)).toBeGreaterThanOrEqual(4.5);
-});
-
-test("hlavička: na každé stránce, na úzkém mobilu jen groš s celým jménem", async ({ page }) => {
-  for (const path of ["/", "/sbirka", "/rychlovka", "/kdo-driv", "/jak-hrat", "/zdroje", "/kral/karel-iv"]) {
+test("jinde groš není: hlavička, patička, úvod, sbírka, Denní výzva během hry", async ({ page }) => {
+  for (const path of ["/", "/sbirka", "/rychlovka", "/kdo-driv", "/zdroje", "/kral/karel-iv", "/vyzva"]) {
     await open(page, path);
-    await expectKofiLink(page.getByTestId("kofi-header"), /^Hoď groš \(Ko-fi, otevře se v novém okně\)$/);
+    await expect(page.getByRole("banner").getByRole("link", { name: /groš/ })).toHaveCount(0);
+    await expect(page.getByRole("contentinfo").getByRole("link", { name: /groš/ })).toHaveCount(0);
+    await expect(page.getByTestId("kofi-card")).toHaveCount(0);
   }
-  // Screen-reader-only text is 1 px wide, which Playwright still calls "visible" – measure it.
-  const header = page.getByTestId("kofi-header");
-  const labelWidth = () => header.getByText("Hoď groš", { exact: true }).evaluate((el) => el.getBoundingClientRect().width);
-  await page.setViewportSize({ width: 375, height: 700 });
-  await expect.poll(labelWidth).toBeLessThanOrEqual(1);
-  await expect(header).toHaveAccessibleName(/^Hoď groš/);
-  await page.setViewportSize({ width: 1024, height: 700 });
-  await expect.poll(labelWidth).toBeGreaterThan(40);
 });
 
-test("výsledek Rychlovky: kartička pod hlavními tlačítky", async ({ page }) => {
+test("Jak hrát: groš s vysvětlením", async ({ page }) => {
+  await open(page, "/jak-hrat");
+  await expectKofiCard(page);
+});
+
+test("po dohrání Rychlovky: groš pod hlavními tlačítky", async ({ page }) => {
   await open(page, "/rychlovka");
-  await expect(page.getByTestId("kofi-card")).toHaveCount(0); // never during the game
   await playRound(page, Array(10).fill(true));
-  const card = page.getByRole("complementary", { name: "Podpora hry" });
-  await expect(card).toContainText("Baví tě Český král?");
-  await expect(card).toContainText("Hoď kronikáři groš na další panovníky.");
-  await expectKofiLink(card.getByRole("link"), FULL_NAME);
+  const card = await expectKofiCard(page);
   const again = await page.getByRole("button", { name: "Hrát znovu" }).boundingBox();
   expect((await card.boundingBox())!.y).toBeGreaterThan(again!.y);
 });
 
-test("výsledek Denní výzvy: kartička pod hlavními tlačítky", async ({ page }) => {
+test("po dohrání Denní výzvy: groš pod hlavními tlačítky", async ({ page }) => {
   await setCollection(page, []);
   await page.evaluate(
     (date) => window.localStorage.setItem("cesky-kral:daily", JSON.stringify({ version: 1, date, marks: [true, true, true, true, false], streak: 1, lastCompleted: date })),
     dailyDateKey(),
   );
   await open(page, "/vyzva");
-  const card = page.getByRole("complementary", { name: "Podpora hry" });
-  await expect(card).toContainText("Baví tě Český král?");
-  await expectKofiLink(card.getByRole("link"), FULL_NAME);
+  const card = await expectKofiCard(page);
   const gallery = await page.getByRole("link", { name: "Galerie", exact: true }).boundingBox();
   expect((await card.boundingBox())!.y).toBeGreaterThan(gallery!.y);
 });
 
-test("Moje sbírka: kartička u přehledu sbírky; patička výraznější", async ({ page }) => {
-  await open(page, "/sbirka");
-  const card = page.getByRole("complementary", { name: "Podpora hry" });
-  await expectKofiLink(card.getByRole("link"), FULL_NAME);
-  const status = await page.getByLabel("Postup sbírky").boundingBox();
-  expect((await card.boundingBox())!.y).toBeGreaterThan(status!.y);
-
-  const footer = page.getByRole("contentinfo").getByTestId("kofi-footer");
-  await expectKofiLink(footer, FULL_NAME);
-  expect(await contrast(page, footer)).toBeGreaterThanOrEqual(4.5);
-});
-
-test("hra o kartu tlačítko neruší: během kola ani ve výsledku žádná kartička", async ({ page }) => {
+test("hra o kartu: během kola ne, po dohrání (výhra i prohra) ano, bez vyskakovacích oken", async ({ page }) => {
   page.on("dialog", () => {
     throw new Error("no pop-ups allowed");
   });
   await open(page, "/kral/karel-iv");
+  await expect(page.getByTestId("kofi-card")).toHaveCount(0);
   await playRound(page, [true, true, true, true, true]);
   await expect(page.getByRole("heading", { name: "Král je ve tvé sbírce!" })).toBeVisible();
+  await expectKofiCard(page);
+
+  await open(page, "/kral/josef-ii");
+  await playRound(page, [false, false, false, false, false]);
+  await expect(page.getByRole("heading", { name: "Konec hry" })).toBeVisible();
+  await expectKofiCard(page);
+});
+
+test("Kdo vládl dřív?: groš až po konci hry", async ({ page }) => {
+  // No automatic next pair, so the loop below stays simple.
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  await open(page, "/kdo-driv");
   await expect(page.getByTestId("kofi-card")).toHaveCount(0);
+  const group = page.getByRole("group", { name: "Kdo začal vládnout dřív?" });
+  // Keep answering until a wrong pick ends the game (bounded).
+  for (let i = 0; i < 40; i++) {
+    const option = group.getByRole("button").first();
+    await waitForHydration(option);
+    await option.click();
+    const over = page.getByText("Vedle! Konec hry.");
+    const next = page.getByRole("button", { name: "Další" });
+    await expect(over.or(next)).toBeVisible();
+    if (await over.isVisible()) break;
+    await next.click();
+  }
+  await expectKofiCard(page);
 });

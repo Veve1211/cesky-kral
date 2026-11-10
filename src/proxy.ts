@@ -1,11 +1,18 @@
 import { NextResponse, type NextRequest } from "next/server";
 
+import { crestFromQuery } from "@/lib/heraldry";
 import { getPrisma } from "@/lib/prisma";
 import { isValidSlug } from "@/lib/slug";
 
-/** Check existence before the streamed page commits its HTTP 200 headers. */
+/** Check existence (rulers) or validity (shared crest) before the streamed page commits its HTTP 200 headers. */
 export async function proxy(request: NextRequest) {
   if (request.method !== "GET" && request.method !== "HEAD") return NextResponse.next();
+
+  // A shared coat of arms lives only in its link: a broken link is a real 404.
+  if (request.nextUrl.pathname === "/erb") {
+    const crest = crestFromQuery(Object.fromEntries(request.nextUrl.searchParams));
+    return crest ? NextResponse.next() : missingKing(request);
+  }
 
   let slug: string;
   try {
@@ -28,5 +35,5 @@ function missingKing(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/kral/:slug", "/kral/:slug/zlate-kolo"],
+  matcher: ["/kral/:slug", "/kral/:slug/zlate-kolo", "/erb"],
 };

@@ -4,8 +4,9 @@ import { useCollection, useCollectionReady } from "@/lib/collection";
 
 /**
  * "1576–1611 · Habsburkové" under the king's name on /kral/[slug].
- * The years are the answers of "Kdo vládl dřív?", so until the king is in
- * the player's collection (localStorage) they show as "???? – ????".
+ * The years are the answers of "Kdo vládl dřív?" and the dynasty answers
+ * quiz questions, so until the king is in the player's collection
+ * (localStorage) the years show as "???? – ????" and the dynasty is left out.
  */
 export function KingReignLine({
   slug,
@@ -32,8 +33,8 @@ export function KingReignLine({
             <span className="sr-only">roky jsou skryté</span>
           </>
         ))}
-      {reign && dynasty && " · "}
-      {dynasty}
+      {owned && reign && dynasty && " · "}
+      {owned && dynasty}
     </p>
   );
 }
