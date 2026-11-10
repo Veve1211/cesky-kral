@@ -26,7 +26,7 @@ export const chronicles: Record<string, SeedChronicle> = {
       },
       {
         heading: "Volba Přemysla",
-        text: "Když jí jeden muž ve sporu vyčetl, že je hanba, aby nad muži vládla žena, rozhodla se vzít si manžela. Poslala posly za svým bílým koněm, který je dovedl do Stadic k oráči Přemyslovi. Jeho lísková hůl zaražená do země se zazelenala a vyrašily z ní tři větve, což bylo znamení, že má vládnout. Z jejich rodu pak podle pověsti vzešli Přemyslovci.",
+        text: "Když jí jeden muž ve sporu vyčetl, že je hanba, aby nad muži vládla žena, rozhodla se vzít si manžela. Poslala posly za svým koněm, který je dovedl do Stadic k oráči Přemyslovi. Z jejich rodu pak podle pověsti vzešli Přemyslovci.",
       },
       {
         heading: "Odkaz pověsti",
@@ -34,14 +34,14 @@ export const chronicles: Record<string, SeedChronicle> = {
       },
     ],
     facts: [
-      "poslové našli Přemysla tak, že šli za Libušiným bílým koněm až na pole ve Stadicích?",
-      "Přemyslova lísková hůl zaražená do země se podle pověsti zazelenala a vyrašily z ní tři větve?",
+      "poslové našli Přemysla tak, že šli za Libušiným koněm až na pole ve Stadicích?",
+      "její existence není historicky doložena a František Palacký její život jen hypoteticky kladl na počátek 8. století?",
       "slavnou větu „Vidím město veliké, jehož sláva hvězd se dotýká“ jí vložil do úst kronikář Kosmas a vypůjčil si ji z Vergiliovy Aeneidy?",
       "Národní divadlo bylo otevřeno Smetanovou operou Libuše?",
       "pověst zná většina Čechů ze Starých pověstí českých, které Alois Jirásek napsal v roce 1894?",
     ],
     sources: [
-      { label: "Prague.eu", url: "https://prague.eu/en/about-libuse-and-premysl/" },
+      { label: "Wikipedie – Libuše (kněžna)", url: "https://cs.wikipedia.org/wiki/Libu%C5%A1e_(kn%C4%9B%C5%BEna)" },
       { label: "Radio Prague", url: "https://english.radio.cz/node/8091287" },
       { label: "Wikipedie", url: "https://en.wikipedia.org/wiki/Ancient_Bohemian_Legends" },
     ],
@@ -169,11 +169,11 @@ export const chronicles: Record<string, SeedChronicle> = {
   },
   "jan-lucembursky": {
     intro:
-      "Narodil se roku 1296 v Lucembursku jako nejstarší syn císaře Jindřicha VII. a vyrůstal v Paříži. Ve čtrnácti letech se oženil s Eliškou Přemyslovnou a v únoru 1311 byl s ní korunován. Mnozí šlechtici ho brali jako krále cizince, protože správu Čech přenechával jiným a sám cestoval po Evropě. Padl 26. srpna 1346 v bitvě u Kresčaku.",
+      "Narodil se roku 1296 v Lucembursku jako nejstarší syn císaře Jindřicha VII. a vyrůstal na francouzském královském dvoře. Ve čtrnácti letech se oženil s Eliškou Přemyslovnou a v únoru 1311 byl s ní korunován. Mnozí šlechtici ho brali jako krále cizince, protože správu Čech přenechával jiným a sám cestoval po Evropě. Padl 26. srpna 1346 v bitvě u Kresčaku.",
     sections: [
       {
         heading: "Mládí",
-        text: "Narodil se roku 1296 v Lucembursku jako nejstarší syn císaře Jindřicha VII. a vyrůstal v Paříži. Ve čtrnácti letech si vzal Elišku Přemyslovnu, dceru Václava II., a v únoru 1311 byli korunováni.",
+        text: "Narodil se roku 1296 v Lucembursku jako nejstarší syn císaře Jindřicha VII. a vyrůstal na francouzském královském dvoře. Ve čtrnácti letech si vzal Elišku Přemyslovnu, dceru Václava II., a v únoru 1311 byli korunováni.",
       },
       {
         heading: "Vláda",
@@ -498,11 +498,11 @@ export const chronicles: Record<string, SeedChronicle> = {
   },
   "fridrich-falcky": {
     intro:
-      "Narodil se 26. srpna 1596 a byl falckým kurfiřtem. Čeští stavové ho v roce 1619 zvolili králem místo sesazeného Ferdinanda II. Po prohrané bitvě na Bílé hoře 8. listopadu 1620 z Prahy uprchl. Kvůli tak krátké vládě se mu říká „zimní král“. Zemřel 29. listopadu 1632 v Mohuči.",
+      "Narodil se v srpnu 1596 a byl falckým kurfiřtem. Čeští stavové ho v roce 1619 zvolili králem místo sesazeného Ferdinanda II. Po prohrané bitvě na Bílé hoře 8. listopadu 1620 z Prahy uprchl. Kvůli tak krátké vládě se mu říká „zimní král“. Zemřel 29. listopadu 1632 v Mohuči.",
     sections: [
       {
         heading: "Kurfiřt z Falce",
-        text: "Narodil se 26. srpna 1596 v rodu falckých Wittelsbachů. Byl kalvinista a stál v čele Protestantské unie. V roce 1613 se oženil s Alžbětou, dcerou anglického a skotského krále Jakuba I.",
+        text: "Narodil se v srpnu 1596 v rodu falckých Wittelsbachů. Byl kalvinista a stál v čele Protestantské unie. V roce 1613 se oženil s Alžbětou, dcerou anglického a skotského krále Jakuba I.",
       },
       {
         heading: "Zvolený král",
@@ -510,17 +510,18 @@ export const chronicles: Record<string, SeedChronicle> = {
       },
       {
         heading: "Zimní král",
-        text: "Slibovaná pomoc anglického krále a protestantských spojenců nepřišla. Po bitvě na Bílé hoře 8. listopadu 1620 opustil Pražský hrad, rok a čtyři dny po své korunovaci. Přišel o všechny své země a zemřel 29. listopadu 1632 v Mohuči. Dodnes není známo, kde leží jeho tělo.",
+        text: "Slibovaná pomoc anglického krále a protestantských spojenců nepřišla. Bitva na Bílé hoře 8. listopadu 1620 přišla rok a čtyři dny po jeho korunovaci a hned druhý den Fridrich s rodinou z Prahy utekl. Přišel o všechny své země a zemřel 29. listopadu 1632 v Mohuči. Dodnes není známo, kde leží jeho tělo.",
       },
     ],
     facts: [
       "už v roce 1619 ho skeptici nazývali „zimním králem“?",
-      "Prahu opustil přesně rok a čtyři dny po své korunovaci?",
+      "bitva na Bílé hoře proběhla přesně rok a čtyři dny po jeho korunovaci?",
       "s manželkou Alžbětou měl třináct dětí?",
       "jeho dcera Žofie byla matkou Jiřího I., prvního anglického krále z hannoverského rodu?",
       "jeho jediný pomník v Čechách stojí od roku 2010 v Pyšelích?",
     ],
-    sources: [{ label: "Wikipedie", url: "https://cs.wikipedia.org/wiki/Fridrich_Falck%C3%BD" }],
+    sources: [
+      { label: "Historický ústav AV ČR – Biografický slovník českých zemí: Fridrich Falcký", url: "https://biography.hiu.cas.cz/pageid/55808" },{ label: "Wikipedie", url: "https://cs.wikipedia.org/wiki/Fridrich_Falck%C3%BD" }],
   },
   "frantisek-josef-i": {
     intro:

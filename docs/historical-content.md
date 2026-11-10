@@ -88,4 +88,25 @@ Popis a dynastie panovníka (často obsahují odpovědi) se nově ukazují až p
 | Jan Lucemburský | Kde je pohřben? → V katedrále Notre-Dame v Lucemburku | Kdy byly ostatky přeneseny do katedrály? → Roku 1945 | dosavadní vysvětlení otázky |
 | Rudolf II. | Jak se jmenují tabulky, které dokončil Kepler? → Rudolfinské tabulky | Kde měl Tycho Brahe zámek pro pozorování? → V Benátkách nad Jizerou | [Historický ústav AV ČR – Tycho Brahe](https://biography.hiu.cas.cz/wiki/BRAHE_Tycho_14.12.1546-24.10.1601) („zámek v Benátkách nad Jizerou … observatoř“) |
 | Libuše | Kterou operou bylo otevřeno ND? → Smetanovou Libuší | Kdo složil operu Libuše? → Bedřich Smetana | [Radio Prague](https://english.radio.cz/node/8091287) („the National Theatre was opened by Smetana's 'Libuse'“) |
-| Libuše | Jak poslové Přemysla našli? → Šli za Libušiným bílým koněm | stejná otázka → Šli za jejím bílým koněm | beze změny faktu |
+| Libuše | Jak poslové Přemysla našli? → Šli za Libušiným bílým koněm | stejná otázka → Šli za jejím koněm | barva koně ve zdroji není (viz audit 10. 11.) |
+
+## Audit faktů (10. 11. 2026)
+
+Všech 162 otázek a 18 kronik prošlo strojovou kontrolou proti zdrojům (správná odpověď musí ve zdroji
+stát) a ruční kontrolou všeho, co se nenašlo, plus kontrolou, že „špatné“ odpovědi nejsou ve zdroji
+pravdivé. Dostupné byly: Wikipedie, archiv Českého rozhlasu, Národní archiv, Knihovna AV ČR,
+Biografický slovník českých zemí (Historický ústav AV ČR), ČT24.
+
+| Panovník | Původně | Co bylo špatně | Oprava | Zdroj |
+| --- | --- | --- | --- | --- |
+| Libuše | Kdo proroctví o Praze poprvé zapsal? → Kosmas | Nepřesné: věštkyni předpovídající slávu Prahy zmiňuje už křesťanská kronika z 10. století | Kdo jí vložil do úst větu „Vidím město veliké…“? → Kosmas | [Radio Prague](https://english.radio.cz/node/8091287) |
+| Libuše | Lísková hůl se zazelenala a vyrašily tři větve | V dostupných zdrojích neověřitelné | Nahrazeno: Palacký kladl její život na počátek 8. století | [cs.wikipedia – Libuše (kněžna)](https://cs.wikipedia.org/wiki/Libu%C5%A1e_(kn%C4%9B%C5%BEna)) |
+| Libuše | Šli za jejím **bílým** koněm (otázka i kronika) | Barva koně ve zdroji není | „Šli za jejím koněm“ | tamtéž |
+| Libuše | Zdroj prague.eu | Z prostředí neověřitelný | Zdroj česká Wikipedie, otázka na Vyšehrad heslo Vyšehrad | [cs.wikipedia – Vyšehrad](https://cs.wikipedia.org/wiki/Vy%C5%A1ehrad) |
+| Fridrich Falcký (kronika) | Opustil hrad „rok a čtyři dny“ po korunovaci | Útěk byl 9. 11. 1620, tj. rok a pět dní; rok a čtyři dny po korunovaci byla bitva | Věta i „Věděli jste“ opraveny | [BSČZ – Fridrich Falcký](https://biography.hiu.cas.cz/pageid/55808) |
+| Fridrich Falcký (kronika) | Narodil se 26. srpna 1596 | Sporné: BSČZ uvádí 28. 8. 1596 | „v srpnu 1596“ | tamtéž |
+| Jan Lucemburský (kronika) | Vyrůstal v Paříži | Zdroj říká „na francouzském královském dvoře“ | Sjednoceno | [cs.wikipedia – Jan Lucemburský](https://cs.wikipedia.org/wiki/Jan_Lucembursk%C3%BD) |
+| Josef II. | Toleranční patent – modlitebny | Správně, zdroj obecný | Přesnější vysvětlení (bez věží a zvonů), český zdroj | [cs.wikipedia – Toleranční patent](https://cs.wikipedia.org/wiki/Toleran%C4%8Dn%C3%AD_patent) |
+| Karel IV. | Karlův most 1357, zdroj Novinky | Zdroj neověřitelný | Zdroj s datem 9. 7. 1357 | [cs.wikipedia – Karel IV.](https://cs.wikipedia.org/wiki/Karel_IV.) |
+| Karel I. | 9 otázek, zdroj New World Encyclopedia | Zdroj neověřitelný | Všech 9 ověřeno, nový zdroj | [cs.wikipedia – Karel I. Rakouský](https://cs.wikipedia.org/wiki/Karel_I._Rakousk%C3%BD) |
+| Ferdinand I. (7), Fridrich Falcký (6), František Josef I. (6) | Zdroj Wikipedie | Správně | Zdroj povýšen na Biografický slovník českých zemí (AV ČR) | [BSČZ](https://biography.hiu.cas.cz/) |

@@ -26,7 +26,8 @@ test("data: roky vlády, 9 otázek 3/3/3, ověřitelný zdroj u každé otázky,
     for (const level of [1, 2, 3]) expect(king.questions.filter((q) => q.difficulty === level)).toHaveLength(3);
     for (const q of king.questions) {
       const source = q.sourceUrl ?? king.sourceUrl;
-      expect(source).toMatch(/^https:\/\/cs\.wikipedia\.org\/wiki\//);
+      // Czech Wikipedia, or the Biographical Dictionary of the Czech Lands (Czech Academy of Sciences).
+      expect(source).toMatch(/^https:\/\/(cs\.wikipedia\.org\/wiki\/|biography\.hiu\.cas\.cz\/pageid\/\d+$)/);
       expect(q.explanation.trim().length).toBeGreaterThan(10);
       expect(new Set([q.correct, ...q.wrong]).size).toBe(3);
     }
