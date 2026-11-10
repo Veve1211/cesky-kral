@@ -5,6 +5,9 @@ STOP pravidlo: v 6:00 práci ukončit. Obnoveno 10. 11. v 9:50 (po 6:00) → ote
 10. 11. dopoledne: odevzdání do hodiny – PR 2 jen úvod + první otázka na mobilu, PR 4 jen groš + test + README.
 Další krok: počkat na CI #48 a #49; po odevzdání body ⏳ z AUDIT.md.
 
+## Úvod bez korun (10. 11., větev `fix/home-no-crowns`)
+- Koruny učenosti a počet zlatých karet jen v Moje sbírka; galerie i blok hodnosti na úvodu bez nich (úvod = hlavní hra a sbírka, odměny podrobně ve sbírce).
+
 ## Odevzdání 10. 11. (rozhodnutí)
 - #47 sloučené do dev (uživatelka). CI #48 spadlo na 3 věcech: desktop – první otázka o 38 px pod okrajem (CI má jiná písma), test Pověsti hledal větu na starém místě, test štítku Nový čekal na „zhlédnutí“ Řeky času, která je na mobilu teď o řádek níž. Opraveno: hlavička ještě menší i na desktopu (bez ornamentu, menší mezery), testy upravené (Řeka času se v testu posune na obrazovku – „viděno“ znamená opravdu na obrazovce). Totéž sloučeno do PR 4.
 - Kontrola tajných údajů: gitleaks přes celou historii (všechny větve) – nic; jen `.env.example` se zástupnými hodnotami a heslo dočasné testovací DB v CI (`kral:kral@localhost`, není tajné). Bezpečné zveřejnit: ANO.
@@ -36,6 +39,3 @@ Rozhodnutí (herní design):
 - „Hoď groš“ v menu je jen odkaz na novou stránku /hod-gros (ne tlačítko Ko-fi). Položka se ukáže jen s nastavenou adresou Ko-fi, aby nevedla do prázdna. Patička teď vede na stejnou stránku.
 - Stránka /hod-gros: proč hra je, že je zdarma a bez reklam, na co groš půjde (provoz, další panovníci s ověřenými zdroji), jedno tlačítko.
 - Dole na úvodu dvě karty (erb hráče / ukázkový, ⏳ Kdo vládl dřív?) s jednou větou; groš pod nimi jeden.
-
-## Úvod bez korun (10. 11., větev `fix/home-no-crowns`)
-- Koruny učenosti a počet zlatých karet jen v Moje sbírka; galerie i blok hodnosti na úvodu bez nich (úvod = hlavní hra a sbírka, odměny podrobně ve sbírce).
