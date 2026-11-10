@@ -15,7 +15,7 @@ export function KingBio({ slug, bio }: { slug: string; bio: string }) {
   if (!ready || !kings.includes(slug)) {
     return (
       <p data-testid="king-bio-locked" className="text-center text-sm text-muted-foreground italic">
-        Kdo to byl? Odpověz na otázky – popis i roky vlády se odemknou s kartou.
+        Popis panovníka se odemkne, až získáš kartu.
       </p>
     );
   }

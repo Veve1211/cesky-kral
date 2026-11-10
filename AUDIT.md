@@ -22,11 +22,13 @@ Stav: ✅ opraveno · 🔧 opravuje se v uvedeném PR · ⏳ po odevzdání · �
 
 4. ✅ (PR 2) Nezískaný panovník už neukazuje zamčené tlačítko „Mistrovské kolo“ (u získaného zůstává).
 5. ⏳ Po odevzdání: Po první kartě oslava nabízí víc cest (sbírka, kronika, erb, Pokračovat); chybí jeden jasný další krok.
-6. 🔧 (PR 4) Text „Kdo to byl? … popis i roky vlády se odemknou“ – u pověstí roky nejsou a u kněžny/královny
-   „byl“ nesedí (hrají i holky).
-7. 🔧 (PR 4) Stránka 404 říká „Tohoto krále neznáme“ i u adres, které s panovníky nesouvisí.
-8. 🔧 (PR 4) Groš: nové pravidlo – jedno tlačítko na stránce, místa dle zadání, malý odkaz v patičce.
-9. 🔧 (PR 4) Jak hrát musí popsat postupné odemykání režimů z PR 2.
+6. ✅ (PR 4) Text „Kdo to byl? … popis i roky vlády se odemknou“ – u pověstí roky nejsou a u kněžny/královny
+   „byl“ nesedí. Nově „Popis panovníka se odemkne, až získáš kartu.“
+7. ✅ (PR 4) Stránka 404 říkala „Tohoto krále neznáme“ i u adres, které s panovníky nesouvisí. Nově „Tuhle stránku kronika nezná“.
+8. ✅ (PR 4) Groš: nejvýš jedno tlačítko na stránce (úvod dole, po každém režimu, oslava karty a koruny, Jak hrát),
+   malý odkaz v patičce; hlídá `e2e/kofi.spec.ts`.
+9. ⏸ Jak hrát a postupné odemykání: odemykání režimů se zatím nedělá (viz bod 3), takže Jak hrát odpovídá
+   skutečnosti beze změny. Až se odemykání udělá, doplnit i sem.
 
 ## Nízká závažnost
 
