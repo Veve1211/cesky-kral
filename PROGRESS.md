@@ -39,3 +39,8 @@ Rozhodnutí (herní design):
 - „Hoď groš“ v menu je jen odkaz na novou stránku /hod-gros (ne tlačítko Ko-fi). Položka se ukáže jen s nastavenou adresou Ko-fi, aby nevedla do prázdna. Patička teď vede na stejnou stránku.
 - Stránka /hod-gros: proč hra je, že je zdarma a bez reklam, na co groš půjde (provoz, další panovníci s ověřenými zdroji), jedno tlačítko.
 - Dole na úvodu dvě karty (erb hráče / ukázkový, ⏳ Kdo vládl dřív?) s jednou větou; groš pod nimi jeden.
+
+## Úvod, 3. kolo (10. 11., větev `feat/home-daily-river`)
+- Denní výzva zpět jako karta hned pod Začni hrát: název, stav dne (nedohráno / rozehráno / splněno), série 🔥 a jedno zlaté tlačítko; nižší a ne širší než hlavní tlačítko, aby hlavní hra zůstala první.
+- Řeka času hned pod kartou výzvy, portréty 68 px místo 44 px (širší zastávky, větší jména); bez nadpisu, návrat po puštění prstu beze změny.
+- Hodnost, nadpis a Začni hrát se nemění, na mobilu dál bez posouvání (test `first-impression`).
