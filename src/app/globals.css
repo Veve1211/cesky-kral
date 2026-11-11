@@ -541,3 +541,9 @@
     scroll-behavior: auto !important;
   }
 }
+
+/* At most one groš per page: while a card or crown celebration is open, its own
+   small groš link is the one shown and the page's groš card steps aside. */
+body:has([data-testid="card-celebration"], [data-testid="tier-celebration"]) .kofi-page {
+  display: none;
+}

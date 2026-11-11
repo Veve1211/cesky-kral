@@ -13,8 +13,10 @@ Ukázkový projekt do portfolia: celý stack od databáze přes server a UI po t
 
 ## Herní režimy a mechaniky
 
-Úvodní stránka má jedno hlavní tlačítko **„Začni hrát“** (nového hráče pošle rovnou do hry o prvního
-panovníka); vracející se hráč vidí **„Pokračuj“** s dalším nezískaným panovníkem.
+Úvodní stránka má pod nadpisem jednu větu, o čem hra je, a jedno hlavní tlačítko **„Začni hrát“**
+(nového hráče pošle rovnou do hry o prvního panovníka); vracející se hráč vidí **„Pokračuj“** s dalším
+nezískaným panovníkem. Na mobilu je obojí vidět bez posouvání a ve hře o kartu je bez posouvání vidět
+i první otázka.
 
 | Režim | Jak funguje |
 | --- | --- |
@@ -51,7 +53,10 @@ odemkne díl, oslava nabídne „Ozdobit erb“.
   Hráče pozná server podle náhodného anonymního tokenu; v databázi je jen jeho otisk (SHA-256).
 - **Přenos na jiné zařízení** krátkým kódem `ABCD-EFGH` (platí 30 minut, jen jednou), postup se sloučí.
 - **Kronika** panovníka (oddíly, „Věděli jste, že…“, zdroje) se odemkne se získanou kartou.
-- „🪙 Hoď kronikáři groš“ (dobrovolná podpora) jen po dohrání hry a na stránce Jak hrát.
+- „🪙 Hoď kronikáři groš“ (dobrovolná podpora, obyčejný odkaz na Ko-fi, žádná vyskakovací okna): na každé
+  stránce nejvýš jedno tlačítko – na úvodu jednou dole, po dohrání každého režimu, nenápadně na oslavě karty
+  a koruny učenosti a na konci Jak hrát; v patičce malý odkaz „🪙 Hoď groš“. Zobrazí se jen s nastavenou
+  proměnnou `NEXT_PUBLIC_KOFI_URL` (adresa https://ko-fi.com/…).
 
 Pravidla pro hráče jsou na stránce [/jak-hrat](https://cesky-kral.up.railway.app/jak-hrat);
 čísla na ní se berou přímo z herních konstant v kódu.
@@ -117,8 +122,12 @@ docs/                  ověření historického obsahu
 - Žádná vymyšlená fakta: každá otázka má ověřený zdroj (URL, jen `https://`); co nejde ověřit, se vynechá.
 - Seed obsah validuje: 9 otázek na panovníka (3 lehké, 3 střední, 3 těžké), 3 odpovědi, jedna správná,
   žádné duplicity, https zdroje.
-- Ověření a opravy obsahu jsou zapsané v [`docs/historical-content.md`](docs/historical-content.md);
-  regresní testy hlídají fakta i počty otázek.
+- Zdroje: česká Wikipedie a tam, kde je k dispozici, odborný
+  [Biografický slovník českých zemí](https://biography.hiu.cas.cz/) (Historický ústav AV ČR).
+- 10. 11. 2026 prošlo všech 162 otázek a 18 kronik kontrolou proti zdrojům (správná odpověď musí ve zdroji
+  stát, špatné odpovědi nesmí být pravdivé). Ověření a opravy jsou v
+  [`docs/historical-content.md`](docs/historical-content.md); regresní testy hlídají fakta i počty otázek.
+- Nálezy z auditu celé hry (UX, přístupnost, soukromí) a co zbývá jsou v [`AUDIT.md`](AUDIT.md).
 - Obrázky panovníků jen volná díla (public domain) z Wikimedia Commons, s kredity na stránce `/zdroje`.
 
 ## Prostředí a postup práce

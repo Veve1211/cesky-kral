@@ -1,7 +1,6 @@
 // The crest is visible where it tempts: next to the rank on the home page,
 // at the top of Moje sbírka, in the header, on celebrations that unlock a
 // part ("Ozdobit erb"), in shared results – and "Jak hrát" explains it.
-import { randomBytes } from "node:crypto";
 
 import { expect, type Page, test } from "@playwright/test";
 
@@ -16,36 +15,23 @@ async function saveCrest(page: Page) {
   await page.evaluate((design) => window.localStorage.setItem("cesky-kral:crest", JSON.stringify({ version: 1, design })), CREST);
 }
 
-test("úvod: karta erbu hned u hodnosti – bez erbu výzva, s erbem erb, přezdívka a díly", async ({ page, request }) => {
+test("úvod: bez karty erbu, jen malý znak erbu dole jako odkaz na Můj erb", async ({ page }) => {
   await setCollection(page, []);
   await open(page, "/");
-  const card = page.getByTestId("crest-card");
-  await expect(card).toHaveAttribute("data-has-crest", "false");
-  await expect(card.getByRole("heading", { name: "Vytvoř si vlastní erb" })).toBeVisible();
-  await expect(card.getByRole("img", { name: "Ukázkový erb" })).toBeVisible();
-  await expect(card.getByTestId("crest-parts")).toHaveText("Odemčeno 9 z 33 dílů erbu");
-  // Right after the rank panel, before the gallery.
-  const rank = await page.getByLabel("Postup sbírky").boundingBox();
-  const cardBox = await card.boundingBox();
+  await expect(page.getByTestId("crest-card")).toHaveCount(0);
+  const link = page.getByTestId("home-crest-link");
+  await expect(link).toHaveAccessibleName("Můj erb");
+  await expect(link.locator("svg").last()).toBeVisible();
+  // At the bottom: below the gallery.
   const gallery = await page.getByRole("heading", { name: "Galerie panovníků" }).boundingBox();
-  expect(cardBox!.y).toBeGreaterThan(rank!.y);
-  expect(cardBox!.y).toBeLessThan(gallery!.y);
-  await card.getByRole("link", { name: "Vytvořit erb" }).click();
-  await expect(page).toHaveURL("/muj-erb");
+  expect((await link.boundingBox())!.y).toBeGreaterThan(gallery!.y);
 
-  // With a crest, a nickname and one card.
+  // With a saved crest the emblem is the player's own.
   await saveCrest(page);
-  await setCollection(page, ["libuse"]);
-  const token = (await (await request.post("/api/player", { data: {} })).json()).token as string;
-  const name = `Heraldik ${randomBytes(3).toString("hex")}`;
-  await request.post("/api/player/nickname", { data: { token, nickname: name } });
-  await page.evaluate((t) => window.localStorage.setItem("cesky-kral:player", JSON.stringify({ version: 1, token: t })), token);
   await open(page, "/");
-  await expect(card).toHaveAttribute("data-has-crest", "true");
-  await expect(card.getByRole("heading", { name: `Erb hráče ${name}` })).toBeVisible();
-  await expect(card.getByRole("img")).toHaveAccessibleName(/červená, hvězda \(zlato\)/);
-  await expect(card.getByTestId("crest-parts")).toHaveText("Odemčeno 10 z 33 dílů erbu"); // + the key
-  await expect(card.getByRole("link", { name: "Upravit erb" })).toHaveAttribute("href", "/muj-erb");
+  await expect(link.locator("svg").last()).toBeVisible();
+  await link.click();
+  await expect(page).toHaveURL("/muj-erb");
 });
 
 test("hlavička a Moje sbírka vedou k erbu", async ({ page }) => {
@@ -146,9 +132,10 @@ test("Jak hrát odpovídá dnešní hře", async ({ page }) => {
   await expect(boards).toContainText("Skóre počítá vždy server");
   // FAQ about storage tells the truth (transfer code).
   await expect(page.getByRole("region", { name: "Časté otázky" })).toContainText("krátkým kódem");
-  // Same header as everywhere (with Žebříčky, no groš); the groš stays at the end of the page.
+  // Same header as everywhere (with Žebříček and a menu link to the groš page, no Ko-fi button there).
   const nav = page.getByRole("navigation", { name: "Hlavní navigace" });
-  await expect(nav.getByRole("link", { name: "Žebříčky" })).toBeVisible();
-  await expect(page.getByRole("banner").getByRole("link", { name: /groš/ })).toHaveCount(0);
+  await expect(nav.getByRole("link", { name: "Žebříček" })).toBeVisible();
+  await expect(page.getByRole("banner").getByRole("link", { name: /groš/ })).toHaveAttribute("href", "/hod-gros");
+  await expect(page.getByRole("banner").getByTestId("kofi-link")).toHaveCount(0);
   await expect(page.getByRole("complementary", { name: "Podpora hry" })).toBeVisible();
 });

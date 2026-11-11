@@ -41,7 +41,7 @@ test("Libuše: štítek Pověst a žádné roky", async ({ page }) => {
   await expect(card).not.toContainText(/\d{3,4}/);
 
   await open(page, "/kral/libuse");
-  const header = page.getByRole("heading", { level: 1, name: "Libuše" }).locator("..");
+  const header = page.getByRole("heading", { level: 1, name: "Libuše" }).locator("xpath=ancestor::header");
   await expect(header.getByText("Pověst", { exact: true })).toBeVisible();
   await expect(header).toContainText("Otázky jsou o pověsti, ne o doložené historii.");
   await expect(header).not.toContainText(/\d{3,4}/);

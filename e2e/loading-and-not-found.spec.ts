@@ -9,7 +9,7 @@ for (const suffix of ["", "/zlate-kolo"]) {
       const path = `/kral/${slug}${suffix}`;
       const response = await page.goto(path);
       expect(response?.status()).toBe(404);
-      await expect(page.getByRole("heading", { name: "Tohoto krále neznáme", exact: true })).toBeVisible();
+      await expect(page.getByRole("heading", { name: "Tuhle stránku kronika nezná", exact: true })).toBeVisible();
       await expect(page.locator('meta[name="robots"]')).toHaveAttribute("content", /noindex/);
       expect(new URL(page.url()).pathname).toBe(path);
 
@@ -50,7 +50,7 @@ for (const path of ["/", "/sbirka", "/kral/rudolf-ii"]) {
       await page.goto(path, { waitUntil: "domcontentloaded" });
       await waitForHydration(page.getByRole("navigation", { name: "Hlavní navigace" }).getByRole("link").first());
       if (path.startsWith("/kral/")) await currentQuestion(page);
-      else await expect(page.getByRole("heading", { name: "Řeka času", exact: true })).toBeVisible();
+      else await expect(page.getByRole("region", { name: "Řeka času", exact: true })).toBeVisible();
       await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
       // Keep font downloads pending beyond the browser's short font block period.
       await page.waitForTimeout(300);

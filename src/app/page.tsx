@@ -1,34 +1,42 @@
-import { Suspense } from "react";
-import Link from "next/link";
+import { cache, Suspense } from "react";
 import { connection } from "next/server";
 
 import { CollectionGallery } from "@/components/collection-gallery";
 import { DailyHomeButton } from "@/components/daily-home-button";
-import { TodayRulerCard } from "@/components/daily-leaderboard";
-import { IlluminatedInitial } from "@/components/illuminated-initial";
-import { CardCorners, OrnamentDivider } from "@/components/ornaments";
+import { HomeMoreLinks, HomeRank } from "@/components/home-extras";
+import { KofiButton } from "@/components/kofi-button";
 import { ReignTimeline } from "@/components/reign-timeline";
 import { StartButton, StartButtonSkeleton } from "@/components/start-button";
-import { WhoFirstGame } from "@/components/who-first-game";
-import { dailyDateKey } from "@/lib/daily";
-import { getDailyLeaderboard } from "@/lib/daily-server";
-import { getKings, toWhoFirstKings } from "@/lib/kings";
-import { pickPair } from "@/lib/who-first";
+import { getKings } from "@/lib/kings";
 
+// One DB query per request, shared by the rank pill and the rest of the page.
+const loadKings = cache(async () => {
+  // Data comes from the DB on each request (never at build time).
+  await connection();
+  return getKings();
+});
+
+/**
+ * Home page, top to bottom: rank block → one sentence + the main game button →
+ * Řeka času strip → gallery → two cards (Můj erb, Kdo vládl dřív?) → groš.
+ * Everything else lives on its own page (header menu), so the main game wins.
+ */
 export default function HomePage() {
   return (
-    <div className="flex flex-col gap-8 sm:gap-10">
+    <div className="flex flex-col gap-6 sm:gap-8">
       <section className="flex flex-col items-center gap-3 text-center">
-        <p className="text-xs font-semibold tracking-[0.3em] text-gold-dark uppercase">
-          Sbírej české panovníky
-        </p>
-        <h1 className="text-[2.6rem] leading-[1.05] font-bold min-[400px]:text-5xl sm:text-7xl">
+        <Suspense fallback={<div className="parchment h-[136px] w-full max-w-xl animate-pulse rounded-2xl sm:h-24" aria-hidden />}>
+          <HomeRankSection />
+        </Suspense>
+        <h1 className="text-[2.2rem] leading-[1.05] font-bold min-[400px]:text-[2.6rem] sm:text-6xl">
           Erbovní kniha <span className="gilt-text gilt-text-ink animate-shimmer">českých panovníků</span>
         </h1>
-        <OrnamentDivider />
+        <p className="max-w-md text-base text-ink/85 sm:text-lg">
+          Odpovídej na otázky o českých panovnících a sbírej je jako karty.
+        </p>
       </section>
 
-      {/* Static shell above renders instantly; everything below streams in with one DB query. */}
+      {/* Static shell above renders instantly; everything below streams in. */}
       <Suspense fallback={<HomeSkeleton />}>
         <HomeContent />
       </Suspense>
@@ -36,80 +44,42 @@ export default function HomePage() {
   );
 }
 
+async function HomeRankSection() {
+  const kings = await loadKings();
+  return <HomeRank kings={kings} />;
+}
+
 async function HomeContent() {
-  // Data comes from the DB on each request (never at build time).
-  await connection();
-  const [kings, board] = await Promise.all([getKings(), getDailyLeaderboard(dailyDateKey(), 1)]);
-  const ruler = board.entries[0];
-  const duelKings = toWhoFirstKings(kings);
+  const kings = await loadKings();
 
   return (
     <>
-      {/* One main button; the daily challenge is a smaller second choice. */}
-      <section aria-label="Hrát" className="-mt-4 flex flex-col items-center gap-4 sm:-mt-6">
+      {/* The one main button; the daily challenge is only a small link under it. */}
+      <section aria-label="Hrát" className="-mt-2 flex flex-col items-center gap-3">
         <StartButton kings={kings.map(({ slug, name }) => ({ slug, name }))} />
         <DailyHomeButton />
       </section>
 
-      <div className="flex flex-col gap-2">
-        <ReignTimeline variant="compact" kings={kings} />
-        <Link
-          href="/reka-casu"
-          className="self-center text-sm font-semibold text-navy underline decoration-gold underline-offset-4 hover:decoration-2"
-        >
-          <span aria-hidden>🌊 </span>Hraj Řeku času: seřaď panovníky
-        </Link>
-      </div>
-
-      {/* Today's first place in the daily challenge. */}
-      {ruler && (
-        <Link
-          href="/vyzva"
-          aria-label={`Dnešní vládce: ${ruler.nickname}, ${ruler.score} z 5 – zobrazit žebříček Denní výzvy`}
-          className="mx-auto w-full max-w-sm rounded-2xl outline-none transition-transform hover:-translate-y-0.5 focus-visible:ring-4 focus-visible:ring-ring/60"
-        >
-          <TodayRulerCard entry={ruler} className="py-3" />
-        </Link>
-      )}
-
-      {duelKings.length >= 2 && (
-        <section
-          aria-labelledby="who-first-heading"
-          className="parchment relative mx-auto flex w-full max-w-xl flex-col gap-3 rounded-2xl px-4 py-5 sm:px-6"
-        >
-          <CardCorners className="m-1 size-7 text-gold-dark" />
-          <div className="text-center">
-            <h2 id="who-first-heading" className="text-3xl font-bold">
-              <span aria-hidden>⏳ </span>Kdo vládl dřív?
-            </h2>
-            <p className="text-sm text-muted-foreground">Klepni na toho, kdo začal vládnout dřív.</p>
-          </div>
-          <WhoFirstGame variant="teaser" kings={duelKings} initialPair={pickPair(duelKings.length)} />
-        </section>
-      )}
-
-      <p className="mx-auto max-w-xl text-left text-ink/85 sm:text-lg">
-        <IlluminatedInitial letter="V" />
-        <span className="sr-only">V</span>yber si panovníka a odpověz na pět otázek. Když trefíš aspoň
-        čtyři, jeho karta je tvoje. Sbírej dál a stoupej od panoše až k titulu Pán nebo Paní erbovní
-        knihy.
-      </p>
+      <ReignTimeline variant="compact" kings={kings} />
 
       {/* Collected state lives in localStorage, so the client components read it. */}
       <CollectionGallery kings={kings} />
+
+      <HomeMoreLinks />
+
+      {/* The only groš on the home page: low, after the main content. */}
+      <KofiButton className="mx-auto max-w-sm" />
     </>
   );
 }
 
 function HomeSkeleton() {
   return (
-    <div aria-busy="true" aria-label="Načítám" className="flex flex-col gap-8 sm:gap-10">
-      <div className="-mt-4 flex justify-center sm:-mt-6">
+    <div aria-busy="true" aria-label="Načítám" className="flex flex-col gap-6 sm:gap-8">
+      <div className="-mt-2 flex justify-center">
         <StartButtonSkeleton />
       </div>
-      <div className="parchment h-28 animate-pulse rounded-2xl" />
-      <div className="parchment mx-auto h-64 w-full max-w-xl animate-pulse rounded-2xl" />
-      <div className="parchment h-28 animate-pulse rounded-2xl" />
+      <div className="parchment h-24 animate-pulse rounded-2xl" />
       <div className="grid grid-cols-2 gap-4 sm:grid-cols-3">
         {Array.from({ length: 3 }, (_, i) => (
           <div key={i} className="h-80 animate-pulse rounded-2xl bg-navy/80" />

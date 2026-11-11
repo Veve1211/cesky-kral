@@ -10,7 +10,7 @@ import { KingBio } from "@/components/king-bio";
 import { KingPortrait } from "@/components/king-portrait";
 import { KingReignLine } from "@/components/king-reign-line";
 import { LegendBadge } from "@/components/legend-badge";
-import { CardCorners, OrnamentDivider } from "@/components/ornaments";
+import { CardCorners } from "@/components/ornaments";
 import { Quiz } from "@/components/quiz";
 import { CORRECT_TO_COLLECT } from "@/lib/game-rules";
 import { formatReign, LEGEND_NOTE } from "@/lib/king-display";
@@ -45,7 +45,7 @@ export async function generateMetadata({
 
 export default function KingGamePage({ params }: PageProps<"/kral/[slug]">) {
   return (
-    <div className="mx-auto flex max-w-xl flex-col gap-6">
+    <div className="mx-auto flex max-w-xl flex-col gap-3 sm:gap-4">
       <Link
         href="/"
         className="flex w-fit items-center gap-1 text-sm text-muted-foreground transition-colors hover:text-foreground"
@@ -78,33 +78,30 @@ async function KingGame({ params }: { params: Promise<{ slug: string }> }) {
     <>
       <GoldenHeaderFrame slug={king.slug}>
         <CardCorners className="m-1 size-8 text-gold-dark" />
-        <div className="w-32 sm:w-36">
+        {/* Portrait beside the name: compact enough to show the first question without scrolling. */}
+        <div className="flex w-full items-center justify-center gap-4 sm:gap-6">
+        <div className="w-20 shrink-0 sm:w-28">
           <KingPortrait
             name={king.name}
             initial={initial}
             imageUrl={king.imageUrl}
             priority
-            sizes="144px"
+            sizes="112px"
           />
         </div>
-        <div className="flex flex-col items-center gap-1">
+        <div className="flex flex-col items-start gap-0.5 text-left sm:gap-1">
           <p className="text-xs font-semibold tracking-[0.2em] text-gold-dark uppercase">
             Hra o kartu · {CORRECT_TO_COLLECT} z 5 správně
           </p>
-          <div className="my-1 h-px w-12 bg-gold/60" aria-hidden />
           <p className="text-xs font-semibold tracking-[0.2em] text-gold-dark uppercase">
             {king.title}
           </p>
-          <h1 className="text-4xl leading-tight font-bold sm:text-5xl">{king.name}</h1>
+          <h1 className="text-3xl leading-tight font-bold sm:text-4xl">{king.name}</h1>
           <KingReignLine slug={king.slug} reign={formatReign(king)} dynasty={king.dynasty} />
-          {king.isLegend && (
-            <div className="mt-2 flex flex-col items-center gap-2">
-              <LegendBadge />
-              <p className="text-sm font-medium text-ink/80 italic">{LEGEND_NOTE}</p>
-            </div>
-          )}
+          {king.isLegend && <LegendBadge className="mt-1" />}
         </div>
-        <OrnamentDivider />
+        </div>
+        {king.isLegend && <p className="text-sm font-medium text-ink/80 italic">{LEGEND_NOTE}</p>}
         <KingBio slug={king.slug} bio={bio} />
         <GoldenRoundButton slug={king.slug} />
       </GoldenHeaderFrame>

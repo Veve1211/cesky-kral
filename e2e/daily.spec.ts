@@ -95,14 +95,13 @@ async function stubShare(page: Page) {
   });
 }
 
-test("na úvodní stránce je výzva hned pod hlavním tlačítkem", async ({ page }) => {
+test("na úvodní stránce je výzva malým odkazem hned pod hlavním tlačítkem", async ({ page }) => {
   await open(page, "/");
   const link = page.getByRole("link", { name: /Denní výzva/ });
   await expect(link).toBeVisible();
-  await expect(link).toHaveAccessibleDescription(/5 otázek, pro všechny stejných/);
   // Above the first section of the page content (Řeka času).
   const linkBox = await link.boundingBox();
-  const riverBox = await page.getByRole("heading", { name: "Řeka času" }).boundingBox();
+  const riverBox = await page.getByRole("region", { name: "Řeka času", exact: true }).boundingBox();
   expect(linkBox!.y).toBeLessThan(riverBox!.y);
   await link.click();
   await expect(page).toHaveURL(/\/vyzva$/);

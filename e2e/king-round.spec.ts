@@ -35,10 +35,10 @@ test("výhra: správné odpovědi → karta se otočí → panovník je ve sbír
   await expect(status).toContainText("Rytíř");
   await expect(status).toContainText(`Ve sbírce: 1 z ${kings.length}`);
   const gallery = page.getByRole("region", { name: "Galerie panovníků" });
-  // Five correct answers of nine also earned the bronze "koruna učenosti".
-  await expect(
-    gallery.getByRole("button", { name: `král ${getKing(SLUG).name}, bronzová koruna učenosti – ve sbírce, přečíst kroniku` }),
-  ).toBeVisible();
+  // The home gallery shows the card without crowns; the bronze "koruna učenosti" is in Moje sbírka.
+  await expect(gallery.getByRole("button", { name: `král ${getKing(SLUG).name} – ve sbírce, přečíst kroniku` })).toBeVisible();
+  await open(page, "/sbirka");
+  await expect(page.getByRole("button", { name: `král ${getKing(SLUG).name}, bronzová koruna učenosti – ve sbírce, přečíst kroniku` })).toBeVisible();
 });
 
 test("prohra: špatné odpovědi → Zkusit znovu, panovník není ve sbírce", async ({ page }) => {

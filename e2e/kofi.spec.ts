@@ -1,4 +1,5 @@
-// "🪙 Hoď kronikáři groš": only after a finished game and on /jak-hrat, only with NEXT_PUBLIC_KOFI_URL.
+// "🪙 Hoď kronikáři groš": at most one per page (home once, after every game, celebrations, /jak-hrat),
+// a small footer link everywhere; only with NEXT_PUBLIC_KOFI_URL.
 import { createElement } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import { expect, type Locator, type Page, test } from "@playwright/test";
@@ -6,7 +7,9 @@ import { expect, type Locator, type Page, test } from "@playwright/test";
 import { KofiButton } from "../src/components/kofi-button";
 import { parseKofiUrl } from "../src/lib/kofi";
 import { dailyDateKey } from "../src/lib/daily";
-import { open, playRound, setCollection, waitForHydration } from "./helpers/game";
+import { questionKey } from "../src/lib/mastery";
+import { celebration, currentQuestion, dismissAllCelebrations, open, playRound, setCollection, waitForHydration } from "./helpers/game";
+import { getKing } from "./helpers/seed-answers";
 import { TEST_KOFI_URL } from "./helpers/kofi";
 
 const NEW_WINDOW = "(Ko-fi, otevře se v novém okně)";
@@ -66,18 +69,84 @@ function contrast(locator: Locator) {
   });
 }
 
-test("jinde groš není: hlavička, patička, úvod, sbírka, Denní výzva během hry", async ({ page }) => {
-  for (const path of ["/", "/sbirka", "/rychlovka", "/kdo-driv", "/zdroje", "/kral/karel-iv", "/vyzva"]) {
+/** At most one groš button on a page (the small footer link does not count). */
+async function expectAtMostOneGrosh(page: Page) {
+  const visible = await page.getByTestId("kofi-link").evaluateAll((els) => els.filter((el) => (el as HTMLElement).offsetParent !== null).length);
+  expect(visible).toBeLessThanOrEqual(1);
+  return visible;
+}
+
+test("na každé stránce nejvýš jeden groš; v menu a v patičce jen odkaz na stránku Hoď groš", async ({ page }) => {
+  for (const path of ["/", "/sbirka", "/rychlovka", "/kdo-driv", "/reka-casu", "/zebricky", "/muj-erb", "/zdroje", "/jak-hrat", "/kral/karel-iv", "/vyzva", "/hod-gros"]) {
     await open(page, path);
-    await expect(page.getByRole("banner").getByRole("link", { name: /groš/ })).toHaveCount(0);
-    await expect(page.getByRole("contentinfo").getByRole("link", { name: /groš/ })).toHaveCount(0);
-    await expect(page.getByTestId("kofi-card")).toHaveCount(0);
+    // The header has a menu link to the groš page, never a Ko-fi button.
+    const menu = page.getByRole("banner").getByRole("link", { name: /groš/ });
+    await expect(menu).toHaveCount(1);
+    await expect(menu).toHaveAttribute("href", "/hod-gros");
+    await expect(page.getByRole("banner").getByTestId("kofi-link")).toHaveCount(0);
+    const footer = page.getByRole("contentinfo").getByTestId("kofi-footer-link");
+    await expect(footer).toHaveText(/Hoď groš/);
+    await expect(footer).toHaveAttribute("href", "/hod-gros");
+    await expectAtMostOneGrosh(page);
   }
+  // During a question: no groš at all.
+  await open(page, "/kral/karel-iv");
+  await expect(page.getByTestId("kofi-card")).toHaveCount(0);
+});
+
+test("stránka Hoď groš: proč hra existuje, na co groš půjde a právě jedno tlačítko", async ({ page }) => {
+  await open(page, "/hod-gros");
+  await expect(page.getByRole("heading", { level: 1 })).toContainText("Hoď groš");
+  await expect(page.getByRole("main")).toContainText("zdarma");
+  await expect(page.getByRole("heading", { name: "Na co groš půjde" })).toBeVisible();
+  await expectKofiCard(page);
+  expect(await expectAtMostOneGrosh(page)).toBe(1);
+  // Menu order: games, boards, own things, help, groš last.
+  const labels = await page.getByRole("navigation", { name: "Hlavní navigace" }).getByRole("link").evaluateAll((links) => links.map((l) => l.getAttribute("aria-label")));
+  expect(labels).toEqual(["Rychlovka", "Kdo vládl dřív?", "Žebříček", "Můj erb", "Moje sbírka", "Jak hrát", "Hoď groš"]);
+});
+
+test("úvod: groš právě jednou, nenápadně pod hlavním obsahem", async ({ page }) => {
+  await open(page, "/");
+  const card = await expectKofiCard(page);
+  expect(await expectAtMostOneGrosh(page)).toBe(1);
+  const start = await page.getByRole("link", { name: /Začni hrát/ }).boundingBox();
+  const gallery = await page.getByRole("region", { name: "Galerie panovníků" }).boundingBox();
+  const box = (await card.boundingBox())!;
+  expect(box.y).toBeGreaterThan(start!.y);
+  expect(box.y).toBeGreaterThan(gallery!.y);
+});
+
+test("oslava koruny učenosti: groš pod Pokračovat a na stránce jen jeden", async ({ page }) => {
+  const king = getKing("karel-iv");
+  // Mistrovské kolo shows a crown right after the answer. Two easy questions already
+  // known: the first (hard) correct answer gives the bronze crown.
+  const known = king.questions.filter((q) => q.difficulty === 1).slice(0, 2).map((q) => questionKey(king.slug, q.text));
+  await page.goto("/zdroje");
+  await page.evaluate(
+    ([slug, keys]) => {
+      window.localStorage.setItem("cesky-kral:collection", JSON.stringify({ version: 2, kings: [slug], golden: [] }));
+      window.localStorage.setItem("cesky-kral:mastery", JSON.stringify({ version: 1, kings: { [slug]: { known: keys, tier: 0 } } }));
+    },
+    [king.slug, known] as const,
+  );
+  await open(page, `/kral/${king.slug}/zlate-kolo`);
+  const q = await currentQuestion(page);
+  await page.getByRole("button", { name: q.correct, exact: true }).click();
+  const dialog = celebration(page);
+  await expect(dialog).toBeVisible();
+  const link = dialog.getByTestId("kofi-link");
+  await expect(link).toBeVisible();
+  await expect(link).toHaveAttribute("href", TEST_KOFI_URL);
+  const next = await dialog.getByRole("button", { name: "Pokračovat" }).boundingBox();
+  expect((await link.boundingBox())!.y).toBeGreaterThan(next!.y);
+  expect(await expectAtMostOneGrosh(page)).toBe(1);
 });
 
 test("Jak hrát: groš s vysvětlením", async ({ page }) => {
   await open(page, "/jak-hrat");
   await expectKofiCard(page);
+  await expectAtMostOneGrosh(page);
 });
 
 test("po dohrání Rychlovky: groš pod hlavními tlačítky", async ({ page }) => {
@@ -107,13 +176,16 @@ test("hra o kartu: během kola ne, po dohrání (výhra i prohra) ano, bez vyska
   await open(page, "/kral/karel-iv");
   await expect(page.getByTestId("kofi-card")).toHaveCount(0);
   await playRound(page, [true, true, true, true, true]);
+  await dismissAllCelebrations(page); // an open celebration shows its own groš instead
   await expect(page.getByRole("heading", { name: "Král je ve tvé sbírce!" })).toBeVisible();
   await expectKofiCard(page);
 
   await open(page, "/kral/josef-ii");
   await playRound(page, [false, false, false, false, false]);
+  await dismissAllCelebrations(page);
   await expect(page.getByRole("heading", { name: "Konec hry" })).toBeVisible();
   await expectKofiCard(page);
+  await expectAtMostOneGrosh(page);
 });
 
 test("Kdo vládl dřív?: groš až po konci hry", async ({ page }) => {
@@ -134,4 +206,5 @@ test("Kdo vládl dřív?: groš až po konci hry", async ({ page }) => {
     await next.click();
   }
   await expectKofiCard(page);
+  await expectAtMostOneGrosh(page);
 });
