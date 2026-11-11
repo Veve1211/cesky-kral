@@ -56,8 +56,11 @@ export function CollectionStatus({
   total,
   action,
   className,
+  showGolden = true,
 }: {
   className?: string;
+  /** Home page: false – golden cards and crowns are shown only in Moje sbírka. */
+  showGolden?: boolean;
   rank: Rank;
   collected: number;
   golden: number;
@@ -89,7 +92,7 @@ export function CollectionStatus({
           </strong>
         </p>
         <Progress value={collected} max={total} label="Získaní panovníci" />
-        <GoldenCount golden={golden} total={total} />
+        {showGolden && <GoldenCount golden={golden} total={total} />}
       </div>
       {action}
     </section>

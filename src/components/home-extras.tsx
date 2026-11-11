@@ -22,6 +22,7 @@ export function HomeRank({ kings }: { kings: KingSummary[] }) {
       collected={collected}
       golden={golden}
       total={total}
+      showGolden={false}
       className="w-full max-w-xl gap-2 p-4 text-left max-sm:[&_.font-heading]:text-xl"
     />
   );

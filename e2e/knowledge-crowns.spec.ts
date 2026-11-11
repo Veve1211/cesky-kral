@@ -186,6 +186,12 @@ test("Moje sbírka a kronika: koruna v barvě stupně, bez stupně bez koruny", 
   await card("Josef II.").getByRole("button", { name: /přečíst kroniku/ }).click();
   const josef = page.getByRole("dialog", { name: /Kronika: Josef II\./ });
   await expect(josef.locator('[data-testid^="tier-crown-"]')).toHaveCount(0);
+
+  // The home page shows no crowns and no golden-card count – those live in Moje sbírka.
+  await open(page, "/");
+  await expect(page.getByRole("region", { name: "Galerie panovníků" }).getByRole("listitem")).toHaveCount(18);
+  await expect(page.locator('[data-testid^="tier-crown-"]')).toHaveCount(0);
+  await expect(page.getByLabel("Postup sbírky")).not.toContainText("Zlatých");
 });
 
 test("oslava na mobilu i s omezeným pohybem: vše vidět, koruna hned na hlavě", async ({ page }) => {
