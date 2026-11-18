@@ -9,6 +9,14 @@ Hra je pro žáky a učitele dějepisu i pro všechny, koho baví české dějin
 
 Ukázkový projekt do portfolia: celý stack od databáze přes server a UI po testy a nasazení.
 
+## Jak to vypadá
+
+| Úvodní stránka a galerie | Kdo vládl dřív? |
+|---|---|
+| ![Úvodní stránka s hodností, denní výzvou a galerií panovníků](docs/screenshots/home.webp) | ![Režim Kdo vládl dřív? se dvěma kartami panovníků](docs/screenshots/kdo-vladl-driv.webp) |
+| **Můj erb** | **Pro učitele** |
+| ![Heraldická dílna, kde se díly erbu odemykají znalostmi](docs/screenshots/muj-erb.webp) | ![Stránka Pro učitele s popisem obsahu a použití v hodině](docs/screenshots/pro-ucitele.webp) |
+
 ## Případová studie
 
 **Autorka:** Věra Paukrtová ([verapaukrtova.cz](https://verapaukrtova.cz) · [GitHub](https://github.com/Veve1211)) · první aplikace, kterou jsem postavila
