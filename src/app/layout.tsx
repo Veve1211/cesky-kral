@@ -35,7 +35,7 @@ const SITE_NAME = "Český král";
 const SITE_TITLE = `${SITE_NAME} – Sbírej české panovníky`;
 const SITE_YEAR = 2026;
 const SITE_DESCRIPTION =
-  "Odpovídej na otázky o českých panovnících a sbírej je jako sběratelské karty z erbovní knihy.";
+  "Kvízová hra o českých panovnících pro žáky, učitele dějepisu i všechny, koho baví dějiny. Za správné odpovědi získáš sběratelské karty.";
 
 // Absolute base URL for Open Graph links. Railway provides its public domain.
 function siteUrl(): URL {
@@ -86,6 +86,10 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
             <span className="font-heading text-sm">Český král</span> ·{" "}
             <Link href="/jak-hrat" className="underline underline-offset-4 hover:text-foreground">
               Jak hrát
+            </Link>{" "}
+            ·{" "}
+            <Link href="/pro-ucitele" className="underline underline-offset-4 hover:text-foreground">
+              Pro učitele
             </Link>{" "}
             ·{" "}
             <Link href="/zdroje" className="underline underline-offset-4 hover:text-foreground">
