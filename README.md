@@ -2,12 +2,52 @@
 
 **Webová kvízová hra o českých dějinách – „Sbírej české panovníky“.**
 Hráč odpovídá na krátké otázky o českých panovnících a sbírá je jako sběratelské karty
-z iluminované erbovní knihy. Hra je v češtině, navržená hlavně pro mobil, bez registrace.
+Hra je pro žáky a učitele dějepisu i pro všechny, koho baví české dějiny. Je v češtině, navržená hlavně pro mobil, bez registrace.
 
 🌐 **Ostrý web:** [cesky-kral.up.railway.app](https://cesky-kral.up.railway.app)
 · testovací web (staging): [cesky-kral-staging.up.railway.app](https://cesky-kral-staging.up.railway.app)
 
 Ukázkový projekt do portfolia: celý stack od databáze přes server a UI po testy a nasazení.
+
+## Případová studie
+
+**Autorka:** Věra Paukrtová ([GitHub](https://github.com/Veve1211)) · první aplikace, kterou jsem postavila
+s AI (Claude Code) po kurzu Vibecoding Akademie.
+
+**Problém.** Dějepis je pro hodně žáků seznam jmen a letopočtů. Chtěla jsem krátkou hru na mobil, kde se
+fakta opakují tak dlouho, až se zapamatují, a za odměnu se sbírají karty panovníků.
+
+**Výsledek.**
+- 18 panovníků, 162 otázek a každá má odkaz na ověřený zdroj
+- 6 herních režimů, žebříčky bez registrace a sběratelské odměny
+- 34 souborů automatických E2E testů na počítači i mobilu, spouští se u každého pull requestu
+- ostrý web a testovací web, každý s vlastní databází
+- vývoj od 7. 11. 2026, přes 50 sloučených pull requestů
+
+**Jak jsem pracovala.**
+- Kód psala AI podle zadání. Já určovala, co se staví, kontrolovala výsledek na testovacím webu
+  a rozhodovala, co jde na ostrý web.
+- Každá změna šla stejnou cestou: feature větev → pull request do `dev` → automatické testy →
+  testovací web → kontrola → pull request `dev` → `main` → vydání. Do `main` merguji jen já.
+- Pravidla pro AI jsou v [`CLAUDE.md`](CLAUDE.md), historie rozhodnutí v [`docs/decisions.md`](docs/decisions.md).
+- Bez administrátorských práv na notebooku jsem nemohla použít Docker, proto celý vývoj běží v cloudu
+  (Claude Code na webu + Railway).
+
+**Klíčová rozhodnutí.**
+- **Správnost i skóre zná jen server.** Do prohlížeče nikdy nejde správná odpověď a žebříčky nepřijmou
+  skóre poslané z prohlížeče, což testy ověřují podvrženými požadavky.
+- **Žádné účty.** Postup je v prohlížeči, do žebříčků stačí přezdívka a server zná jen otisk anonymního tokenu.
+  Hra tak nesbírá osobní údaje žáků.
+- **Fakta jen se zdrojem.** Audit všech otázek našel 2 nepřesnosti a 3 neověřitelné detaily, které jsme opravili
+  nebo vyřadili. Od té doby hlídají fakta regresní testy ([`docs/historical-content.md`](docs/historical-content.md)).
+- **Roky vlády skryté, dokud panovníka nezískáš**, aby nešlo opisovat odpovědi do hry Kdo vládl dřív?.
+
+**Co bych příště udělala jinak.**
+- Méně funkcí najednou. Audit ([`AUDIT.md`](AUDIT.md)) ukázal, že první dojem byl přehlcený, a režimy jsem
+  měla odhalovat postupně.
+- Dřív ukázat hru skutečným hráčům. Další krok je stránka [Pro učitele](https://cesky-kral.up.railway.app/pro-ucitele)
+  a zpětná vazba od učitelů dějepisu.
+- Udržet `CLAUDE.md` krátký od začátku. Narostl na desítky kilobajtů, tak jsem ho rozdělila do `docs/`.
 
 ---
 
@@ -91,7 +131,7 @@ prisma/
   chronicles.ts        kroniky panovníků
   seed.ts              validace + zápis do DB v jedné transakci
 e2e/                   Playwright testy a pomocníci
-docs/                  ověření historického obsahu
+docs/                  rozhodnutí, herní logika, ověření historického obsahu
 ```
 
 ## Ochrana odpovědí na serveru
