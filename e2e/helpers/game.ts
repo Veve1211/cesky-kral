@@ -90,7 +90,15 @@ export async function answer(
   await settleAnswer(page, correctly ? "Správně!" : "Tentokrát vedle.");
   await goNext(page, index, total, correctly);
   // The end of a won king round opens the card celebration (and maybe a crown after it).
-  if (index === total) await dismissAllCelebrations(page);
+  if (index === total) {
+    // Wait until the round has really finished: a right last answer may still be
+    // waiting for its auto-advance (1.2 s). The result and its celebrations are
+    // set in the same update, so once the question is gone the queue is complete.
+    // Without this wait the celebration could open after we looked for it and
+    // hide the result from the accessibility tree (flaky "Král je ve tvé sbírce!").
+    await expect(progress(page, index, total)).toHaveCount(0);
+    await dismissAllCelebrations(page);
+  }
   return question;
 }
 

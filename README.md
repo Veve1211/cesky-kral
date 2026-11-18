@@ -11,7 +11,7 @@ Ukázkový projekt do portfolia: celý stack od databáze přes server a UI po t
 
 ## Případová studie
 
-**Autorka:** Věra Paukrtová ([GitHub](https://github.com/Veve1211)) · první aplikace, kterou jsem postavila
+**Autorka:** Věra Paukrtová ([verapaukrtova.cz](https://verapaukrtova.cz) · [GitHub](https://github.com/Veve1211)) · první aplikace, kterou jsem postavila
 s AI (Claude Code) po kurzu Vibecoding Akademie.
 
 **Problém.** Dějepis je pro hodně žáků seznam jmen a letopočtů. Chtěla jsem krátkou hru na mobil, kde se
