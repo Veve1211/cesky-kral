@@ -14,7 +14,7 @@ const inViewport = async (locator: import("@playwright/test").Locator) => {
 
 test("úvod: věta o hře a tlačítko Začni hrát bez posouvání", async ({ page }) => {
   await open(page, "/");
-  const sentence = page.getByText("Odpovídej na otázky o českých panovnících a sbírej je jako karty.");
+  const sentence = page.getByText(/Hra pro žáky a učitele dějepisu/);
   const start = page.getByRole("link", { name: /Začni hrát/ });
   await expect(sentence).toBeVisible();
   await expect(start).toBeVisible();

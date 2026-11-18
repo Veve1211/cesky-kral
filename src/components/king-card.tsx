@@ -185,7 +185,7 @@ function KingCardFace({
                 {locked ? (
                   <>
                     <span aria-hidden>???? – ????</span>
-                    <span className="sr-only">roky jsou skryté</span>
+                    <span className="sr-only"> roky jsou skryté</span>
                   </>
                 ) : (
                   reign
