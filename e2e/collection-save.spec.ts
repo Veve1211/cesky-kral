@@ -1,6 +1,6 @@
 import { expect, test, type Page } from "@playwright/test";
 
-import { dismissAllCelebrations, open, playRound, readCollection, setCollection, STORAGE_KEY } from "./helpers/game";
+import { anyCelebration, dismissAllCelebrations, open, playRound, readCollection, setCollection, STORAGE_KEY } from "./helpers/game";
 import { kings } from "./helpers/seed-answers";
 
 const SLUG = "rudolf-ii";
@@ -68,6 +68,7 @@ for (const failure of ["quota", "blocked"] as const) {
     expect(await readCollection(page)).toEqual({ version: 2, kings: ["karel-iv"], golden: ["karel-iv"] });
     await page.getByRole("button", { name: RETRY }).click();
     // Saved now: the new card is celebrated first.
+    await expect(anyCelebration(page).first()).toBeVisible(); // the retried save opens it a moment later
     expect(await dismissAllCelebrations(page)).toEqual([{ kind: "card", firstTime: true }]);
 
     await expect(page.getByRole("heading", { name: "Král je ve tvé sbírce!" })).toBeVisible();
@@ -98,6 +99,7 @@ test("opakování uložení neduplikuje kartu získanou mezitím v jiné zálož
   // Writes in the quiz tab are still blocked, but the card is already persisted.
   await page.getByRole("button", { name: RETRY }).click();
   // Won in the other tab already – only the small "won again" celebration.
+  await expect(anyCelebration(page).first()).toBeVisible(); // the retried save opens it a moment later
   expect(await dismissAllCelebrations(page)).toEqual([{ kind: "card", firstTime: false }]);
   await expect(page.getByRole("heading", { name: "Král je ve tvé sbírce!" })).toBeVisible();
   expect(await readCollection(page)).toEqual({ version: 2, kings: [SLUG], golden: [SLUG] });
@@ -116,6 +118,7 @@ test("poslední panovník dokončí sbírku až po úspěšném opakování ulo�
 
   await restoreStorage(page);
   await page.getByRole("button", { name: RETRY }).click();
+  await expect(anyCelebration(page).first()).toBeVisible(); // the retried save opens it a moment later
   await dismissAllCelebrations(page);
   await expect(celebration).toBeVisible();
   await expect(celebration).toContainText(`Všech ${kings.length} panovníků ve sbírce`);
