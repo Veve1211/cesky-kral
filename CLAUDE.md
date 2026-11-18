@@ -54,6 +54,7 @@
 - PR vždy do dev; na ostrý web jde změna jen přes PR dev → main a ten merguje Veve (Claude nikdy nemerguje)
 - Před každým commitem a pushem se zeptej uživatele
 - Před každým push na main otestuj web přes Chrome DevTools MCP.
+- Před merge do main zkontroluj staging na mobilu, tabletu a počítači
 - Commit zprávy: anglicky, stručně (feat: add king gallery, fix: answer feedback)
 
 ### Produkční mód
