@@ -30,7 +30,7 @@ export function KingReignLine({
         ) : (
           <>
             <span aria-hidden>???? – ????</span>
-            <span className="sr-only">roky jsou skryté</span>
+            <span className="sr-only"> roky jsou skryté</span>
           </>
         ))}
       {owned && reign && dynasty && " · "}

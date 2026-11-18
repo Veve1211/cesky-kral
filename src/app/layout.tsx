@@ -32,6 +32,7 @@ const uncial = Uncial_Antiqua({
 });
 
 const SITE_NAME = "Český král";
+const SITE_TITLE = `${SITE_NAME} – Sbírej české panovníky`;
 const SITE_YEAR = 2026;
 const SITE_DESCRIPTION =
   "Odpovídej na otázky o českých panovnících a sbírej je jako sběratelské karty z erbovní knihy.";
@@ -46,7 +47,7 @@ function siteUrl(): URL {
 export const metadata: Metadata = {
   metadataBase: siteUrl(),
   title: {
-    default: `${SITE_NAME} – Sbírej české panovníky`,
+    default: SITE_TITLE,
     template: `%s | ${SITE_NAME}`,
   },
   description: SITE_DESCRIPTION,
@@ -54,12 +55,12 @@ export const metadata: Metadata = {
     type: "website",
     locale: "cs_CZ",
     siteName: SITE_NAME,
-    title: SITE_NAME,
+    title: SITE_TITLE,
     description: SITE_DESCRIPTION,
   },
   twitter: {
     card: "summary_large_image",
-    title: SITE_NAME,
+    title: SITE_TITLE,
     description: SITE_DESCRIPTION,
   },
 };
