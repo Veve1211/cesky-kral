@@ -27,7 +27,7 @@ async function expectSingleInitial(paragraph: Locator, expected: string) {
 
 test("úvod: dlouhý úvodní odstavec s iniciálou nahradila jedna věta", async ({ page }) => {
   await open(page, "/");
-  await expect(page.getByText("Odpovídej na otázky o českých panovnících a sbírej je jako karty.")).toBeVisible();
+  await expect(page.getByText(/Hra pro žáky a učitele dějepisu/)).toBeVisible();
   await expect(page.locator("p", { hasText: "yber si panovníka a odpověz" })).toHaveCount(0);
 });
 

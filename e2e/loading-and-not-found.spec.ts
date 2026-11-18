@@ -18,7 +18,7 @@ for (const suffix of ["", "/zlate-kolo"]) {
       expect((await head.body()).length).toBe(0);
 
       await page.getByRole("link", { name: "Zpět do galerie", exact: true }).click();
-      await expect(page.getByRole("heading", { level: 1 })).toHaveText("Erbovní kniha českých panovníků");
+      await expect(page.getByRole("heading", { level: 1 })).toHaveText("Český král Sbírej české panovníky");
     });
   }
 }

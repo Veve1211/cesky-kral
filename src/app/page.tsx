@@ -28,11 +28,16 @@ export default function HomePage() {
         <Suspense fallback={<div className="parchment h-[136px] w-full max-w-xl animate-pulse rounded-2xl sm:h-24" aria-hidden />}>
           <HomeRankSection />
         </Suspense>
-        <h1 className="text-[2.2rem] leading-[1.05] font-bold min-[400px]:text-[2.6rem] sm:text-6xl">
-          Erbovní kniha <span className="gilt-text gilt-text-ink animate-shimmer">českých panovníků</span>
+        {/* Same name as the <title> ("Český král – Sbírej české panovníky"). */}
+        <h1 className="flex flex-col items-center gap-1 leading-[1.05] font-bold">
+          <span className="gilt-text gilt-text-ink animate-shimmer text-[2.6rem] min-[400px]:text-5xl sm:text-6xl">
+            Český král
+          </span>{" "}
+          <span className="text-xl min-[400px]:text-2xl sm:text-3xl">Sbírej české panovníky</span>
         </h1>
         <p className="max-w-md text-base text-ink/85 sm:text-lg">
-          Odpovídej na otázky o českých panovnících a sbírej je jako karty.
+          Hra pro žáky a učitele dějepisu i pro všechny, koho baví české dějiny. Za správné odpovědi na
+          otázky o panovnících získáš jejich sběratelské karty.
         </p>
       </section>
 
