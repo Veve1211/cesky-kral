@@ -85,6 +85,7 @@ Pokud NODE_ENV=production:
 - `src/app/` stránky a API, `src/components/` UI, `src/lib/` logika, `prisma/` schéma, migrace a seed, `e2e/` testy, `docs/` dokumentace
 - Příkazy: `npm run dev`, `npm run build`, `npm run lint`, `npm run db:migrate`, `npm run db:seed`, `npm run test:e2e`
 - `npm start` (Railway): `prisma migrate deploy` → `prisma db seed` → `next start`
+- SEO a bezpečnost: `src/app/sitemap.ts` (veřejné stránky + králové ze seedu), `src/app/robots.ts`, adresa webu v `src/lib/site-url.ts`, bezpečnostní hlavičky v `next.config.ts`; ikony `src/app/favicon.ico` a `apple-icon.png` (koruna)
 
 ## Testy
 - Playwright E2E (desktop + mobil), testovací DB z `E2E_DATABASE_URL` (název musí obsahovat `test`); CI na každém PR do dev i main
