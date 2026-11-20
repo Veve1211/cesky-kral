@@ -11,7 +11,6 @@
 export type Tier = 0 | 1 | 2 | 3; // 0 = none, 1 bronze, 2 silver, 3 gold
 
 export const TIER_KEYS = { 1: "bronze", 2: "silver", 3: "gold" } as const;
-export type TierKey = (typeof TIER_KEYS)[1 | 2 | 3];
 
 export const TIER_NAMES: Record<1 | 2 | 3, string> = {
   1: "Bronzová koruna učenosti",
