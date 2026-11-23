@@ -4,6 +4,11 @@ const nextConfig: NextConfig = {
   /* config options here */
   cacheComponents: true,
   partialPrefetching: true,
+  images: {
+    // Defaults plus 320 and 480: king cards (~150–275 CSS px) on 1.75–3× screens
+    // otherwise jump to 384 or 640 px images.
+    imageSizes: [32, 48, 64, 96, 128, 256, 320, 384, 480],
+  },
   async headers() {
     return [
       {
