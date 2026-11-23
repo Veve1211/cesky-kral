@@ -49,13 +49,6 @@ export async function getKings(): Promise<KingSummary[]> {
   );
 }
 
-/** Kings playable in "Kdo vládl dřív?" (no legends, known start year), without years. */
-export function toWhoFirstKings(kings: KingSummary[]): WhoFirstKing[] {
-  return kings
-    .filter((king) => !king.isLegend && king.reignFrom !== null)
-    .map(({ slug, name, title, imageUrl }) => ({ slug, name, title, imageUrl }));
-}
-
 /** Lean query for the /kdo-driv page (no chronicle, no years). */
 export async function getWhoFirstKings(): Promise<WhoFirstKing[]> {
   const rows = await getPrisma().king.findMany({
