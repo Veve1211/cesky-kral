@@ -13,7 +13,7 @@ import { LegendBadge } from "@/components/legend-badge";
 import { CardCorners } from "@/components/ornaments";
 import { Quiz } from "@/components/quiz";
 import { CORRECT_TO_COLLECT } from "@/lib/game-rules";
-import { formatReign, LEGEND_NOTE } from "@/lib/king-display";
+import { endSentence, formatReign, LEGEND_NOTE } from "@/lib/king-display";
 import { getKingBySlug, getKingSlugs, kingInitial } from "@/lib/kings";
 import { getKingQuestions } from "@/lib/questions";
 
@@ -27,7 +27,7 @@ export async function generateMetadata({
   // Own preview for sharing a ruler's link (the image is `opengraph-image.tsx`).
   const title = `${king.name} – hra o kartu`;
   // No short bio here: it would give away answers of the round.
-  const description = `Zahraj si o kartu: ${king.name}. Pět otázek, tři možnosti – čtyři správně a ${king.title} je ve tvé sbírce.`;
+  const description = `Zahraj si o kartu: ${endSentence(king.name)} Pět otázek, tři možnosti – čtyři správně a ${king.title} je ve tvé sbírce.`;
   return {
     title: king.name,
     description,
