@@ -50,3 +50,4 @@ Historie rozhodnutí v projektu (přesunuto z CLAUDE.md, aby zůstal krátký). 
 - 2026-11-19: vlastní ikona (zlatá koruna na tmavě modré) místo loga Next.js; sitemap.xml a robots.txt; bezpečnostní hlavičky (nosniff, Referrer-Policy, Permissions-Policy, zákaz vkládání do rámců); adresa webu má v produkci záložní doménu cesky-kral.up.railway.app
 - 2026-11-20: jednotkové testy herní logiky (Vitest 5, `src/lib/*.test.ts`) – rychlá kontrola bez databáze (< 1 s) vedle 13minutových E2E; `@types/node` 22 podle Node 22 v CI (Vitest 5 to vyžaduje)
 - 2026-11-23: kontrola serverového kódu: tělo požadavku se čte s limitem (velký požadavek se nenačte celý do paměti); prošlé kódy pro přenos (obsahují token hráče) se mažou i při uplatnění a při startu denní výzvy, ne jen při vytvoření nového kódu
+- 2026-11-23: `GET /api/health` – 200 když odpoví aplikace i databáze (`SELECT 1`, limit 3 s), jinak 503; bez detailů chyby, `no-store`; nastavení Railway (healthcheck path) se zatím nemění

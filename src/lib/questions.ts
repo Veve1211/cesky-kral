@@ -94,19 +94,51 @@ export async function getRandomQuestions(count: number): Promise<QuizQuestion[]>
     .map(toQuizQuestion);
 }
 
+// The question ids of a day never change while the server runs (the seed runs
+// before `next start`), so they are picked once per day and remembered. Only
+// the last few days are kept, so the map cannot grow.
+const DAILY_CACHE_DAYS = 3;
+const dailyIds = new Map<string, number[]>();
+
 /**
- * "Denní výzva": the questions of `dateKey`, the same for every player
- * (see `pickDailyQuestions`). Answers are shuffled as in every other mode.
+ * Ids of "Denní výzva" questions of `dateKey`, in play order, the same for every
+ * player (see `pickDailyQuestions`). Reads only the light columns of the pool,
+ * and only once per day.
  */
-export async function getDailyQuestions(dateKey: string): Promise<QuizQuestion[]> {
+export async function getDailyQuestionIds(dateKey: string): Promise<number[]> {
+  const cached = dailyIds.get(dateKey);
+  if (cached) return cached;
   const rows = await getPrisma().question.findMany({
-    select: { ...questionSelect, king: { select: { name: true, isLegend: true, slug: true } } },
+    select: { id: true, text: true, difficulty: true, king: { select: { slug: true } } },
   });
   const pool = rows.map((row) => ({
-    row,
+    id: row.id,
     kingSlug: row.king.slug,
     text: row.text,
     difficulty: toDifficulty(row.difficulty),
   }));
-  return pickDailyQuestions(dateKey, pool).map(({ row }) => toQuizQuestion(row));
+  const ids = pickDailyQuestions(dateKey, pool).map(({ id }) => id);
+  // An empty database (before the seed) is not remembered.
+  if (ids.length > 0) {
+    dailyIds.set(dateKey, ids);
+    for (const key of [...dailyIds.keys()].slice(0, -DAILY_CACHE_DAYS)) dailyIds.delete(key);
+  }
+  return ids;
+}
+
+/**
+ * "Denní výzva": the questions of `dateKey`, the same for every player.
+ * Answers are shuffled as in every other mode.
+ */
+export async function getDailyQuestions(dateKey: string): Promise<QuizQuestion[]> {
+  const ids = await getDailyQuestionIds(dateKey);
+  const rows = await getPrisma().question.findMany({
+    where: { id: { in: ids } },
+    select: questionSelect,
+  });
+  const byId = new Map(rows.map((row) => [row.id, row]));
+  return ids
+    .map((id) => byId.get(id))
+    .filter((row): row is QuestionRow => row !== undefined)
+    .map(toQuizQuestion);
 }
