@@ -9,6 +9,14 @@ import { CODE_ALPHABET, CODE_LENGTH, cleanPayload, normalizeCode, TRANSFER_MINUT
 // The payload carries the player's token so the other device plays as the
 // same player (nickname, leaderboards). The row is deleted when redeemed.
 
+/**
+ * Deletes expired codes. They carry the player's token, so they must not outlive
+ * their 30 minutes: called on every new code, every redeem and every daily start.
+ */
+export async function purgeExpiredTransfers(now = new Date()): Promise<void> {
+  await getPrisma().transferCode.deleteMany({ where: { expiresAt: { lt: now } } });
+}
+
 function newCode(): string {
   return Array.from({ length: CODE_LENGTH }, () => CODE_ALPHABET[randomInt(CODE_ALPHABET.length)]).join("");
 }
@@ -22,8 +30,7 @@ export async function createTransfer(
   if (!payload) return { ok: false, error: "Postup se nepodařilo připravit." };
   const prisma = getPrisma();
   const now = new Date();
-  // Housekeeping: drop expired codes.
-  await prisma.transferCode.deleteMany({ where: { expiresAt: { lt: now } } });
+  await purgeExpiredTransfers(now);
   const expiresAt = new Date(now.getTime() + TRANSFER_MINUTES * 60_000);
   for (let attempt = 0; attempt < 5; attempt++) {
     const code = newCode();
@@ -46,6 +53,7 @@ export async function redeemTransfer(
   const invalid = { ok: false, error: "Kód neplatí. Zkontroluj ho nebo si vytvoř nový." } as const;
   if (!code) return invalid;
   const prisma = getPrisma();
+  await purgeExpiredTransfers();
   const row = await prisma.transferCode.findUnique({ where: { codeHash: hashSecret(code) } });
   if (!row || row.usedAt || row.expiresAt < new Date()) return invalid;
   // Single use: whoever deletes the row first wins.
