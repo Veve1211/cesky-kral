@@ -20,3 +20,8 @@ export function formatReign(king: {
 }
 
 export const LEGEND_NOTE = "Otázky jsou o pověsti, ne o doložené historii.";
+
+/** Ends a sentence after `text` without doubling a trailing period ("Karel IV."). */
+export function endSentence(text: string): string {
+  return text.endsWith(".") ? text : `${text}.`;
+}
