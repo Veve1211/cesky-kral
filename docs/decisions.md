@@ -52,3 +52,4 @@ Historie rozhodnutí v projektu (přesunuto z CLAUDE.md, aby zůstal krátký). 
 - 2026-11-23: stránka /soukromi s přehledem ukládaných údajů (hra je pro žáky, učitelé se ptají nejdřív na tohle) a kontaktem pro smazání přezdívky a výsledků; odkaz v patičce, v sitemap, e2e test
 - 2026-11-23: kontrola serverového kódu: tělo požadavku se čte s limitem (velký požadavek se nenačte celý do paměti); prošlé kódy pro přenos (obsahují token hráče) se mažou i při uplatnění a při startu denní výzvy, ne jen při vytvoření nového kódu
 - 2026-11-23: `GET /api/health` – 200 když odpoví aplikace i databáze (`SELECT 1`, limit 3 s), jinak 503; bez detailů chyby, `no-store`; nastavení Railway (healthcheck path) se zatím nemění
+- 2026-11-23: `browserslist` se nenastavuje – měření ukázalo nulový rozdíl v JS (core-js je `noModule`, vestavěné polyfilly Next ~1,4 kB neovlivní), detail v `docs/audit.md`
