@@ -40,6 +40,12 @@ const LINK_CLASS =
 const STRETCHED_CLASS =
   "cursor-pointer text-xs font-semibold text-gold-dark underline-offset-4 outline-none group-hover:underline after:absolute after:inset-0 after:rounded-2xl focus-visible:after:ring-4 focus-visible:after:ring-ring/60";
 
+/**
+ * Rendered portrait width in `KingGrid` (2 columns, 3 from `sm`, inside `max-w-5xl`),
+ * measured at 320–1400 px, so the browser downloads the smallest sufficient image.
+ */
+const KING_GRID_SIZES = "(max-width: 639px) calc(50vw - 56px), (max-width: 1023px) calc(33vw - 64px), 273px";
+
 export function KingCard({ king, index }: { king: KingCardData; index: number }) {
   const crown = king.tier > 0 ? `, ${TIER_SHORT[king.tier as 1 | 2 | 3]} učenosti` : "";
   const label = `${king.title} ${king.name}${king.isLegend ? " (pověst)" : ""}${crown}`;
@@ -157,6 +163,7 @@ function KingCardFace({
               imageUrl={king.imageUrl}
               locked={locked}
               priority={index < 2}
+              sizes={KING_GRID_SIZES}
               className="transition-transform duration-300 group-hover:scale-[1.02]"
             />
             {king.isLegend && (
