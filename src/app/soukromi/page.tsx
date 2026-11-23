@@ -51,7 +51,10 @@ export default function PrivacyPage() {
           </li>
           <li>Erb a heslo, pokud ho uložíš do žebříčku.</li>
           <li>Výsledky her: skóre, počet správných odpovědí a čas, pro žebříčky a denní výzvu.</li>
-          <li>Kód pro přenos sbírky na jiné zařízení, který platí 30 minut.</li>
+          <li>
+            Kód pro přenos sbírky na jiné zařízení. Kvůli přenosu obsahuje i tvůj identifikátor,
+            platí 30 minut a po použití se smaže; nepoužitý se smaže nejpozději do druhého dne.
+          </li>
         </ul>
       </section>
 
