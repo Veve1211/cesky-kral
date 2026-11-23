@@ -89,6 +89,10 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
             <Link href="/zdroje" className="underline underline-offset-4 hover:text-foreground">
               Zdroje obrázků a písem
             </Link>{" "}
+            ·{" "}
+            <Link href="/soukromi" className="underline underline-offset-4 hover:text-foreground">
+              Soukromí
+            </Link>{" "}
             · {SITE_YEAR}
             {KOFI_URL && (
               <>

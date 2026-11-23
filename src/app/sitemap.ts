@@ -16,6 +16,7 @@ const PAGES = [
   "/erb",
   "/zebricky",
   "/zdroje",
+  "/soukromi",
 ];
 
 export default function sitemap(): MetadataRoute.Sitemap {
