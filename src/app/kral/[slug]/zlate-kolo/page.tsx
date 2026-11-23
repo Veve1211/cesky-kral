@@ -9,7 +9,7 @@ import { KingPortrait } from "@/components/king-portrait";
 import { LegendBadge } from "@/components/legend-badge";
 import { CardCorners, OrnamentDivider } from "@/components/ornaments";
 import { Quiz } from "@/components/quiz";
-import { LEGEND_NOTE } from "@/lib/king-display";
+import { endSentence, LEGEND_NOTE } from "@/lib/king-display";
 import { getKingBySlug, kingInitial } from "@/lib/kings";
 import { getGoldenQuestions } from "@/lib/questions";
 
@@ -22,7 +22,7 @@ export async function generateMetadata({
   if (!king) return { title: "Král nenalezen" };
   return {
     title: `Mistrovské kolo: ${king.name}`,
-    description: `Mistrovská úroveň: všechny těžké otázky o panovníkovi ${king.name}.`,
+    description: `Mistrovská úroveň: všechny těžké otázky o panovníkovi ${endSentence(king.name)}`,
   };
 }
 

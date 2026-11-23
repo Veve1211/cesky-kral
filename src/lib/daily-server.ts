@@ -6,7 +6,8 @@ import { parseCrest } from "@/lib/heraldry";
 import type { BoardEntry, Standing } from "@/lib/leaderboard";
 import type { PlayerRow } from "@/lib/player-server";
 import { getPrisma } from "@/lib/prisma";
-import { getDailyQuestions } from "@/lib/questions";
+import { getDailyQuestionIds } from "@/lib/questions";
+import { purgeExpiredTransfers } from "@/lib/transfer-server";
 import type { AnswerResult } from "@/lib/quiz-types";
 
 // "Denní výzva" scored by the server. The browser sends only which answer it
@@ -17,10 +18,6 @@ export type DailyState = { answered: number; marks: boolean[]; finished: boolean
 
 function isToday(date: unknown): date is string {
   return isDateKey(date) && date === dailyDateKey();
-}
-
-async function questionIds(date: string): Promise<number[]> {
-  return (await getDailyQuestions(date)).map((question) => question.id);
 }
 
 /**
@@ -34,11 +31,13 @@ export async function startDaily(
   offlineAnswered: unknown,
 ): Promise<{ ok: true; state: DailyState | null } | { ok: false; error: string }> {
   if (!isToday(date)) return { ok: false, error: "Tahle výzva už skončila. Načti stránku znovu." };
+  // Most players start the daily challenge, so expired transfer codes never linger.
+  await purgeExpiredTransfers();
   const prisma = getPrisma();
   const existing = await prisma.dailyAttempt.findUnique({ where: { playerId_date: { playerId: player.id, date } } });
   if (existing) return { ok: true, state: toState(existing) };
 
-  const total = (await questionIds(date)).length;
+  const total = (await getDailyQuestionIds(date)).length;
   const skipped =
     typeof offlineAnswered === "number" && Number.isSafeInteger(offlineAnswered)
       ? Math.max(0, Math.min(offlineAnswered, total))
@@ -75,7 +74,7 @@ export async function answerDaily(
   if (!attempt) return { ok: false, error: "Výzva ještě nezačala." };
   if (attempt.finishedAt) return { ok: false, error: "Dnešní výzvu už máš dohranou." };
 
-  const ids = await questionIds(date);
+  const ids = await getDailyQuestionIds(date);
   // Only the next question in order – no skipping, no answering twice.
   if (ids[attempt.answered] !== questionId) return { ok: false, error: "Neplatná odpověď." };
 

@@ -6,6 +6,7 @@ import { Grenze_Gotisch, Inter, Uncial_Antiqua } from "next/font/google";
 import { OrnamentDivider } from "@/components/ornaments";
 import { SiteHeader } from "@/components/site-header";
 import "./globals.css";
+import { siteUrl } from "@/lib/site-url";
 
 // Keep preloads, but avoid late font swaps after the page has painted on a slow network.
 // latin-ext subset = Czech diacritics (ř, ě, š, č, ů ...)
@@ -36,13 +37,6 @@ const SITE_TITLE = `${SITE_NAME} – Sbírej české panovníky`;
 const SITE_YEAR = 2026;
 const SITE_DESCRIPTION =
   "Kvízová hra o českých panovnících pro žáky, učitele dějepisu i všechny, koho baví dějiny. Za správné odpovědi získáš sběratelské karty.";
-
-// Absolute base URL for Open Graph links. Railway provides its public domain.
-function siteUrl(): URL {
-  const domain = process.env.RAILWAY_PUBLIC_DOMAIN;
-  if (domain && /^[a-z0-9.-]+$/i.test(domain)) return new URL(`https://${domain}`);
-  return new URL("http://localhost:3000");
-}
 
 export const metadata: Metadata = {
   metadataBase: siteUrl(),
@@ -94,6 +88,10 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
             ·{" "}
             <Link href="/zdroje" className="underline underline-offset-4 hover:text-foreground">
               Zdroje obrázků a písem
+            </Link>{" "}
+            ·{" "}
+            <Link href="/soukromi" className="underline underline-offset-4 hover:text-foreground">
+              Soukromí
             </Link>{" "}
             · {SITE_YEAR}
             {KOFI_URL && (
