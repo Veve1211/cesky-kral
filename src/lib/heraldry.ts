@@ -296,18 +296,6 @@ export function crownCounts(tiers: readonly number[], total: number, cards = 0):
   };
 }
 
-/** True when every part of the design is unlocked for `counts`. */
-export function designUnlocked(design: CrestDesign, counts: CrownCounts): boolean {
-  return (
-    isUnlocked(UNLOCKS.shape[design.shape], counts) &&
-    isUnlocked(UNLOCKS.division[design.division], counts) &&
-    isUnlocked(UNLOCKS.tincture[design.field], counts) &&
-    (design.division === "plain" || isUnlocked(UNLOCKS.tincture[design.second], counts)) &&
-    isUnlocked(UNLOCKS.charge[design.charge], counts) &&
-    (design.charge === "none" || isUnlocked(UNLOCKS.tincture[design.chargeTincture], counts))
-  );
-}
-
 // --- validation and the share link ----------------------------------------------
 
 const has = <T extends string>(list: readonly T[], value: unknown): value is T =>

@@ -11,6 +11,7 @@ import { PrismaPg } from "@prisma/adapter-pg";
 import { PrismaClient } from "../src/generated/prisma/client";
 import { chronicles, type SeedChronicle } from "./chronicles";
 import { kings, type SeedKing } from "./seed-data";
+import { ANSWERS_PER_QUESTION } from "../src/lib/game-rules";
 
 config({ path: ".env.local" });
 
@@ -52,6 +53,11 @@ function validate(data: SeedKing[]) {
       const count = king.questions.filter((q) => q.difficulty === level).length;
       if (count !== 3) {
         throw new Error(`${king.slug}: expected 3 questions of difficulty ${level}, got ${count}`);
+      }
+    }
+    for (const q of king.questions) {
+      if (new Set([q.correct, ...q.wrong]).size !== ANSWERS_PER_QUESTION) {
+        throw new Error(`${king.slug}: "${q.text}" needs ${ANSWERS_PER_QUESTION} different answers`);
       }
     }
     const texts = new Set(king.questions.map((q) => q.text));
