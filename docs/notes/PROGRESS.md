@@ -3,7 +3,7 @@
 Aktualizováno: 2026-11-10 (Praha). PR 3 (víc otázek) se na pokyn uživatelky nedělá.
 STOP pravidlo: v 6:00 práci ukončit. Obnoveno 10. 11. v 9:50 (po 6:00) → otevřen jen PR #47, PR 2 a PR 4 čekají na pokyn „pokračuj“.
 10. 11. dopoledne: odevzdání do hodiny – PR 2 jen úvod + první otázka na mobilu, PR 4 jen groš + test + README.
-Další krok: počkat na CI #48 a #49; po odevzdání body ⏳ z AUDIT.md.
+Další krok: počkat na CI #48 a #49; po odevzdání body ⏳ z `docs/game-audit.md`.
 
 ## Úvod bez korun (10. 11., větev `fix/home-no-crowns`)
 - Koruny učenosti a počet zlatých karet jen v Moje sbírka; galerie i blok hodnosti na úvodu bez nich (úvod = hlavní hra a sbírka, odměny podrobně ve sbírce).
