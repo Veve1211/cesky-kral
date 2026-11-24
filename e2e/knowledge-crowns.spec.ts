@@ -5,7 +5,7 @@ import { expect, type Page, test } from "@playwright/test";
 import { dailyDateKey, pickDailyQuestions } from "../src/lib/daily";
 import { questionKey, tierThresholds } from "../src/lib/mastery";
 import { celebration, currentQuestion, open, openCelebration, setCollection } from "./helpers/game";
-import { getKing, kings, type SeedKing } from "./helpers/seed-answers";
+import { dailyQuestions, getKing, kings, type SeedKing } from "./helpers/seed-answers";
 
 const MASTERY_KEY = "cesky-kral:mastery";
 
@@ -124,8 +124,8 @@ test("oslava stupně podruhé už nepřijde", async ({ page }) => {
 
 test("stříbro: šestá různá správně zodpovězená otázka", async ({ page }) => {
   const karel = getKing("karel-iv");
-  // The three hard questions are known (bronze). A round has 2 easy, 2 medium,
-  // 1 hard: the first three answers are new → the third one makes six.
+  // The three hard questions are known (bronze). A round has 2 easy and 3 medium
+  // questions, all new: the third answer makes six.
   await setMastery(page, { [karel.slug]: { known: keysOf(karel, [3]), tier: 1 } });
   await open(page, `/kral/${karel.slug}`);
   expect(await playCorrect(page, 5, karel.name)).toEqual([null, null, null, null, null]);
@@ -141,16 +141,18 @@ test("zlato: poslední otázka ve zlatém kole", async ({ page }) => {
   expect((await readMastery(page))?.kings[karel.slug].tier).toBe(3);
 });
 
-test("počítá se i v Denní výzvě", async ({ page }) => {
+test("Denní výzva má vlastní otázky a do korun se nepočítá", async ({ page }) => {
   const first = pickDailyQuestions(
     dailyDateKey(),
-    kings.flatMap((k) => k.questions.map((q) => ({ kingSlug: k.slug, text: q.text, difficulty: q.difficulty as 1 | 2 | 3 }))),
+    kings.flatMap((k) => (dailyQuestions[k.slug] ?? []).map((q) => ({ kingSlug: k.slug, text: q.text, difficulty: q.difficulty as 1 | 2 | 3 }))),
   )[0];
   const king = getKing(first.kingSlug);
-  const others = king.questions.filter((q) => q.text !== first.text).slice(0, 2).map((q) => questionKey(king.slug, q.text));
-  await setMastery(page, { [king.slug]: { known: others, tier: 0 } });
+  // Two card questions known: one more card answer would give bronze, a daily one does not.
+  const known = king.questions.slice(0, 2).map((q) => questionKey(king.slug, q.text));
+  await setMastery(page, { [king.slug]: { known, tier: 0 } });
   await open(page, "/vyzva");
-  expect(await playCorrect(page, 1, king.name)).toEqual(["bronze"]);
+  expect(await playCorrect(page, 1, king.name)).toEqual([null]);
+  expect((await readMastery(page))?.kings[king.slug].known).toHaveLength(2);
 });
 
 test("počítá se i v Rychlovce", async ({ page }) => {
