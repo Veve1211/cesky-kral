@@ -12,7 +12,7 @@ import {
   pickDailyQuestions,
   shiftDateKey,
 } from "../src/lib/daily";
-import { answer, currentQuestion, open, progress } from "./helpers/game";
+import { answer, currentQuestion, open, progress, revealAll } from "./helpers/game";
 import { kings } from "./helpers/seed-answers";
 
 const DAILY_KEY = "cesky-kral:daily";
@@ -96,6 +96,8 @@ async function stubShare(page: Page) {
 }
 
 test("na úvodní stránce je výzva malým odkazem hned pod hlavním tlačítkem", async ({ page }) => {
+  // A returning player (a new one sees the challenge after the first card).
+  await revealAll(page);
   await open(page, "/");
   const link = page.getByRole("link", { name: /Denní výzva/ });
   await expect(link).toBeVisible();
