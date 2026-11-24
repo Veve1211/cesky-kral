@@ -51,7 +51,7 @@ fakta opakují tak dlouho, až se zapamatují, a za odměnu se sbírají karty p
 - **Roky vlády skryté, dokud panovníka nezískáš**, aby nešlo opisovat odpovědi do hry Kdo vládl dřív?.
 
 **Co bych příště udělala jinak.**
-- Méně funkcí najednou. Audit ([`AUDIT.md`](AUDIT.md)) ukázal, že první dojem byl přehlcený, a režimy jsem
+- Méně funkcí najednou. Audit ([`docs/game-audit.md`](docs/game-audit.md)) ukázal, že první dojem byl přehlcený, a režimy jsem
   měla odhalovat postupně.
 - Dřív ukázat hru skutečným hráčům. Další krok je stránka [Pro učitele](https://cesky-kral.up.railway.app/pro-ucitele)
   a zpětná vazba od učitelů dějepisu.
@@ -175,7 +175,7 @@ docs/                  rozhodnutí, herní logika, ověření historického obsa
 - 10. 11. 2026 prošlo všech 162 otázek a 18 kronik kontrolou proti zdrojům (správná odpověď musí ve zdroji
   stát, špatné odpovědi nesmí být pravdivé). Ověření a opravy jsou v
   [`docs/historical-content.md`](docs/historical-content.md); regresní testy hlídají fakta i počty otázek.
-- Nálezy z auditu celé hry (UX, přístupnost, soukromí) a co zbývá jsou v [`AUDIT.md`](AUDIT.md).
+- Nálezy z auditu celé hry (UX, přístupnost, soukromí) a co zbývá jsou v [`docs/game-audit.md`](docs/game-audit.md).
 - Obrázky panovníků jen volná díla (public domain) z Wikimedia Commons, s kredity na stránce `/zdroje`.
 
 ## Prostředí a postup práce

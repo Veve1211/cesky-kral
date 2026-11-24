@@ -8,7 +8,7 @@ Hra je ve fázi dokončení – žádné nové funkce, jen opravy, výkon a doku
 
 1. **Fáze 1 – průzkum.** Hra prošlá jako nový i vracející se hráč (mobil i počítač), Lighthouse,
    řádek po řádku serverový kód (API, server actions, ukládání skóre, rate limit), měření
-   databázových dotazů. Herní audit obsahu a UX z 10. 11. je v [`AUDIT.md`](../AUDIT.md).
+   databázových dotazů. Herní audit obsahu a UX z 10. 11. je v [`game-audit.md`](game-audit.md).
 2. **Fáze 2 – návrh.** Každý nález dostal závažnost, odhad práce a návrh řešení; Veve schválila,
    co se dělá hned.
 3. **Fáze 3 – quick wins.** Každá oprava zvlášť ve feature větvi, s testem a měřením, PR do `dev`.
@@ -47,7 +47,7 @@ nestáhne. Zbytek jsou vestavěné polyfilly Next.js v hlavním chunku (~1,4 kB,
 - Desktopové skóre výkonu v Lighthouse kolísá (74–89) kvůli času běhu JavaScriptu (TBT 280–400 ms),
   ne kvůli obrázkům – samostatný větší úkol.
 - `/api/health` lze po merge nastavit jako healthcheck v Railway nebo v monitoru dostupnosti.
-- Body ⏳ a ⏸ z [`AUDIT.md`](../AUDIT.md) (postupné odhalování režimů, jeden jasný další krok po první kartě).
+- Body ⏳ a ⏸ z [`game-audit.md`](game-audit.md) (postupné odhalování režimů pro nové hráče).
 
 ## Co si z toho beru
 

@@ -31,6 +31,7 @@ import {
 import type { Chronicle } from "@/lib/chronicle";
 import { AUTO_ADVANCE_MS, useAutoAdvanceAllowed } from "@/lib/auto-advance";
 import { CORRECT_TO_COLLECT } from "@/lib/game-rules";
+import { nextUncollected } from "@/lib/next-step";
 import type { AnswerResult, QuizQuestion } from "@/lib/quiz-types";
 import { unlockedBy } from "@/lib/crest-unlocks";
 import { recordCorrectAnswer } from "@/lib/mastery-progress";
@@ -605,11 +606,7 @@ function Results(
             <p className="text-muted-foreground">
               Skvělá práce. Karta už na tebe čeká ve sbírce.
             </p>
-            {!props.completedAll && (
-              <Button asChild variant="accent" size="lg">
-                <Link href="/sbirka">Do sbírky</Link>
-              </Button>
-            )}
+            {!props.completedAll && <NextCardActions allKingSlugs={props.allKingSlugs} />}
           </CardContent>
         </Card>
         {props.completedAll && (
@@ -671,6 +668,35 @@ function Results(
         <KofiButton className="mt-2" />
       </CardContent>
     </Card>
+  );
+}
+
+/**
+ * One clear next step after a won card (audit 10. 11., point 5): play for the next
+ * missing ruler; the collection stays as a quieter second option.
+ */
+function NextCardActions({ allKingSlugs }: { allKingSlugs: readonly string[] }) {
+  // Rendered only after the round, on the client, when the card is already saved.
+  const next = nextUncollected(allKingSlugs, readCollection().kings);
+  if (!next) {
+    return (
+      <Button asChild variant="accent" size="lg">
+        <Link href="/sbirka">Do sbírky</Link>
+      </Button>
+    );
+  }
+  return (
+    <div className="flex flex-col items-center gap-2">
+      <Button asChild variant="accent" size="lg">
+        <Link href={`/kral/${next}`}>
+          Hrát o další kartu
+          <ArrowRight aria-hidden />
+        </Link>
+      </Button>
+      <Button asChild variant="link" size="sm">
+        <Link href="/sbirka">Do sbírky</Link>
+      </Button>
+    </div>
   );
 }
 
