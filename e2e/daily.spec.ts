@@ -13,14 +13,15 @@ import {
   shiftDateKey,
 } from "../src/lib/daily";
 import { answer, currentQuestion, open, progress } from "./helpers/game";
-import { kings } from "./helpers/seed-answers";
+import { dailyQuestions, kings } from "./helpers/seed-answers";
 
 const DAILY_KEY = "cesky-kral:daily";
 
 // --- pure logic --------------------------------------------------------------
 
+// The daily challenge draws only from its own pool (never the card questions).
 const pool = kings.flatMap((king) =>
-  king.questions.map((q) => ({ kingSlug: king.slug, text: q.text, difficulty: q.difficulty as 1 | 2 | 3 })),
+  (dailyQuestions[king.slug] ?? []).map((q) => ({ kingSlug: king.slug, text: q.text, difficulty: q.difficulty as 1 | 2 | 3 })),
 );
 
 test.describe("logika výzvy", () => {

@@ -1,5 +1,5 @@
 // Picks one king round from the ruler's whole question pool (pure, shared by the
-// client and the tests). Per difficulty of ROUND_PLAN (2 easy, 2 medium, 1 hard):
+// client and the tests). Per difficulty of ROUND_PLAN (2 easy, 3 medium):
 // unseen questions first, then the ones seen longest ago; random among equals.
 import { ROUND_PLAN } from "@/lib/game-rules";
 import type { QuizQuestion } from "@/lib/quiz-types";

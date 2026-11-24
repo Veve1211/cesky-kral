@@ -8,5 +8,5 @@ import type { AnswerResult } from "@/lib/quiz-types";
  * answer is correct until it calls this action.
  */
 export async function checkAnswer(questionId: unknown, answerId: unknown): Promise<AnswerResult> {
-  return evaluateAnswer(questionId, answerId);
+  return evaluateAnswer(questionId, answerId, "card");
 }

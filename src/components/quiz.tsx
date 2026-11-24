@@ -159,7 +159,7 @@ export function Quiz(props: QuizProps) {
         setFeedback(result);
         if (result.correct) setScore((s) => s + 1);
         setMarks((current) => [...current, result.correct]);
-        if (result.correct) {
+        if (result.correct && result.ruler.countsForCrowns) {
           const { ruler } = result;
           let reached: 1 | 2 | 3 | null = null;
           // Crest parts this crown unlocks are shown on its celebration.
@@ -370,10 +370,17 @@ export function Quiz(props: QuizProps) {
         <CardCorners className="m-1 size-8 text-gold-dark" />
         <CardHeader>
           <div className="flex items-center justify-between gap-3">
-            <p className="flex flex-wrap items-center gap-2 text-xs font-semibold tracking-[0.2em] text-gold-dark uppercase">
-              {props.mode === "quick" || props.mode === "daily" ? question.kingName : `Otázka ${index + 1}`}
-              {(props.mode === "quick" || props.mode === "daily") && question.isLegend && <LegendBadge />}
-            </p>
+            {props.mode === "quick" || props.mode === "daily" ? (
+              // Questions across rulers: the ruler's name must be easy to see.
+              <p data-testid="question-ruler" className="flex flex-wrap items-center gap-x-2 gap-y-1">
+                <span className="sr-only">Panovník: </span>
+                <span aria-hidden className="text-lg leading-none">👑</span>
+                <span className="font-heading text-xl leading-tight font-bold sm:text-2xl">{question.kingName}</span>
+                {question.isLegend && <LegendBadge />}
+              </p>
+            ) : (
+              <p className="text-xs font-semibold tracking-[0.2em] text-gold-dark uppercase">{`Otázka ${index + 1}`}</p>
+            )}
             <DifficultyBadge difficulty={question.difficulty} className="mr-4" />
           </div>
           <h2

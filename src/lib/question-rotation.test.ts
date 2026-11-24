@@ -16,22 +16,21 @@ const pool: QuizQuestion[] = Array.from({ length: 9 }, (_, i) => ({
 const ids = (round: QuizQuestion[]) => round.map((q) => q.id);
 
 describe("pickRound", () => {
-  it("keeps the round plan: 2 easy, 2 medium, 1 hard, from easy to hard", () => {
+  it("keeps the round plan: 2 easy, 3 medium, from easy to medium – never a hard one", () => {
     const round = pickRound(pool, []);
-    expect(round.map((q) => q.difficulty)).toEqual([1, 1, 2, 2, 3]);
+    expect(round.map((q) => q.difficulty)).toEqual([1, 1, 2, 2, 2]);
   });
 
   it("prefers questions the player has not seen yet", () => {
-    const round = pickRound(pool, [1, 2, 4, 5, 7], () => 0.5);
-    expect(ids(round).sort((a, b) => a - b)).toContain(3);
-    expect(ids(round)).toContain(6);
-    expect(ids(round)).toContain(8);
-    expect(ids(round)).not.toContain(7);
+    const round = pickRound(pool, [1, 2, 4, 5], () => 0.5);
+    expect(ids(round)).toContain(3);
+    expect(ids(round).filter((id) => id <= 3)).toHaveLength(2);
+    expect(ids(round).filter((id) => id >= 4 && id <= 6).sort()).toEqual([4, 5, 6]);
   });
 
   it("when everything was seen, takes the ones seen longest ago", () => {
     const seen = [1, 4, 7, 2, 5, 8, 3, 6, 9]; // oldest first
-    expect(ids(pickRound(pool, seen, () => 0.5))).toEqual([1, 2, 4, 5, 7]);
+    expect(ids(pickRound(pool, seen, () => 0.5))).toEqual([1, 2, 4, 5, 6]);
   });
 
   it("is random among unseen questions", () => {
