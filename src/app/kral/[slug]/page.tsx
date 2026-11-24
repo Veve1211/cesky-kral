@@ -11,11 +11,11 @@ import { KingPortrait } from "@/components/king-portrait";
 import { KingReignLine } from "@/components/king-reign-line";
 import { LegendBadge } from "@/components/legend-badge";
 import { CardCorners } from "@/components/ornaments";
-import { Quiz } from "@/components/quiz";
+import { KingRound } from "@/components/king-round";
 import { CORRECT_TO_COLLECT } from "@/lib/game-rules";
 import { endSentence, formatReign, LEGEND_NOTE } from "@/lib/king-display";
 import { getKingBySlug, getKingSlugs, kingInitial } from "@/lib/kings";
-import { getKingQuestions } from "@/lib/questions";
+import { getKingQuestionPool } from "@/lib/questions";
 
 export async function generateMetadata({
   params,
@@ -67,8 +67,8 @@ async function KingGame({ params }: { params: Promise<{ slug: string }> }) {
   const king = await getKingBySlug(slug);
   if (!king) notFound();
 
-  const [questions, allSlugs] = await Promise.all([
-    getKingQuestions(king.slug),
+  const [pool, allSlugs] = await Promise.all([
+    getKingQuestionPool(king.slug),
     getKingSlugs(),
   ]);
   const initial = kingInitial(king.name);
@@ -106,9 +106,8 @@ async function KingGame({ params }: { params: Promise<{ slug: string }> }) {
         <GoldenRoundButton slug={king.slug} />
       </GoldenHeaderFrame>
 
-      <Quiz
-        mode="king"
-        questions={questions}
+      <KingRound
+        pool={pool}
         allKingSlugs={allSlugs}
         king={{
           slug: king.slug,

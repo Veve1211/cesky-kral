@@ -30,6 +30,7 @@ export default function PrivacyPage() {
         </h2>
         <ul className={listClass}>
           <li>Sbírka karet, koruny učenosti, erb a postup ve hře.</li>
+          <li>Které otázky už jsi viděl/a, aby se v dalším kole střídaly (jen čísla otázek).</li>
           <li>Náhodný identifikátor hráče, podle kterého server pozná tvoje výsledky v žebříčcích.</li>
           <li>Když v prohlížeči smažeš data webu, postup i identifikátor zmizí.</li>
         </ul>

@@ -4,7 +4,7 @@ Podrobná specifikace přesunutá z CLAUDE.md. Před změnou herní logiky, dat 
 
 ## Herní logika
 - Každý král má 9 otázek: 3 lehké, 3 střední, 3 těžké (seed to validuje). Každá otázka má přesně 3 odpovědi, z toho 1 správnou.
-- Kolo o krále = 5 otázek: 2 lehké, 2 střední, 1 těžká, v tomto pořadí, v rámci úrovně náhodně (`ROUND_PLAN`).
+- Kolo o krále = 5 otázek: 2 lehké, 2 střední, 1 těžká, v tomto pořadí (`ROUND_PLAN`). Server pošle všech 9 otázek panovníka bez správnosti (`getKingQuestionPool`), kolo vybere prohlížeč (`KingRound` → `pickRound`): v rámci úrovně nejdřív neviděné, pak nejdéle neviděné, mezi rovnými náhodně. Viděné otázky: localStorage `cesky-kral:seen`, `{ version: 1, ids }`, max 60 id, bez cookie. „Zkusit znovu“ i nové načtení = nové kolo.
 - U otázky štítek obtížnosti: 1–3 korunky.
 - Na začátku hry o krále i rychlovky zdobný štítek „⚔️ Rytířský slib: Odlož AI i internet. Králové vše vidí. 👁️“.
 - Po odpovědi hned ukaž správně/špatně + jednu větu vysvětlení.
