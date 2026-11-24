@@ -42,3 +42,12 @@ export function nextStep(
   }
   return { kind: "continue", href: "/rychlovka", label: "Pokračuj", detail: "Rychlovka napříč všemi panovníky" };
 }
+
+/**
+ * After a won card: the next ruler (in game order) still missing from the collection,
+ * or null when everything is collected. `slugs` must be sorted by `order`.
+ */
+export function nextUncollected(slugs: readonly string[], collected: readonly string[]): string | null {
+  const owned = new Set(collected);
+  return slugs.find((slug) => !owned.has(slug)) ?? null;
+}

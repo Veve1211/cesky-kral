@@ -47,7 +47,7 @@ nestáhne. Zbytek jsou vestavěné polyfilly Next.js v hlavním chunku (~1,4 kB,
 - Desktopové skóre výkonu v Lighthouse kolísá (74–89) kvůli času běhu JavaScriptu (TBT 280–400 ms),
   ne kvůli obrázkům – samostatný větší úkol.
 - `/api/health` lze po merge nastavit jako healthcheck v Railway nebo v monitoru dostupnosti.
-- Body ⏳ a ⏸ z [`game-audit.md`](game-audit.md) (postupné odhalování režimů, jeden jasný další krok po první kartě).
+- Body ⏳ a ⏸ z [`game-audit.md`](game-audit.md) (postupné odhalování režimů pro nové hráče).
 
 ## Co si z toho beru
 

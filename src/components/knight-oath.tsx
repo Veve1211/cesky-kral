@@ -6,7 +6,7 @@ export function KnightOath({ className }: { className?: string }) {
     <div
       role="note"
       className={cn(
-        "animate-card-reveal relative mx-auto w-full rounded-xl bg-navy px-5 py-3 text-center text-sm text-parchment shadow-md ring-2 ring-gold",
+        "animate-card-reveal relative mx-auto w-full rounded-xl bg-navy px-5 py-2 text-center text-sm text-parchment sm:py-3 shadow-md ring-2 ring-gold",
         className,
       )}
     >

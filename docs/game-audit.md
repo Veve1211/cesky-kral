@@ -11,8 +11,10 @@ Stav: ✅ opraveno · 🔧 opravuje se v uvedeném PR · ⏳ po odevzdání · �
    `docs/historical-content.md`, část „Audit faktů 10. 11.“).
 2. ✅ (PR 2) **Hra začíná pod okrajem obrazovky.** Hra o kartu: portrét vedle jména, menší mezery, bez
    zamčeného tlačítka – první otázka je na mobilu (iPhone 13) i desktopu vidět bez posouvání (test
-   `e2e/first-impression.spec.ts`). ⏳ Po odevzdání: totéž zkontrolovat u Denní výzvy, Rychlovky,
-   Kdo vládl dřív? a Řeky času.
+   `e2e/first-impression.spec.ts`). ✅ (24. 11.) Totéž u ostatních režimů: společné kompaktní záhlaví
+   `ModeHeader` (ikona vedle nadpisu, na mobilu menší text). iPhone 13 (výška 664 px), spodní okraj první
+   otázky: Denní výzva 765 → 571 px, Rychlovka 713 → 515 px; Kdo vládl dřív? obě karty celé (dřív jen první);
+   Řeka času první dvojice karet celá. Počítač (720 px): Denní výzva 774 → 698 px. Hlídá týž test.
 3. ✅ (PR 2) **Přehlcený první dojem.** Pod nadpisem je jedna věta, o čem hra je, a hned pod ní
    velké „Začni hrát“ – na mobilu obojí bez posouvání (test). ⏳ Po odevzdání: postupné odhalování
    (zpočátku jen hra o kartu a galerie, erb a Denní výzva po první kartě, další režimy po několika),
@@ -21,7 +23,8 @@ Stav: ✅ opraveno · 🔧 opravuje se v uvedeném PR · ⏳ po odevzdání · �
 ## Střední závažnost
 
 4. ✅ (PR 2) Nezískaný panovník už neukazuje zamčené tlačítko „Mistrovské kolo“ (u získaného zůstává).
-5. ⏳ Po odevzdání: Po první kartě oslava nabízí víc cest (sbírka, kronika, erb, Pokračovat); chybí jeden jasný další krok.
+5. ✅ (24. 11.) Po výhře karty je jeden hlavní krok „Hrát o další kartu“ (další chybějící panovník podle
+   pořadí); „Do sbírky“ a v oslavě „Zobrazit ve sbírce“ jsou jen nenápadné odkazy. Test `e2e/next-card.spec.ts`.
 6. ✅ (PR 4) Text „Kdo to byl? … popis i roky vlády se odemknou“ – u pověstí roky nejsou a u kněžny/královny
    „byl“ nesedí. Nově „Popis panovníka se odemkne, až získáš kartu.“
 7. ✅ (PR 4) Stránka 404 říkala „Tohoto krále neznáme“ i u adres, které s panovníky nesouvisí. Nově „Tuhle stránku kronika nezná“.
