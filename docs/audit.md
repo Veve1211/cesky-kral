@@ -25,6 +25,20 @@ Hra je ve fázi dokončení – žádné nové funkce, jen opravy, výkon a doku
 | K3 | Denní výzva načítala všech 162 otázek při každé odpovědi | Výběr otázek dne jednou za den (v paměti, max 3 dny), jen lehké sloupce | 41 požadavků: 206 → 85 DB dotazů, načtení všech otázek 41× → 1×, 14–16 → 10–11 ms na požadavek | #69 |
 | K6 | Žádný endpoint pro kontrolu dostupnosti | `GET /api/health` – 200 když odpoví aplikace i DB (`SELECT 1`, limit 3 s), jinak 503, bez detailů chyby | Ověřeno proti produkčnímu buildu (správná DB → 200, špatné heslo → 503); nastavení Railway beze změny | #70 |
 
+## Výkon na počítači (24. 11. 2026)
+
+Nové měření (Lighthouse 12, preset desktop, produkční build, 3× na stránku): čas běhu JS už problém není
+(TBT 0–75 ms místo dřívějších 280–400 ms). Skóre kazil **posun rozložení (CLS)**: obsah vykreslovaný až
+v prohlížeči (sbírka, Denní výzva) odstrčil patičku, která byla při prvním vykreslení vidět dole na obrazovce.
+Oprava: `main` má `min-h-dvh`, patička tak vždy začíná pod okrajem obrazovky.
+
+| Stránka | Skóre před | CLS před | Skóre po | CLS po |
+|---|---|---|---|---|
+| /sbirka | 76 | 0,794 | 99 | 0,000 |
+| /vyzva | 80–99 | až 0,420 | 99 | 0,016–0,027 |
+| / | 94–99 | 0,000 | 99 | 0,000 |
+| /kral/karel-iv | 99–100 | 0,026 | 99 | 0,000 |
+
 ## Co se změřilo a nedělá se
 
 **K9 – `browserslist`.** Předpoklad: nastavení cílových prohlížečů v `package.json` odstraní
@@ -44,8 +58,6 @@ nestáhne. Zbytek jsou vestavěné polyfilly Next.js v hlavním chunku (~1,4 kB,
 
 ## Co zůstává
 
-- Desktopové skóre výkonu v Lighthouse kolísá (74–89) kvůli času běhu JavaScriptu (TBT 280–400 ms),
-  ne kvůli obrázkům – samostatný větší úkol.
 - `/api/health` lze po merge nastavit jako healthcheck v Railway nebo v monitoru dostupnosti.
 - Body ⏳ a ⏸ z [`game-audit.md`](game-audit.md) (postupné odhalování režimů pro nové hráče).
 
