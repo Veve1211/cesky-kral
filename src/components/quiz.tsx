@@ -59,6 +59,8 @@ type QuizProps =
       mode: "king";
       questions: QuizQuestion[];
       allKingSlugs: string[];
+      /** "Zkusit znovu" starts a fresh round picked by the caller (`KingRound`). */
+      onRestart?: () => void;
       king: Omit<ChronicleKing, "chronicle"> &
         QuizKing & {
           chronicle: Chronicle | null;
@@ -249,7 +251,7 @@ export function Quiz(props: QuizProps) {
   });
 
   function restart() {
-    if (props.mode === "quick" && props.onRestart) {
+    if ((props.mode === "quick" || props.mode === "king") && props.onRestart) {
       props.onRestart();
       return;
     }
