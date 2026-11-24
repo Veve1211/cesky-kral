@@ -59,6 +59,10 @@ type QuizProps =
       mode: "king";
       questions: QuizQuestion[];
       allKingSlugs: string[];
+      /** "Zkusit znovu" starts a fresh round picked by the caller (`KingRound`). */
+      onRestart?: () => void;
+      /** A restarted round: keyboard focus goes to the first question, as after an in-place restart. */
+      focusFirstQuestion?: boolean;
       king: Omit<ChronicleKing, "chronicle"> &
         QuizKing & {
           chronicle: Chronicle | null;
@@ -127,7 +131,7 @@ export function Quiz(props: QuizProps) {
   const locked = isPending || feedback !== null;
   const questionHeading = useRef<HTMLHeadingElement>(null);
   const resultHeading = useRef<HTMLHeadingElement>(null);
-  const focusQuestions = useRef(false);
+  const focusQuestions = useRef(props.mode === "king" && props.focusFirstQuestion === true);
 
   useEffect(() => {
     if (finished) {
@@ -249,7 +253,7 @@ export function Quiz(props: QuizProps) {
   });
 
   function restart() {
-    if (props.mode === "quick" && props.onRestart) {
+    if ((props.mode === "quick" || props.mode === "king") && props.onRestart) {
       props.onRestart();
       return;
     }

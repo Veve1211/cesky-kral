@@ -2,7 +2,7 @@ import "server-only";
 import { randomInt } from "node:crypto";
 
 import { pickDailyQuestions } from "@/lib/daily";
-import { GOLDEN_DIFFICULTY, ROUND_PLAN, toDifficulty } from "@/lib/game-rules";
+import { GOLDEN_DIFFICULTY, toDifficulty } from "@/lib/game-rules";
 import { getPrisma } from "@/lib/prisma";
 import { isValidSlug } from "@/lib/slug";
 import type { QuizQuestion } from "@/lib/quiz-types";
@@ -46,21 +46,17 @@ function toQuizQuestion(row: QuestionRow): QuizQuestion {
 }
 
 /**
- * One king round: picks questions by ROUND_PLAN (2 easy, 2 medium, 1 hard),
- * random within each level, ordered from easy to hard.
+ * All questions of a king (without correctness) – the client picks the round
+ * from them and prefers questions the player has not seen (`pickRound`).
  */
-export async function getKingQuestions(slug: string): Promise<QuizQuestion[]> {
+export async function getKingQuestionPool(slug: string): Promise<QuizQuestion[]> {
   if (!isValidSlug(slug)) return [];
   const rows = await getPrisma().question.findMany({
     where: { king: { slug } },
     select: questionSelect,
+    orderBy: { id: "asc" },
   });
-
-  return ROUND_PLAN.flatMap(({ difficulty, count }) =>
-    shuffle(rows.filter((row) => toDifficulty(row.difficulty) === difficulty))
-      .slice(0, count)
-      .map(toQuizQuestion),
-  );
+  return rows.map(toQuizQuestion);
 }
 
 /**
