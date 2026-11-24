@@ -316,8 +316,8 @@ export function Quiz(props: QuizProps) {
               // Questions across rulers: the ruler's name must be easy to see.
               <p data-testid="question-ruler" className="flex flex-wrap items-center gap-x-2 gap-y-1">
                 <span className="sr-only">Panovník: </span>
-                <span aria-hidden className="text-lg leading-none">👑</span>
-                <span className="font-heading text-xl leading-tight font-bold sm:text-2xl">{question.kingName}</span>
+                <span aria-hidden className="text-base leading-none">👑</span>
+                <span className="font-heading text-lg leading-none font-bold sm:text-xl">{question.kingName}</span>
                 {question.isLegend && <LegendBadge />}
               </p>
             ) : (
