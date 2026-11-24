@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { nextStep } from "@/lib/next-step";
+import { nextStep, nextUncollected } from "@/lib/next-step";
 import { pickPair, type WhoFirstPair } from "@/lib/who-first";
 
 const kings = [
@@ -52,5 +52,18 @@ describe("Kdo vládl dřív? pairs", () => {
       if (previous) expect(new Set([a, b])).not.toEqual(new Set(previous));
       previous = pair;
     }
+  });
+});
+
+describe("nextUncollected", () => {
+  const slugs = ["libuse", "premysl-orac", "svaty-vaclav"];
+
+  it("returns the first ruler in order that is not collected", () => {
+    expect(nextUncollected(slugs, ["libuse"])).toBe("premysl-orac");
+    expect(nextUncollected(slugs, ["premysl-orac"])).toBe("libuse");
+  });
+
+  it("returns null when everything is collected", () => {
+    expect(nextUncollected(slugs, slugs)).toBeNull();
   });
 });

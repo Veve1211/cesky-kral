@@ -148,7 +148,8 @@ export function CardCelebration({
                     Pokračovat
                   </Button>
                 </DialogPrimitive.Close>
-                <Button asChild variant="outline" size="lg">
+                {/* Quieter than "Pokračovat": one clear next step (audit 10. 11., point 5). */}
+                <Button asChild variant="link" size="lg" className="text-parchment/85 hover:text-parchment">
                   <Link href="/sbirka">
                     <BookOpen aria-hidden />
                     Zobrazit ve sbírce

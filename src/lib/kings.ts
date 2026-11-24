@@ -59,8 +59,9 @@ export async function getWhoFirstKings(): Promise<WhoFirstKing[]> {
   return rows.map((row) => ({ ...row, title: toKingTitle(row.title) }));
 }
 
+/** All ruler slugs in game order (the "next card" after a round follows it). */
 export async function getKingSlugs(): Promise<string[]> {
-  const rows = await getPrisma().king.findMany({ select: { slug: true } });
+  const rows = await getPrisma().king.findMany({ select: { slug: true }, orderBy: { order: "asc" } });
   return rows.map((row) => row.slug);
 }
 
