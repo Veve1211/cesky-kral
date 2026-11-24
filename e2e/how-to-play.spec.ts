@@ -55,7 +55,7 @@ test("Jak hrát: odkaz v menu, pět kroků, časté otázky a tlačítko Hrát",
   // FAQ: closed at first, opens from the keyboard.
   const faq = page.getByRole("region", { name: "Časté otázky" });
   const items = faq.locator("details");
-  await expect(items).toHaveCount(5);
+  await expect(items).toHaveCount(6);
   const first = items.first();
   const answer = first.locator("p");
   await expect(answer).toBeHidden();
