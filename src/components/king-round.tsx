@@ -17,7 +17,7 @@ type KingQuizProps = Extract<ComponentProps<typeof Quiz>, { mode: "king" }>;
 export function KingRound({
   pool,
   ...quiz
-}: Omit<KingQuizProps, "mode" | "questions" | "onRestart"> & { pool: QuizQuestion[] }) {
+}: Omit<KingQuizProps, "mode" | "questions" | "onRestart" | "focusFirstQuestion"> & { pool: QuizQuestion[] }) {
   const [round, setRound] = useState<{ id: number; questions: QuizQuestion[] } | null>(null);
 
   function startRound() {
@@ -32,5 +32,14 @@ export function KingRound({
 
   if (!round) return <div aria-busy="true" aria-label="Načítám otázky" className="parchment h-80 animate-pulse rounded-2xl" />;
 
-  return <Quiz key={round.id} mode="king" questions={round.questions} onRestart={startRound} {...quiz} />;
+  return (
+    <Quiz
+      key={round.id}
+      mode="king"
+      questions={round.questions}
+      onRestart={startRound}
+      focusFirstQuestion={round.id > 1}
+      {...quiz}
+    />
+  );
 }
