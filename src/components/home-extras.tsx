@@ -36,7 +36,7 @@ export function HomeMoreLinks() {
   const card =
     "parchment group relative flex items-center gap-4 rounded-2xl p-4 ring-1 ring-gold/50 outline-none transition-transform hover:-translate-y-0.5 hover:ring-gold focus-visible:ring-4 focus-visible:ring-ring/60";
   return (
-    <nav aria-label="Další na Českém králi" className="grid gap-4 sm:grid-cols-2">
+    <nav aria-label="Další na Českém králi" data-reveal-at="1" className="grid gap-4 sm:grid-cols-2">
       <Link href="/muj-erb" data-testid="home-crest-link" aria-label="Můj erb" className={card}>
         <CardCorners className="m-1 size-6 text-gold-dark" />
         <CrestSvg design={design} withMotto={false} label="" className="h-20 w-auto shrink-0 drop-shadow" />
@@ -45,7 +45,7 @@ export function HomeMoreLinks() {
           <span className="text-sm text-ink/80">{saved ? "Ozdob svůj štít novými díly." : "Navrhni si vlastní rodový erb."}</span>
         </span>
       </Link>
-      <Link href="/kdo-driv" aria-label="Kdo vládl dřív?" className={card}>
+      <Link href="/kdo-driv" aria-label="Kdo vládl dřív?" data-reveal-at="2" className={card}>
         <CardCorners className="m-1 size-6 text-gold-dark" />
         <span
           aria-hidden

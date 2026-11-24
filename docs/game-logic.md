@@ -3,6 +3,7 @@
 Podrobná specifikace přesunutá z CLAUDE.md. Před změnou herní logiky, dat nebo struktury ji přečti a po změně aktualizuj.
 
 ## Herní logika
+- **Postupné odhalování režimů** (`src/lib/reveal.ts`): `<html data-reveal="0|1|2">` nastaví inline skript v `<head>` ještě před vykreslením (žádné probliknutí ani posun), po zisku karty `applyReveal()` v `collection.ts`. Úroveň 0 = nový hráč: jen hra o kartu, galerie, Moje sbírka, Jak hrát + věta „🔒 Po první kartě…“. Úroveň 1 (1 karta): + Denní výzva, Můj erb. Úroveň 2 (3 karty, nebo už hrál Denní výzvu / Kdo vládl dřív? – klíče `cesky-kral:daily`, `cesky-kral:who-first`): vše. Skrývá se jen menu a položky na úvodu (`data-reveal-at`, CSS v `globals.css`), stránky fungují přes adresu vždy. Bez JS nebo bez úložiště se neskrývá nic.
 - Každý král má 9 otázek: 3 lehké, 3 střední, 3 těžké (seed to validuje). Každá otázka má přesně 3 odpovědi, z toho 1 správnou.
 - Kolo o krále = 5 otázek: 2 lehké, 2 střední, 1 těžká, v tomto pořadí (`ROUND_PLAN`). Server pošle všech 9 otázek panovníka bez správnosti (`getKingQuestionPool`), kolo vybere prohlížeč (`KingRound` → `pickRound`): v rámci úrovně nejdřív neviděné, pak nejdéle neviděné, mezi rovnými náhodně. Viděné otázky: localStorage `cesky-kral:seen`, `{ version: 1, ids }`, max 60 id, bez cookie. „Zkusit znovu“ i nové načtení = nové kolo.
 - U otázky štítek obtížnosti: 1–3 korunky.

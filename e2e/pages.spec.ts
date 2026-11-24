@@ -1,7 +1,10 @@
 import { expect, test } from "@playwright/test";
 
-import { answer, open, progress } from "./helpers/game";
+import { answer, open, progress, revealAll } from "./helpers/game";
 import { getKing } from "./helpers/seed-answers";
+
+// Full menu and home page: act as a returning player (progressive reveal, src/lib/reveal.ts).
+test.beforeEach(async ({ page }) => revealAll(page));
 
 test("Moje sbírka: tlačítko v hlavičce vede na /sbirka a je označené jako aktivní", async ({ page }) => {
   await open(page, "/");

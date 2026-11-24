@@ -35,6 +35,7 @@ export function DailyHomeButton() {
       href="/vyzva"
       aria-describedby="daily-home-status"
       data-testid="daily-home-card"
+      data-reveal-at="1"
       className="flex w-full max-w-sm items-center gap-3 rounded-2xl bg-navy px-3.5 py-2 text-parchment shadow-md ring-1 ring-gold/70 transition-colors outline-none hover:bg-navy/90 focus-visible:ring-4 focus-visible:ring-ring/60"
     >
       <span aria-hidden className="flex size-10 shrink-0 items-center justify-center rounded-full bg-gold/15 text-xl ring-1 ring-gold">

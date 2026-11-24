@@ -8,9 +8,12 @@ import { KofiButton } from "../src/components/kofi-button";
 import { parseKofiUrl } from "../src/lib/kofi";
 import { dailyDateKey } from "../src/lib/daily";
 import { questionKey } from "../src/lib/mastery";
-import { celebration, currentQuestion, dismissAllCelebrations, open, playRound, setCollection, waitForHydration } from "./helpers/game";
+import { celebration, currentQuestion, dismissAllCelebrations, open, playRound, setCollection, waitForHydration, revealAll } from "./helpers/game";
 import { getKing } from "./helpers/seed-answers";
 import { TEST_KOFI_URL } from "./helpers/kofi";
+
+// Full menu and home page: act as a returning player (progressive reveal, src/lib/reveal.ts).
+test.beforeEach(async ({ page }) => revealAll(page));
 
 const NEW_WINDOW = "(Ko-fi, otevře se v novém okně)";
 

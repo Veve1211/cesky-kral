@@ -15,6 +15,7 @@ import {
 } from "@/lib/game-rules";
 import { unlockTable } from "@/lib/heraldry";
 import { TIER_SHORT, tierThresholds } from "@/lib/mastery";
+import { REVEAL_ALL_AT } from "@/lib/reveal";
 
 export const metadata: Metadata = {
   title: "Jak hrát",
@@ -240,6 +241,12 @@ export default function HowToPlayPage() {
               </li>
             ))}
           </ul>
+          <p data-testid="reveal-rules">
+            Nový hráč začíná jen hrou o kartu, ať se v tom neztratí. Po{" "}
+            <strong>první kartě</strong> se v menu a na úvodu objeví Denní výzva a Můj erb, po{" "}
+            <strong>{REVEAL_ALL_AT} kartách</strong> i Rychlovka, Kdo vládl dřív?, Řeka času a žebříčky.
+            Odkazy na této stránce fungují vždycky.
+          </p>
         </Step>
 
         <Step number={4} title="Moje sbírka a kronika">

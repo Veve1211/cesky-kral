@@ -63,6 +63,13 @@ async function HomeContent() {
       <section aria-label="Hrát" className="-mt-2 flex flex-col items-center gap-3">
         <StartButton kings={kings.map(({ slug, name }) => ({ slug, name }))} />
         <DailyHomeButton />
+        {/* New players see what the next cards unlock (src/lib/reveal.ts). */}
+        <p data-reveal-hint="0" data-testid="reveal-hint" className="max-w-sm text-center text-sm text-ink/80">
+          🔒 Po první kartě se ti odemkne Denní výzva a vlastní erb, po třech kartách další hry.
+        </p>
+        <p data-reveal-hint="1" data-testid="reveal-hint" className="max-w-sm text-center text-sm text-ink/80">
+          🔒 Po třech kartách se ti odemknou další hry: Rychlovka, Kdo vládl dřív?, Řeka času a žebříčky.
+        </p>
       </section>
 
       <ReignTimeline variant="compact" kings={kings} />

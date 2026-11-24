@@ -6,7 +6,10 @@ import { expect, type Page, test } from "@playwright/test";
 
 import { DEFAULT_CREST } from "../src/lib/heraldry";
 import { RANKS } from "../src/lib/game-rules";
-import { dismissAllCelebrations, open, playRound, setCollection, settleAnswer, goNext, currentQuestion, waitForHydration } from "./helpers/game";
+import { dismissAllCelebrations, open, playRound, setCollection, settleAnswer, goNext, currentQuestion, waitForHydration, revealAll } from "./helpers/game";
+
+// Full menu and home page: act as a returning player (progressive reveal, src/lib/reveal.ts).
+test.beforeEach(async ({ page }) => revealAll(page));
 
 const CREST = { ...DEFAULT_CREST, field: "gules", charge: "star", chargeTincture: "or" };
 

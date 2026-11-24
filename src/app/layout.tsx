@@ -7,6 +7,7 @@ import { OrnamentDivider } from "@/components/ornaments";
 import { SiteHeader } from "@/components/site-header";
 import "./globals.css";
 import { siteUrl } from "@/lib/site-url";
+import { REVEAL_SCRIPT } from "@/lib/reveal";
 
 // Keep preloads, but avoid late font swaps after the page has painted on a slow network.
 // latin-ext subset = Czech diacritics (ř, ě, š, č, ů ...)
@@ -68,7 +69,13 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
     <html
       lang="cs"
       className={`${inter.variable} ${gothic.variable} ${uncial.variable} h-full antialiased`}
+      // data-reveal is set by the inline script before React hydrates.
+      suppressHydrationWarning
     >
+      <head>
+        {/* Progressive reveal of game modes (src/lib/reveal.ts): a constant script, no user data. */}
+        <script dangerouslySetInnerHTML={{ __html: REVEAL_SCRIPT }} />
+      </head>
       <body className="flex min-h-full flex-col overflow-x-hidden">
         <SiteHeader />
         {/* min-h-dvh: the footer starts below the fold, so client-rendered content never pushes it (CLS). */}

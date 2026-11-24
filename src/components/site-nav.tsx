@@ -25,14 +25,16 @@ function Hourglass({ className }: { className?: string; "aria-hidden"?: boolean 
 // Order: games first (Rychlovka, Kdo vládl dřív?), then the boards, the
 // player's own things (erb, sbírka), help, and the groš page last. Any new
 // item goes after these.
+// `revealAt`: progressive reveal for new players (src/lib/reveal.ts) – 1 = after
+// the first card, 2 = after three cards; the pages themselves always work.
 const ITEMS = [
-  { href: "/rychlovka", label: "Rychlovka", Icon: Zap, className: "text-gold" },
-  { href: "/kdo-driv", label: "Kdo vládl dřív?", Icon: Hourglass, className: "" },
-  { href: "/zebricky", label: "Žebříček", Icon: Trophy, className: "" },
-  { href: "/muj-erb", label: "Můj erb", Icon: Shield, className: "" },
-  { href: "/sbirka", label: "Moje sbírka", Icon: BookOpen, className: "" },
-  { href: "/jak-hrat", label: "Jak hrát", Icon: CircleQuestionMark, className: "" },
-  { href: "/hod-gros", label: "Hoď groš", Icon: Coins, className: "" },
+  { href: "/rychlovka", label: "Rychlovka", Icon: Zap, className: "text-gold", revealAt: 2 },
+  { href: "/kdo-driv", label: "Kdo vládl dřív?", Icon: Hourglass, className: "", revealAt: 2 },
+  { href: "/zebricky", label: "Žebříček", Icon: Trophy, className: "", revealAt: 2 },
+  { href: "/muj-erb", label: "Můj erb", Icon: Shield, className: "", revealAt: 1 },
+  { href: "/sbirka", label: "Moje sbírka", Icon: BookOpen, className: "", revealAt: 0 },
+  { href: "/jak-hrat", label: "Jak hrát", Icon: CircleQuestionMark, className: "", revealAt: 0 },
+  { href: "/hod-gros", label: "Hoď groš", Icon: Coins, className: "", revealAt: 0 },
 ] as const;
 
 /** Header navigation; the current page is marked with aria-current="page". */
@@ -45,7 +47,7 @@ export function SiteNavLinks({ pathname }: { pathname: string | null }) {
   return (
     <nav aria-label="Hlavní navigace" className="flex shrink-0 items-center gap-0.5 text-sm font-medium max-[359px]:gap-0 min-[480px]:gap-1">
       {/* The groš page only makes sense with a Ko-fi address. */}
-      {ITEMS.filter((item) => item.href !== "/hod-gros" || KOFI_URL).map(({ href, label, Icon, className }) => {
+      {ITEMS.filter((item) => item.href !== "/hod-gros" || KOFI_URL).map(({ href, label, Icon, className, revealAt }) => {
         const active = pathname === href;
         return (
           <Link
@@ -53,6 +55,7 @@ export function SiteNavLinks({ pathname }: { pathname: string | null }) {
             href={href}
             aria-current={active ? "page" : undefined}
             aria-label={label}
+            data-reveal-at={revealAt > 0 ? revealAt : undefined}
             className={cn(
               "relative flex min-h-10 items-center gap-1 rounded-lg px-2 py-2 min-[480px]:px-2.5 whitespace-nowrap transition-colors hover:bg-white/10",
               className,
