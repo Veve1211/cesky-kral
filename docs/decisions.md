@@ -56,3 +56,4 @@ Historie rozhodnutí v projektu (přesunuto z CLAUDE.md, aby zůstal krátký). 
 - 2026-11-24: režimy (Denní výzva, Rychlovka, Kdo vládl dřív?, Řeka času) mají společné kompaktní záhlaví `ModeHeader` – první otázka / dvojice karet je na mobilu i počítači vidět bez posouvání (audit bod 2)
 - 2026-11-24: po výhře karty je jeden hlavní krok „Hrát o další kartu“ (další chybějící panovník podle `order`), sbírka jen jako odkaz; `getKingSlugs` vrací panovníky v herním pořadí (audit bod 5)
 - 2026-11-24: střídání otázek ve hře o kartu – výběr kola v prohlížeči z celého fondu panovníka, přednost neviděným (localStorage `cesky-kral:seen`, max 60 id); žádná cookie, protože Soukromí slibuje „Žádné cookies“; správnost dál zná jen server
+- 2026-11-24: `main` má `min-h-dvh` – patička nezačíná na obrazovce, obsah vykreslený v prohlížeči ji neodstrčí (CLS /sbirka 0,79 → 0, Lighthouse desktop 76 → 99); detail v `docs/audit.md`

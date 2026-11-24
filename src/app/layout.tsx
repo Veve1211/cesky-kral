@@ -71,7 +71,8 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
     >
       <body className="flex min-h-full flex-col overflow-x-hidden">
         <SiteHeader />
-        <main className="mx-auto w-full max-w-5xl flex-1 px-4 py-8 sm:py-12">
+        {/* min-h-dvh: the footer starts below the fold, so client-rendered content never pushes it (CLS). */}
+        <main className="mx-auto min-h-dvh w-full max-w-5xl flex-1 px-4 py-8 sm:py-12">
           {children}
         </main>
         <footer className="flex flex-col items-center gap-2 px-4 pt-4 pb-8 text-center text-xs text-muted-foreground">
