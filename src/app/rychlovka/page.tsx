@@ -7,12 +7,13 @@ import { ModeHeader } from "@/components/mode-header";
 import { QuickGame } from "@/components/quick-game";
 import { QUICK_ROUND_QUESTIONS } from "@/lib/game-rules";
 import { getRandomQuestions } from "@/lib/questions";
+import { LockedPage } from "@/components/locked-page";
 
 export const metadata: Metadata = {
   title: "Rychlovka",
 };
 
-export default function QuickRoundPage() {
+function QuickRoundPageContent() {
   return (
     <div className="mx-auto flex max-w-xl flex-col gap-3 sm:gap-6">
       <ModeHeader icon={<Zap className="size-5 sm:size-6" />} title="Rychlovka">
@@ -36,4 +37,13 @@ async function QuickRound() {
   const questions = await getRandomQuestions(QUICK_ROUND_QUESTIONS);
   // Fallback questions for playing without the server score.
   return <QuickGame fallbackQuestions={questions} />;
+}
+
+// New players see a lock until their first card (src/lib/reveal.ts).
+export default function QuickRoundPage() {
+  return (
+    <LockedPage name="Rychlovka">
+      <QuickRoundPageContent />
+    </LockedPage>
+  );
 }

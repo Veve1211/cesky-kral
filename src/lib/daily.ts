@@ -164,6 +164,9 @@ export function pickDailyQuestions<T extends DailyCandidate>(dateKey: string, po
   return picked;
 }
 
+/** Title for everyone who answers the whole challenge right (Veve, 25. 11.). */
+export const DAILY_MONARCH = "Jsi dnešní král / královna";
+
 // --- share text --------------------------------------------------------------
 
 /**
@@ -180,5 +183,6 @@ export function dailyShareText(
   const icons = shareIcons(marks);
   const streakText = streak >= 2 ? ` 🔥 ${formatStreakDays(streak)}` : "";
   const placeText = place ? ` 🏆 ${place.rank}. místo z ${place.total}` : "";
-  return `Český král – výzva ${formatDailyDate(dateKey)} ${score}/${marks.length} ${icons}${streakText}${placeText}`;
+  const monarchText = marks.length > 0 && score === marks.length ? " · dnešní král / královna 👑" : "";
+  return `Český král – výzva ${formatDailyDate(dateKey)} ${score}/${marks.length} ${icons}${monarchText}${streakText}${placeText}`;
 }

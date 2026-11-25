@@ -105,3 +105,10 @@ describe("questions of the day", () => {
     expect(pickDailyQuestions("2026-11-20", twoKings)).toHaveLength(DAILY_QUESTIONS);
   });
 });
+
+describe("dnešní král / královna", () => {
+  it("a perfect challenge adds the title to the share text, one mistake does not", () => {
+    expect(dailyShareText("2026-11-08", [true, true, true, true, true], 1)).toContain("dnešní král / královna 👑");
+    expect(dailyShareText("2026-11-08", [true, true, true, true, false], 1)).not.toContain("dnešní král");
+  });
+});

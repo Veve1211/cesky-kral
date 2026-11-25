@@ -5,6 +5,9 @@ import { expect, type Page, test } from "@playwright/test";
 import { open, setCollection } from "./helpers/game";
 import { kings } from "./helpers/seed-answers";
 
+// A brand-new player: nothing in the browser (the config otherwise unlocks everything).
+test.use({ storageState: { cookies: [], origins: [] } });
+
 const nav = (page: Page) => page.getByRole("navigation", { name: "Hlavní navigace" });
 const LOCKED = ["Rychlovka", "Kdo vládl dřív?", "Žebříček", "Můj erb"];
 const first = [...kings].sort((a, b) => a.order - b.order)[0];
@@ -42,7 +45,16 @@ test("po první kartě je vše odemčené a zámky zmizí", async ({ page }) => 
   await expect(page.getByTestId("reveal-hint")).toBeHidden();
 });
 
-test("zamčené režimy fungují přes přímý odkaz i pro nového hráče", async ({ page }) => {
+test("zamčená stránka: nový hráč vidí jen zámek a cestu k první kartě, po první kartě hru", async ({ page }) => {
+  for (const path of ["/vyzva", "/rychlovka", "/kdo-driv", "/reka-casu", "/zebricky", "/muj-erb"]) {
+    await open(page, path);
+    const lock = page.getByTestId("locked-page");
+    await expect(lock, path).toBeVisible();
+    await expect(lock).toContainText("Odemkne se po první kartě");
+    await expect(lock.getByRole("link", { name: "Hrát o první kartu" })).toHaveAttribute("href", `/kral/${first.slug}`);
+  }
+  await setCollection(page, [first.slug]);
   await open(page, "/rychlovka");
+  await expect(page.getByTestId("locked-page")).toBeHidden();
   await expect(page.getByRole("heading", { level: 1, name: /Rychlovka/ })).toBeVisible();
 });
