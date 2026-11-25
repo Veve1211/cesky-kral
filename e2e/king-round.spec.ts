@@ -74,3 +74,15 @@ test("otázky v kole jdou od lehkých po střední, těžké nikdy (korunky 1, 1
   }
   expect(crowns).toEqual([1, 1, 2, 2, 2]);
 });
+
+test("korunky postupu: 5 korunek, správně = zlatá, špatně = přeškrtnutá; obtížnost slovem", async ({ page }) => {
+  await open(page, `/kral/${SLUG}`);
+  const crowns = page.getByTestId("round-crowns").locator("[data-state]");
+  await expect(crowns).toHaveCount(5);
+  await expect(crowns.nth(0)).toHaveAttribute("data-state", "current");
+  await expect(page.getByRole("img", { name: "Lehká otázka" })).toHaveText("lehká");
+  await answer(page, 1, 5, true);
+  await expect(crowns.nth(0)).toHaveAttribute("data-state", "right");
+  await answer(page, 2, 5, false);
+  await expect(crowns.nth(1)).toHaveAttribute("data-state", "wrong");
+});

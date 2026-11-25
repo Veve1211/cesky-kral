@@ -1,8 +1,12 @@
-import { CrownMark } from "@/components/ornaments";
 import { DIFFICULTY_LABELS, type Difficulty } from "@/lib/game-rules";
 import { cn } from "@/lib/utils";
 
-/** Small badge: 1–3 gold crowns by question difficulty. */
+const SHORT: Record<Difficulty, string> = { 1: "lehká", 2: "střední", 3: "těžká" };
+
+/**
+ * Small badge with the question difficulty in words ("lehká / střední / těžká").
+ * Words, not crowns: crowns show the round progress (RoundCrowns).
+ */
 export function DifficultyBadge({
   difficulty,
   className,
@@ -17,19 +21,11 @@ export function DifficultyBadge({
       aria-label={label}
       title={label}
       className={cn(
-        "inline-flex shrink-0 items-center gap-0.5 rounded-full bg-navy px-2 py-1 shadow-sm ring-1 ring-gold/60",
+        "inline-flex shrink-0 items-center rounded-full bg-navy px-2.5 py-1 text-xs font-semibold text-gold shadow-sm ring-1 ring-gold/60",
         className,
       )}
     >
-      {[1, 2, 3].map((level) => (
-        <CrownMark
-          key={level}
-          className={cn(
-            "h-3 w-4",
-            level <= difficulty ? "text-gold" : "text-parchment/20",
-          )}
-        />
-      ))}
+      {SHORT[difficulty]}
     </span>
   );
 }

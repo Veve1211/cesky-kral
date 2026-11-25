@@ -12,10 +12,10 @@ import { LegendBadge } from "@/components/legend-badge";
 import { CardCorners } from "@/components/ornaments";
 import { GoldenLocked, Results } from "@/components/quiz-results";
 import { HEADING_FOCUS, type QuizProps } from "@/components/quiz-shared";
+import { RoundCrowns } from "@/components/round-crowns";
 import { TierCelebration, type CelebratedRuler } from "@/components/tier-celebration";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { Progress } from "@/components/ui/progress";
 import { addGoldenCard, addToCollection, readCollection, useCollection, useCollectionReady } from "@/lib/collection";
 import { unlockedBy } from "@/lib/crest-unlocks";
 import { CORRECT_TO_COLLECT } from "@/lib/game-rules";
@@ -39,7 +39,7 @@ export function Quiz(props: QuizProps) {
   const [index, setIndex] = useState(props.mode === "daily" ? props.startIndex : 0);
   const [score, setScore] = useState(props.mode === "daily" ? props.startScore : 0);
   /** Right/wrong per answered question, in order (for sharing the result). */
-  const [marks, setMarks] = useState<boolean[]>([]);
+  const [marks, setMarks] = useState<boolean[]>(props.mode === "daily" ? [...props.startMarks] : []);
   const [selectedId, setSelectedId] = useState<number | null>(null);
   /**
    * Celebrations, one at a time (never two over each other). A new "koruna
@@ -278,20 +278,21 @@ export function Quiz(props: QuizProps) {
     <div className="flex flex-col gap-3 sm:gap-4">
       {index === 0 && <KnightOath />}
 
-      <div className="flex flex-col gap-2">
-        <div className="flex justify-between text-sm">
-          <span id="quiz-question-progress">
-            Otázka <strong>{index + 1}</strong> z {total}
-          </span>
-          <span className="text-muted-foreground">
-            Správně: <strong className="text-foreground">{score}</strong>
-          </span>
-        </div>
-        <Progress
-          value={index + (feedback ? 1 : 0)}
-          max={total}
-          label="Postup ve hře"
+      {/* On wider screens one row (text – crowns – score), on phones the crowns get their own row. */}
+      <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-2 text-sm">
+        <span id="quiz-question-progress">
+          Otázka <strong>{index + 1}</strong> z {total}
+        </span>
+        {/* One crown per question: gold = right, crossed out = wrong. */}
+        <RoundCrowns
+          marks={marks}
+          total={total}
+          current={feedback ? -1 : index}
+          className="max-sm:order-last max-sm:basis-full"
         />
+        <span className="text-muted-foreground">
+          Správně: <strong className="text-foreground">{score}</strong>
+        </span>
       </div>
 
       <Card key={question.id} className="animate-card-reveal">
