@@ -4,11 +4,10 @@ import { CORRECT_TO_COLLECT, QUESTIONS_PER_KING, RANKS, ROUND_PLAN, getRank, toD
 import { formatReign, toKingTitle } from "@/lib/king-display";
 
 describe("round plan", () => {
-  it("has 5 questions: 2 easy, 2 medium, 1 hard, in this order", () => {
+  it("has 5 questions: 2 easy, 3 medium, in this order (hard ones are for the Mistrovské kolo)", () => {
     expect(ROUND_PLAN.map((s) => [s.difficulty, s.count])).toEqual([
       [1, 2],
-      [2, 2],
-      [3, 1],
+      [2, 3],
     ]);
     expect(ROUND_PLAN.reduce((sum, s) => sum + s.count, 0)).toBe(QUESTIONS_PER_KING);
   });

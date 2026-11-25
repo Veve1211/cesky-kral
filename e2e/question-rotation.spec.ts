@@ -1,6 +1,7 @@
 // Question rotation: a new king round prefers questions the player has not seen yet
-// (localStorage `cesky-kral:seen`, no cookie). With 3 questions per difficulty and
-// 2 easy ones in a round, the next round always starts with the unseen easy one.
+// (localStorage `cesky-kral:seen`, no cookie). A round has 2 of the 3 easy and all
+// 3 medium questions (hard ones are for the Mistrovské kolo), so the next round
+// always starts with the unseen easy one.
 import { expect, test } from "@playwright/test";
 
 import { currentQuestion, open, playRound } from "./helpers/game";
@@ -20,10 +21,10 @@ test("po Zkusit znovu začíná 2. kolo otázkou, která v 1. kole nebyla", asyn
   const second = await currentQuestion(page);
   expect(firstTexts.has(second.text)).toBe(false);
 
-  // 5 seen + 3 new (1 easy, 1 medium, 1 hard were still unseen; the rest repeats the oldest).
+  // 5 seen + the one unseen easy question; the rest repeats the oldest – the round pool has 6.
   const seen = await page.evaluate((key) => JSON.parse(window.localStorage.getItem(key) ?? "null"), SEEN_KEY);
   expect(seen.version).toBe(1);
-  expect(seen.ids).toHaveLength(8);
+  expect(seen.ids).toHaveLength(6);
 });
 
 test("nové načtení stránky je nové kolo a začíná jinou otázkou", async ({ page }) => {

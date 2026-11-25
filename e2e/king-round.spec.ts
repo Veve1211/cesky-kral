@@ -61,7 +61,7 @@ test("3 správně z 5 nestačí na kartu", async ({ page }) => {
   expect((await readCollection(page))?.kings ?? []).not.toContain(SLUG);
 });
 
-test("otázky v kole jdou od lehkých po těžké (korunky 1, 1, 2, 2, 3)", async ({ page }) => {
+test("otázky v kole jdou od lehkých po střední, těžké nikdy (korunky 1, 1, 2, 2, 2)", async ({ page }) => {
   await open(page, `/kral/${SLUG}`);
   const crowns: number[] = [];
   for (let i = 1; i <= 5; i++) {
@@ -72,5 +72,5 @@ test("otázky v kole jdou od lehkých po těžké (korunky 1, 1, 2, 2, 3)", asyn
     expect(shown).toBe(question.difficulty);
     crowns.push(shown);
   }
-  expect(crowns).toEqual([1, 1, 2, 2, 3]);
+  expect(crowns).toEqual([1, 1, 2, 2, 2]);
 });

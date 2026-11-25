@@ -5,7 +5,7 @@
 import { expect, test } from "@playwright/test";
 
 import { open, setCollection } from "./helpers/game";
-import { getKing, kings } from "./helpers/seed-answers";
+import { dailyQuestions, getKing, kings } from "./helpers/seed-answers";
 
 const norm = (text: string) => text.normalize("NFD").replace(/\p{M}/gu, "").toLowerCase();
 /** Word stems (first 5 letters of words with 4+ letters) – enough to catch "Jagellonský" ~ "Jagellonců". */
@@ -19,7 +19,7 @@ test("žádná správná odpověď není vidět ve jméně panovníka", () => {
   const leaks: string[] = [];
   for (const king of kings) {
     const name = new Set(stems(king.name));
-    for (const question of king.questions) {
+    for (const question of [...king.questions, ...(dailyQuestions[king.slug] ?? [])]) {
       const answer = stems(question.correct);
       const wrong = question.wrong.flatMap(stems);
       // A hint only counts when the wrong answers don't share it.

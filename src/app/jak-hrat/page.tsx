@@ -29,7 +29,7 @@ const MODES: { icon: string; name: string; href: string; text: string }[] = [
     icon: "👑",
     name: "Denní výzva",
     href: "/vyzva",
-    text: `${DAILY_QUESTIONS} otázek, každý den stejných pro všechny hráče. Hraje se jednou denně a nová výzva přijde o půlnoci. Hraj den co den a tvoje série 🔥 poroste.`,
+    text: `${DAILY_QUESTIONS} otázek, každý den stejných pro všechny hráče. Výzva má vlastní otázky, které ve hře o kartu nepotkáš. Hraje se jednou denně a nová výzva přijde o půlnoci. Hraj den co den a tvoje série 🔥 poroste.`,
   },
   {
     icon: "⚡",
@@ -78,7 +78,7 @@ const REWARDS: { icon: string; name: string; what: string; how: string }[] = [
     icon: "👑",
     name: "Koruna učenosti",
     what: `Ukazuje, kolik toho o panovníkovi víš: ${TIER_SHORT[1]} → ${TIER_SHORT[2]} → ${TIER_SHORT[3]}. Nasadí se na jeho portrét.`,
-    how: `Každá jeho otázka zodpovězená správně v jakémkoli režimu se počítá jednou. Bronz za ${BRONZE}, stříbro za ${SILVER}, zlato za všech ${GOLD}.`,
+    how: `Každá jeho otázka ze hry o kartu, mistrovského kola nebo Rychlovky zodpovězená správně se počítá jednou. Bronz za ${BRONZE}, stříbro za ${SILVER}, zlato za všech ${GOLD}.`,
   },
   {
     icon: "✨",
@@ -213,8 +213,8 @@ export default function HowToPlayPage() {
         <Step number={2} title="Jak získáš panovníka">
           <p>
             V galerii vyber panovníka a klepni na <strong>Hrát o kartu</strong>. Čeká tě{" "}
-            {QUESTIONS_PER_KING} otázek: dvě lehké, dvě střední a jedna těžká (obtížnost ukazují
-            korunky). Každá otázka má tři odpovědi a jen jedna je správná.
+            {QUESTIONS_PER_KING} otázek: dvě lehké a tři střední (obtížnost ukazují korunky). Těžké
+            otázky si panovník schovává pro mistrovské kolo. Každá otázka má tři odpovědi a jen jedna je správná.
           </p>
           <p>
             Hned po odpovědi uvidíš, jestli byla správně, a krátké vysvětlení. Když máš aspoň{" "}
