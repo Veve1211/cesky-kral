@@ -555,3 +555,20 @@ html:not([data-reveal="0"]) .reveal-locked,
 html[data-reveal="0"] .reveal-open {
   display: none !important;
 }
+
+/* Řeka času after a won card: the new ruler drops into its place, the gap opens
+   around it (TimelinePlacement). Reduced motion: no movement, only the glow. */
+@keyframes timeline-drop-in {
+  0% { width: 0; opacity: 0; transform: translateY(-60px) scale(1.6); }
+  45% { width: 3.5rem; opacity: 1; transform: translateY(-30px) scale(1.4); }
+  80% { transform: translateY(4px) scale(0.96); }
+  100% { width: 3.5rem; opacity: 1; transform: translateY(0) scale(1); }
+}
+.timeline-drop-in {
+  animation: timeline-drop-in 1.1s cubic-bezier(0.25, 0.8, 0.3, 1) 1.8s both;
+}
+@media (prefers-reduced-motion: reduce) {
+  .timeline-drop-in {
+    animation: none;
+  }
+}
