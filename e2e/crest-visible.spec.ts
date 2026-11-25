@@ -87,7 +87,7 @@ test("bez nového dílu oslava Ozdobit erb nenabízí", async ({ page }) => {
     await waitForHydration(button);
     await button.click();
     await settleAnswer(page, i < 5 ? "Správně!" : "Tentokrát vedle.");
-    await goNext(page, i, 5, i < 5);
+    await goNext(page, i, 5);
   }
   const card = page.getByTestId("card-celebration");
   await expect(card).toContainText("Karta znovu obhájena");

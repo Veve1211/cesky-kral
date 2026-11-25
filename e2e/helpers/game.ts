@@ -88,11 +88,10 @@ export async function answer(
   await button.click();
 
   await settleAnswer(page, correctly ? "Správně!" : "Tentokrát vedle.");
-  await goNext(page, index, total, correctly);
+  await goNext(page, index, total);
   // The end of a won king round opens the card celebration (and maybe a crown after it).
   if (index === total) {
-    // Wait until the round has really finished: a right last answer may still be
-    // waiting for its auto-advance (1.2 s). The result and its celebrations are
+    // Wait until the round has really finished. The result and its celebrations are
     // set in the same update, so once the question is gone the queue is complete.
     // Without this wait the celebration could open after we looked for it and
     // hide the result from the accessibility tree (flaky "Král je ve tvé sbírce!").
@@ -102,15 +101,10 @@ export async function answer(
   return question;
 }
 
-/**
- * Moves on after the feedback. A right answer moves on by itself after about
- * a second, so the button may already be gone – click it only if it is there.
- */
-export async function goNext(page: Page, index: number, total: number, correctly = true) {
+/** Moves on after the feedback: quizzes never move on by themselves (the fact is read first). */
+export async function goNext(page: Page, index: number, total: number) {
   const next = page.getByRole("button", { name: index < total ? "Další otázka" : "Zobrazit výsledek", exact: true });
-  // A wrong answer never moves on by itself: always click.
-  if (!correctly) await next.click();
-  else await next.click({ timeout: 800 }).catch(() => {});
+  await next.click();
   if (index < total) await expect(progress(page, index + 1, total)).toBeVisible();
 }
 
