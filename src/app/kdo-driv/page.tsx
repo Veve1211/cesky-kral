@@ -6,13 +6,14 @@ import { ModeHeader } from "@/components/mode-header";
 import { WhoFirstGame } from "@/components/who-first-game";
 import { getWhoFirstKings } from "@/lib/kings";
 import { pickPair } from "@/lib/who-first";
+import { LockedPage } from "@/components/locked-page";
 
 export const metadata: Metadata = {
   title: "Kdo vládl dřív?",
   description: "Dva panovníci, jedna otázka: kdo z nich začal vládnout dřív? Kolik jich trefíš za sebou?",
 };
 
-export default function WhoFirstPage() {
+function WhoFirstPageContent() {
   return (
     <div className="mx-auto flex max-w-2xl flex-col gap-3 sm:gap-6">
       <ModeHeader icon="⏳" title="Kdo vládl dřív?">
@@ -34,4 +35,13 @@ async function Game() {
   await connection();
   const kings = await getWhoFirstKings();
   return <WhoFirstGame variant="full" kings={kings} initialPair={pickPair(kings.length)} />;
+}
+
+// New players see a lock until their first card (src/lib/reveal.ts).
+export default function WhoFirstPage() {
+  return (
+    <LockedPage name="Kdo vládl dřív?">
+      <WhoFirstPageContent />
+    </LockedPage>
+  );
 }

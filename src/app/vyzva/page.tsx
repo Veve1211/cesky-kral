@@ -9,6 +9,7 @@ import { ModeHeader } from "@/components/mode-header";
 import { DAILY_QUESTIONS, dailyDateKey, formatDailyDate } from "@/lib/daily";
 import { getDailyLeaderboard } from "@/lib/daily-server";
 import { getDailyQuestions } from "@/lib/questions";
+import { LockedPage } from "@/components/locked-page";
 
 export const metadata: Metadata = {
   title: "Denní výzva",
@@ -21,7 +22,7 @@ const RULES = [
   { icon: "🕛", text: "Nová výzva o půlnoci (český čas)." },
 ];
 
-export default function DailyPage() {
+function DailyPageContent() {
   return (
     <div className="mx-auto flex max-w-xl flex-col gap-3 sm:gap-6">
       <ModeHeader icon="👑" title="Denní výzva">
@@ -71,5 +72,14 @@ async function DailyContent() {
       <DailyChallenge key={dateKey} dateKey={dateKey} questions={questions} />
       <DailyLeaderboard key={`board-${dateKey}`} initial={board} />
     </>
+  );
+}
+
+// New players see a lock until their first card (src/lib/reveal.ts).
+export default function DailyPage() {
+  return (
+    <LockedPage name="Denní výzva">
+      <DailyPageContent />
+    </LockedPage>
   );
 }

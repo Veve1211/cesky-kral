@@ -99,6 +99,12 @@ const REWARDS: { icon: string; name: string; what: string; how: string }[] = [
   },
   {
     icon: "👑",
+    name: "Dnešní král / královna",
+    what: "Titul na celý den pro každého, kdo dá Denní výzvu bez chyby. Ukáže se u výsledku i v textu ke sdílení.",
+    how: "Odpověz v Denní výzvě správně na všech 5 otázek.",
+  },
+  {
+    icon: "🏆",
     name: "Dnešní vládce",
     what: "První místo v dnešním žebříčku Denní výzvy – ukazuje se velké na Denní výzvě i na úvodní stránce.",
     how: "Dohraj Denní výzvu s co nejvíc správnými odpověďmi, při shodě rozhoduje rychlejší čas. Do žebříčku stačí přezdívka.",

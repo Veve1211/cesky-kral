@@ -12,9 +12,9 @@ const BUTTON =
 
 /**
  * The one main call to action on the home page. A new player goes straight
- * into the round for the first ruler ("Začni hrát"); a returning player sees
+ * into the round for the first ruler ("Získej českého panovníka"); a returning player sees
  * "Pokračuj" with the next ruler still missing. The collection lives in
- * localStorage, so the server (and the first paint) always shows "Začni hrát".
+ * localStorage, so the server (and the first paint) always shows "Získej českého panovníka".
  */
 export function StartButton({ kings }: { kings: StepKing[] }) {
   const ready = useCollectionReady();

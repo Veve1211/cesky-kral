@@ -40,6 +40,12 @@ export default defineConfig({
   expect: { timeout: 10_000 },
   use: {
     baseURL: BASE_URL,
+    // Every test starts as a returning player: a stored "Kdo vládl dřív?" best (0)
+    // unlocks all modes (src/lib/reveal.ts). e2e/progressive-reveal.spec.ts starts empty.
+    storageState: {
+      cookies: [],
+      origins: [{ origin: BASE_URL, localStorage: [{ name: "cesky-kral:who-first", value: '{"version":1,"best":0}' }] }],
+    },
     locale: "cs-CZ",
     trace: "off",
     screenshot: "only-on-failure",

@@ -189,14 +189,16 @@ const FREE: Unlock = { kind: "free" };
 const CARDS = (count: number): Unlock => ({ kind: "cards", count });
 
 export const UNLOCKS = {
-  shape: { heater: FREE, round: CARDS(3), french: BRONZE(3), kite: SILVER(3), lozenge: GOLD(3), royal: { kind: "all-gold" } },
+  // Ordinary parts come early, the finest ones (lion, eagle, crown, ermine, the
+  // royal shield) last – Veve, 25. 11. 2026.
+  shape: { heater: FREE, round: CARDS(1), french: CARDS(3), kite: BRONZE(3), lozenge: SILVER(6), royal: { kind: "all-gold" } },
   division: {
     plain: FREE,
     "per-pale": FREE,
-    "per-fess": CARDS(6),
-    chief: BRONZE(1),
+    "per-fess": CARDS(1),
+    chief: CARDS(3),
     "per-bend": BRONZE(3),
-    quarterly: SILVER(1),
+    quarterly: SILVER(3),
     bordure: SILVER(3),
     "per-saltire": GOLD(3),
   },
@@ -205,9 +207,9 @@ export const UNLOCKS = {
     argent: FREE,
     gules: FREE,
     azure: FREE,
-    sable: BRONZE(1),
-    vert: BRONZE(3),
-    purpure: GOLD(1),
+    sable: CARDS(3),
+    vert: CARDS(3),
+    purpure: GOLD(3),
     ermine: { kind: "all-gold" },
   },
   charge: {
@@ -215,14 +217,14 @@ export const UNLOCKS = {
     star: FREE,
     cross: FREE,
     key: CARDS(1),
-    tower: BRONZE(1),
+    tower: CARDS(3),
     rose: BRONZE(3),
-    moon: BRONZE(5),
-    fleur: SILVER(1),
+    moon: BRONZE(3),
     sword: SILVER(3),
-    crown: SILVER(5),
-    eagle: GOLD(1),
-    lion: GOLD(3),
+    fleur: SILVER(6),
+    crown: GOLD(3),
+    eagle: GOLD(6),
+    lion: GOLD(9),
   },
 } as const satisfies {
   shape: Record<Shape, Unlock>;

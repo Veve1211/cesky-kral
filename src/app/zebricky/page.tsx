@@ -10,13 +10,14 @@ import { dailyDateKey } from "@/lib/daily";
 import { getDailyLeaderboard } from "@/lib/daily-server";
 import { getGameLeaderboard } from "@/lib/game-server";
 import { GAME_INFO, GAME_MODES } from "@/lib/games";
+import { LockedPage } from "@/components/locked-page";
 
 export const metadata: Metadata = {
   title: "Žebříčky",
   description: "Nejlepší hráči Českého krále: Dnešní vládce, týdenní a celkové žebříčky.",
 };
 
-export default function LeaderboardsPage() {
+function LeaderboardsPageContent() {
   return (
     <div className="mx-auto flex max-w-2xl flex-col gap-6">
       <header className="relative flex flex-col items-center gap-3 overflow-hidden rounded-2xl bg-navy px-6 py-7 text-center text-parchment shadow-xl ring-2 ring-gold">
@@ -73,5 +74,14 @@ async function Boards() {
         </section>
       ))}
     </>
+  );
+}
+
+// New players see a lock until their first card (src/lib/reveal.ts).
+export default function LeaderboardsPage() {
+  return (
+    <LockedPage name="Žebříčky">
+      <LeaderboardsPageContent />
+    </LockedPage>
   );
 }

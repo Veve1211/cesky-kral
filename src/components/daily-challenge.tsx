@@ -13,7 +13,7 @@ import { ShareButton } from "@/components/share-button";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { useCollectionReady } from "@/lib/collection";
-import { dailyShareText, formatDailyDate, formatStreakDays } from "@/lib/daily";
+import { DAILY_MONARCH, dailyShareText, formatDailyDate, formatStreakDays } from "@/lib/daily";
 import {
   currentStreak,
   marksFor,
@@ -230,6 +230,17 @@ function DailyResult({
             </li>
           ))}
         </ol>
+
+        {/* Everyone with a perfect challenge rules for the day (Veve, 25. 11.). */}
+        {marks.length > 0 && score === marks.length && (
+          <p
+            data-testid="daily-monarch"
+            className="gilt rounded-2xl px-5 py-3 font-heading text-2xl font-bold text-navy shadow-md"
+          >
+            <span aria-hidden>👑 </span>
+            {DAILY_MONARCH}!
+          </p>
+        )}
 
         {streak > 0 && (
           <p className="font-heading text-2xl font-bold">

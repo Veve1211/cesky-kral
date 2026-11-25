@@ -54,7 +54,7 @@ test("úvod: jedno hlavní tlačítko – nový hráč „Začni hrát“, vrace
   await setCollection(page, []);
   await open(page, "/");
   const start = page.getByTestId("start-button");
-  await expect(start).toHaveText("Začni hrát");
+  await expect(start).toHaveText("Získej českého panovníka");
   await expect(start).toHaveAttribute("href", `/kral/${ordered[0].slug}`);
   await expect(start).toHaveAccessibleDescription(`První karta: ${ordered[0].name}`);
   // The daily challenge is a smaller second choice under it.

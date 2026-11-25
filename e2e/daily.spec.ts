@@ -211,7 +211,7 @@ test("série dní: včera dohraná výzva se dnes prodlouží, starší série z
   await page.getByRole("button", { name: "Sdílet" }).click();
   await expect
     .poll(() => page.evaluate(() => (window as unknown as { shared?: string }).shared))
-    .toContain("5/5 👑👑👑👑👑 🔥 3 dny");
+    .toContain("5/5 👑👑👑👑👑 · dnešní král / královna 👑 🔥 3 dny");
 });
 
 test("přerušená série se počítá od jedné", async ({ page }) => {

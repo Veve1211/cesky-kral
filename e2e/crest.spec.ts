@@ -51,15 +51,17 @@ test.describe("pravidla erbu (bez prohlížeče)", () => {
     expect(some).toEqual({ cards: 2, bronze: 3, silver: 2, gold: 1, total: 3 });
     expect(isUnlocked(UNLOCKS.charge.key, none)).toBe(false);
     expect(isUnlocked(UNLOCKS.charge.key, some)).toBe(true);
-    expect(unlockText(UNLOCKS.shape.round, none)).toBe("Odemkne se za 3 karty panovníků ve sbírce (máš 0).");
+    expect(unlockText(UNLOCKS.shape.french, none)).toBe("Odemkne se za 3 karty panovníků ve sbírce (máš 0).");
     expect(isUnlocked(UNLOCKS.charge.star, none)).toBe(true);
     expect(isUnlocked(UNLOCKS.charge.lion, none)).toBe(false);
-    expect(isUnlocked(UNLOCKS.charge.eagle, some)).toBe(true);
+    // The finest parts come last: one golden crown is not enough for the eagle.
+    expect(isUnlocked(UNLOCKS.charge.eagle, some)).toBe(false);
+    expect(isUnlocked(UNLOCKS.charge.crown, crownCounts([3, 3, 3], 3))).toBe(true);
     expect(isUnlocked(UNLOCKS.tincture.ermine, some)).toBe(false);
     expect(isUnlocked(UNLOCKS.tincture.ermine, crownCounts([3, 3, 3], 3))).toBe(true);
-    expect(unlockText(UNLOCKS.charge.lion, none)).toBe("Odemkne se za 3 zlaté koruny učenosti (máš 0).");
-    expect(unlockText(UNLOCKS.division.chief, none)).toBe("Odemkne se za bronzovou korunu učenosti (máš 0).");
-    expect(unlockText(UNLOCKS.charge.moon, none)).toBe("Odemkne se za 5 bronzových korun učenosti (máš 0).");
+    expect(unlockText(UNLOCKS.charge.lion, none)).toBe("Odemkne se za 9 zlatých korun učenosti (máš 0).");
+    expect(unlockText(UNLOCKS.division.chief, none)).toBe("Odemkne se za 3 karty panovníků ve sbírce (máš 0).");
+    expect(unlockText(UNLOCKS.charge.moon, none)).toBe("Odemkne se za 3 bronzové koruny učenosti (máš 0).");
     expect(unlockText(UNLOCKS.shape.royal, some)).toContain("u všech panovníků (máš 1 z 3)");
 
     const design: CrestDesign = { ...DEFAULT_CREST, division: "per-fess", field: "gules", second: "argent", charge: "lion", chargeTincture: "or", motto: "Pravda vítězí" };
@@ -121,16 +123,16 @@ test("zámky: zamčené díly řeknou, za co se odemknou; koruny učenosti je od
   await open(page, "/muj-erb");
   const lion = group(page, "Figura").getByRole("button", { name: /^Lev – zamčeno/ });
   await expect(lion).toHaveAttribute("aria-disabled", "true");
-  await expect(lion).toContainText("3× zlato");
+  await expect(lion).toContainText("9× zlato");
   await lion.click({ force: true });
-  await expect(page.getByTestId("crest-notice")).toHaveText("Odemkne se za 3 zlaté koruny učenosti (máš 0).");
+  await expect(page.getByTestId("crest-notice")).toHaveText("Odemkne se za 9 zlatých korun učenosti (máš 0).");
   await expect(preview(page)).toHaveAccessibleName(/hvězda/);
   const royal = group(page, "Tvar štítu").getByRole("button", { name: /^Královský štít s korunou – zamčeno/ });
   await royal.click({ force: true });
   await expect(page.getByTestId("crest-notice")).toContainText("zlatou korunu učenosti u všech panovníků (máš 0 z 18)");
 
-  // Three golden crowns: the lion is free; the rarest parts still wait for all rulers.
-  await setMastery(page, { "karel-iv": 3, "rudolf-ii": 3, "josef-ii": 3 });
+  // Nine golden crowns: the lion is free; the rarest parts still wait for all rulers.
+  await setMastery(page, Object.fromEntries(kings.slice(0, 9).map((king) => [king.slug, 3])));
   await open(page, "/muj-erb");
   await group(page, "Figura").getByRole("button", { name: "Lev", exact: true }).click();
   await expect(preview(page)).toHaveAccessibleName(/lev \(zlato\)/);

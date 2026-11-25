@@ -245,7 +245,7 @@ test("po dohrání: pořadí, co chybělo, zápis přezdívkou, Dnešní vládce
   await page.getByRole("button", { name: "Sdílet" }).click();
   await expect
     .poll(() => page.evaluate(() => (window as unknown as { shared?: string }).shared))
-    .toMatch(/5\/5 👑👑👑👑👑 🏆 \d+\. místo z \d+/);
+    .toMatch(/5\/5 👑👑👑👑👑 · dnešní král \/ královna 👑 🏆 \d+\. místo z \d+/);
 
   // The home page keeps only the main game in front: today's ruler lives on /vyzva and /zebricky.
   await open(page, "/");

@@ -388,13 +388,17 @@ export function Quiz(props: QuizProps) {
               >
                 {feedback.correct ? "Správně!" : "Tentokrát vedle."}
               </p>
-              <p className="text-sm">{feedback.explanation}</p>
+              {/* The fact behind the answer – big enough to read in peace (Veve, 25. 11.). */}
+              <p data-testid="quiz-fact" className="flex gap-2 text-base leading-relaxed font-medium sm:text-lg">
+                <span aria-hidden>📜</span>
+                <span>{feedback.explanation}</span>
+              </p>
               {feedback.sourceUrl && (
                 <a
                   href={feedback.sourceUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex w-fit items-center gap-1 text-xs text-muted-foreground underline-offset-4 hover:underline"
+                  className="flex w-fit items-center gap-1 text-sm text-muted-foreground underline underline-offset-4 hover:text-foreground"
                 >
                   Zdroj
                   <ExternalLink className="size-3" aria-hidden />

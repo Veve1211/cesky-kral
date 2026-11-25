@@ -3,13 +3,14 @@ import type { Metadata } from "next";
 import { ModeHeader } from "@/components/mode-header";
 import { TimelineGame } from "@/components/timeline-game";
 import { TIMELINE_SIZE } from "@/lib/games";
+import { LockedPage } from "@/components/locked-page";
 
 export const metadata: Metadata = {
   title: "Řeka času",
   description: "Seřaď české panovníky podle toho, kdo začal vládnout dřív. Kolik kol dáš bez chyby?",
 };
 
-export default function TimelinePage() {
+function TimelinePageContent() {
   return (
     <div className="mx-auto flex max-w-3xl flex-col gap-3 sm:gap-6">
       <ModeHeader icon="🌊" title="Řeka času" className="mx-auto w-full max-w-2xl">
@@ -20,5 +21,14 @@ export default function TimelinePage() {
       </ModeHeader>
       <TimelineGame />
     </div>
+  );
+}
+
+// New players see a lock until their first card (src/lib/reveal.ts).
+export default function TimelinePage() {
+  return (
+    <LockedPage name="Řeka času">
+      <TimelinePageContent />
+    </LockedPage>
   );
 }
