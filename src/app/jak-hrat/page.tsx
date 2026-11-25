@@ -158,6 +158,11 @@ const FAQ: { question: string; answer: ReactNode }[] = [
     answer:
       "Patří postavám, které známe z pověstí, třeba kněžně Libuši. Otázky o nich jsou o pověsti, ne o doložené historii, a roky vlády u nich nejsou.",
   },
+  {
+    question: "Jak si hru dám na plochu mobilu?",
+    answer:
+      "Na iPhonu otevři hru v Safari, klepni na Sdílet a pak na Přidat na plochu. Na Androidu v Chromu otevři menu (tři tečky) a zvol Přidat na plochu nebo Nainstalovat aplikaci. Na ploše pak budeš mít ikonu se zlatou korunou a hra se otevře přes celou obrazovku.",
+  },
 ];
 
 const linkClass =

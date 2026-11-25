@@ -46,6 +46,12 @@ export const metadata: Metadata = {
     template: `%s | ${SITE_NAME}`,
   },
   description: SITE_DESCRIPTION,
+  // "Přidat na plochu" on iPhone: full screen, short name under the crown icon (apple-icon.png).
+  appleWebApp: {
+    capable: true,
+    title: SITE_NAME,
+    statusBarStyle: "black",
+  },
   openGraph: {
     type: "website",
     locale: "cs_CZ",
