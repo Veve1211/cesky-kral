@@ -64,4 +64,5 @@ Historie rozhodnutí v projektu (přesunuto z CLAUDE.md, aby zůstal krátký). 
 - 2026-11-24: postupné odhalování režimů (bod 15) přes atribut na `<html>` nastavený inline skriptem před vykreslením – stránka nebliká a nic neposkočí (CLS); skrývá se jen navigace, přímé odkazy (učitelé, sdílení) fungují vždy; kdo už hrál pozdější režim, vidí vše
 - 2026-11-25: místo postupného skrývání (1 a 3 karty) vidí nový hráč všechny režimy hned se zámkem 🔒 a odkazem na první kartu; vše se odemkne po první kartě (pokyn Veve – hráč má vědět, co ho čeká)
 - 2026-11-25: postup kola jako korunky (zlatá = správně, ✗ = špatně), obtížnost slovem; „Zkusit znovu“ ve hře o kartu opakuje stejné otázky v jiném pořadí – jde o zapamatování (pokyn Veve ze stagingu)
+- 2026-11-25: kvízy už po správné odpovědi samy nepokračují – fakt (vysvětlení) se nestihl přečíst; Kdo vládl dřív? a Řeka času automatický posun nechávají
 - 2026-11-25: po prvním získání karty animace zařazení panovníka do Řeky času (přání Veve); ukazuje jen získané panovníky a žádné roky, aby neprozradila odpovědi pro Kdo vládl dřív?
