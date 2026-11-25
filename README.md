@@ -26,7 +26,7 @@ s AI (Claude Code) po kurzu Vibecoding Akademie.
 fakta opakují tak dlouho, až se zapamatují, a za odměnu se sbírají karty panovníků.
 
 **Výsledek.**
-- 18 panovníků, 162 otázek a každá má odkaz na ověřený zdroj
+- 18 panovníků, 241 otázek a každá má odkaz na ověřený zdroj
 - 6 herních režimů, žebříčky bez registrace a sběratelské odměny
 - 34 souborů automatických E2E testů na počítači i mobilu, spouští se u každého pull requestu
 - ostrý web a testovací web, každý s vlastní databází
