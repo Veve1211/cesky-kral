@@ -70,3 +70,4 @@ Historie rozhodnutí v projektu (přesunuto z CLAUDE.md, aby zůstal krátký). 
 - 2026-11-25: fakt po odpovědi větší (📜, text-base/lg); titul „Dnešní král / královna“ pro každého, kdo dá Denní výzvu bez chyby (výsledek + sdílení), „Dnešní vládce“ zůstává pro 1. místo
 - 2026-11-25: díly erbu přeřazené podle atraktivity (návrh schválila Veve) – lev 9 zlatých korun, orlice 6, koruna 3 zlaté, lilie 6 stříbrných; obyčejné díly (věž, černá, zelená, hlava) už za 1–3 karty
 - 2026-11-25: hlavní tlačítko nového hráče a zamčené položky: „Získej českého panovníka“ (pokyn Veve), vracející se hráč dál „Pokračuj“
+- 2026-11-25: zpětná vazba ze stagingu – „Pokračuj a získej dalšího“, roky vlády pod portréty v Řece času po výhře, ohňostroj skončí sám (2 kola), výsledek výzvy bez přezdívky „Tvůj výsledek: N. z M“ místo „Patřilo by ti“, karta výsledku se nerozšíří přes displej

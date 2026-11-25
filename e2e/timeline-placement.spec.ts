@@ -25,6 +25,10 @@ test("výhra karty: panovník se zařadí do Řeky času mezi získané", async 
   await expect(river.locator("li").nth(1)).toHaveAttribute("data-new", "true");
   await expect(river.locator("li").nth(1)).toContainText(karel.name);
   await expect(river).toContainText(`${karel.name} zaujímá své místo v Řece času.`);
+  // Years of reign under each portrait (a legend says so).
+  const years = river.getByTestId("timeline-years");
+  await expect(years.nth(0)).toHaveText("pověst");
+  await expect(years.nth(1)).toHaveText(`${karel.reignFrom}–${karel.reignTo}`);
   if (testInfo.project.name === "mobile") {
     await page.waitForTimeout(3200);
     await river.scrollIntoViewIfNeeded();

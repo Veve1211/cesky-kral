@@ -223,7 +223,7 @@ test("po dohrání: pořadí, co chybělo, zápis přezdívkou, Dnešní vládce
 
   await playDaily(page, [true, true, true, true, true]);
   const standing = page.getByTestId("daily-standing");
-  await expect(standing).toContainText(/Patřilo by ti \d+\. z \d+/);
+  await expect(standing).toContainText(/Tvůj výsledek: \d+\. z \d+/);
 
   // Bad nickname first, then a good one.
   const field = standing.getByLabel("Zapiš se do žebříčku – stačí přezdívka");

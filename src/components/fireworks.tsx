@@ -4,11 +4,15 @@ import { cn } from "@/lib/utils";
 
 // Fireworks for the "koruna učenosti" celebration – pure CSS, no canvas.
 // Each burst: a rocket rises, flashes and throws a ring of sparks that fall
-// and fade; then it repeats while the celebration is open. Positions are
+// and fade; every burst goes off twice and then the sky stays calm (Veve,
+// 25. 11.: the fireworks should end by themselves). Positions are
 // fixed (no randomness), so server and client render the same markup.
 // Hidden completely under prefers-reduced-motion.
 
 type Burst = { left: number; top: number; delay: number };
+
+/** How many times each burst goes off before the fireworks end. */
+export const FIREWORKS_ROUNDS = 2;
 
 // Spread over the screen, away from the centre card where possible.
 const BURSTS: Burst[] = [
@@ -60,7 +64,7 @@ export function Fireworks({ level, className }: { level: FireworksLevel; classNa
         const timing = {
           animationDuration: `${cycle}s`,
           animationDelay: `${burst.delay}s`,
-          animationIterationCount: "infinite",
+          animationIterationCount: FIREWORKS_ROUNDS,
           animationFillMode: "both",
         } satisfies CSSProperties;
         return (

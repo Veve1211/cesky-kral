@@ -69,7 +69,7 @@ test("úvod: jedno hlavní tlačítko – nový hráč „Začni hrát“, vrace
   // Returning player: the next ruler not collected yet.
   await setCollection(page, [ordered[0].slug, ordered[1].slug, ordered[3].slug]);
   await open(page, "/");
-  await expect(start).toHaveText("Pokračuj");
+  await expect(start).toHaveText("Pokračuj a získej dalšího");
   await expect(start).toHaveAttribute("href", `/kral/${ordered[2].slug}`);
   await expect(start).toHaveAccessibleDescription(`Další karta: ${ordered[2].name}`);
 
