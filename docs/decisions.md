@@ -57,4 +57,7 @@ Historie rozhodnutí v projektu (přesunuto z CLAUDE.md, aby zůstal krátký). 
 - 2026-11-24: po výhře karty je jeden hlavní krok „Hrát o další kartu“ (další chybějící panovník podle `order`), sbírka jen jako odkaz; `getKingSlugs` vrací panovníky v herním pořadí (audit bod 5)
 - 2026-11-24: střídání otázek ve hře o kartu – výběr kola v prohlížeči z celého fondu panovníka, přednost neviděným (localStorage `cesky-kral:seen`, max 60 id); žádná cookie, protože Soukromí slibuje „Žádné cookies“; správnost dál zná jen server
 - 2026-11-24: `main` má `min-h-dvh` – patička nezačíná na obrazovce, obsah vykreslený v prohlížeči ji neodstrčí (CLS /sbirka 0,79 → 0, Lighthouse desktop 76 → 99); detail v `docs/audit.md`
+- 2026-11-24: tři uzavřené kruhy otázek (pokyn Veve) – hra o kartu jen lehké + střední, mistrovské kolo jen těžké, Denní výzva vlastních 54 otázek (`Question.pool`, aditivní migrace); dřív hráč v mistrovském kole potkal otázky, které už viděl v kole o kartu, a výzva brala otázky z karet
+- 2026-11-24: jméno panovníka v Denní výzvě a Rychlovce velké s 👑 (dřív drobný zlatý nápis, který se přehlížel)
+- 2026-11-24: `quiz.tsx` rozdělený (bod 14) na kvíz, `quiz-results.tsx` a `quiz-shared.ts` – každý soubor pod 450 řádků, chování beze změny
 - 2026-11-24: PWA (bod 13) jen manifest + ikony s korunou + meta pro iPhone, bez service workeru – hra potřebuje server (otázky, skóre), offline by nic nepřineslo a cache by mohla držet staré otázky; návod „Přidat na plochu“ v Jak hrát

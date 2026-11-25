@@ -150,7 +150,7 @@ export async function answerQuick(
   if (!session || session.finishedAt) return GONE;
   const { questionIds } = session.state as QuickState;
   if (!Array.isArray(questionIds) || questionIds[session.answered] !== questionId) return { ok: false, error: "Neplatná odpověď." };
-  const result = await evaluateAnswer(questionId, answerId);
+  const result = await evaluateAnswer(questionId, answerId, "card");
   if (!result.ok) return result;
   const finished = session.answered + 1 >= questionIds.length;
   if (!(await saveStep(session, result.correct, finished))) return TOO_LATE;

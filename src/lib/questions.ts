@@ -2,7 +2,7 @@ import "server-only";
 import { randomInt } from "node:crypto";
 
 import { pickDailyQuestions } from "@/lib/daily";
-import { GOLDEN_DIFFICULTY, toDifficulty } from "@/lib/game-rules";
+import { GOLDEN_DIFFICULTY, ROUND_DIFFICULTIES, toDifficulty } from "@/lib/game-rules";
 import { getPrisma } from "@/lib/prisma";
 import { isValidSlug } from "@/lib/slug";
 import type { QuizQuestion } from "@/lib/quiz-types";
@@ -46,13 +46,15 @@ function toQuizQuestion(row: QuestionRow): QuizQuestion {
 }
 
 /**
- * All questions of a king (without correctness) – the client picks the round
- * from them and prefers questions the player has not seen (`pickRound`).
+ * The king-round questions of a ruler (without correctness): only easy and
+ * medium card questions – hard ones are for the Mistrovské kolo and daily ones
+ * for the Denní výzva. The client picks the round from them and prefers
+ * questions the player has not seen (`pickRound`).
  */
 export async function getKingQuestionPool(slug: string): Promise<QuizQuestion[]> {
   if (!isValidSlug(slug)) return [];
   const rows = await getPrisma().question.findMany({
-    where: { king: { slug } },
+    where: { king: { slug }, pool: "card", difficulty: { in: [...ROUND_DIFFICULTIES] } },
     select: questionSelect,
     orderBy: { id: "asc" },
   });
@@ -66,7 +68,7 @@ export async function getKingQuestionPool(slug: string): Promise<QuizQuestion[]>
 export async function getGoldenQuestions(slug: string): Promise<QuizQuestion[]> {
   if (!isValidSlug(slug)) return [];
   const rows = await getPrisma().question.findMany({
-    where: { king: { slug }, difficulty: GOLDEN_DIFFICULTY },
+    where: { king: { slug }, pool: "card", difficulty: GOLDEN_DIFFICULTY },
     select: questionSelect,
   });
   return shuffle(rows).map(toQuizQuestion);
@@ -74,7 +76,8 @@ export async function getGoldenQuestions(slug: string): Promise<QuizQuestion[]> 
 
 export async function getRandomQuestions(count: number): Promise<QuizQuestion[]> {
   const prisma = getPrisma();
-  const ids = await prisma.question.findMany({ select: { id: true } });
+  // Rychlovka: card questions only – the daily pool stays closed.
+  const ids = await prisma.question.findMany({ where: { pool: "card" }, select: { id: true } });
   const picked = shuffle(ids.map((q) => q.id)).slice(0, count);
 
   const rows = await prisma.question.findMany({
@@ -105,6 +108,7 @@ export async function getDailyQuestionIds(dateKey: string): Promise<number[]> {
   const cached = dailyIds.get(dateKey);
   if (cached) return cached;
   const rows = await getPrisma().question.findMany({
+    where: { pool: "daily" },
     select: { id: true, text: true, difficulty: true, king: { select: { slug: true } } },
   });
   const pool = rows.map((row) => ({
