@@ -28,7 +28,7 @@
 - Prostředí: Claude Code na webu (claude.ai/code), bez Dockeru
 
 ## Herní logika (zkráceně, detail v `docs/game-logic.md`)
-- 18 panovníků, každý 9 otázek do hry o kartu a mistrovského kola (3 lehké, 3 střední, 3 těžké) + 3 vlastní otázky Denní výzvy; každá 3 odpovědi, 1 správná; správnost zná jen server
+- 18 panovníků, každý 9 otázek do hry o kartu a mistrovského kola (3 lehké, 3 střední, 3 těžké) + vlastní sada Denní výzvy (79 otázek, 3–6 na panovníka); každá 3 odpovědi, 1 správná; správnost zná jen server
 - Tři uzavřené kruhy: hra o kartu (2 lehké + 3 střední, 4 správně = karta), Mistrovské kolo (všechny těžké = zlatá karta), Denní výzva (vlastní sada) – otázky se nikdy nesdílí
 - Režimy: Denní výzva, Rychlovka, Kdo vládl dřív?, Řeka času; skóre do žebříčků počítá jen server
 - Odměny: karta, koruny učenosti, zlatá karta, hodnost, díly erbu, série 🔥
