@@ -5,7 +5,10 @@
 // No Ko-fi button in the header.
 import { expect, type Page, test } from "@playwright/test";
 
-import { open } from "./helpers/game";
+import { open, revealAll } from "./helpers/game";
+
+// Full menu and home page: act as a returning player (progressive reveal, src/lib/reveal.ts).
+test.beforeEach(async ({ page }) => revealAll(page));
 
 const WIDTHS = [320, 340, 360, 375, 390, 414, 430, 460, 480, 640, 768, 1023, 1024, 1280];
 

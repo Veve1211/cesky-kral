@@ -16,9 +16,10 @@ Stav: ✅ opraveno · 🔧 opravuje se v uvedeném PR · ⏳ po odevzdání · �
    otázky: Denní výzva 765 → 571 px, Rychlovka 713 → 515 px; Kdo vládl dřív? obě karty celé (dřív jen první);
    Řeka času první dvojice karet celá. Počítač (720 px): Denní výzva 774 → 698 px. Hlídá týž test.
 3. ✅ (PR 2) **Přehlcený první dojem.** Pod nadpisem je jedna věta, o čem hra je, a hned pod ní
-   velké „Začni hrát“ – na mobilu obojí bez posouvání (test). ⏳ Po odevzdání: postupné odhalování
-   (zpočátku jen hra o kartu a galerie, erb a Denní výzva po první kartě, další režimy po několika),
-   menu „Více“ na mobilu, nápověda v prvním kole – větší zásah, který se ve spěchu nedělá.
+   velké „Začni hrát“ – na mobilu obojí bez posouvání (test). ✅ (24. 11.) Postupné odhalování:
+   nový hráč vidí jen hru o kartu, galerii, sbírku a Jak hrát; po první kartě Denní výzvu a Můj erb, po třech
+   kartách Rychlovku, Kdo vládl dřív?, Řeku času a žebříčky (`src/lib/reveal.ts`, test `e2e/progressive-reveal.spec.ts`).
+   ⏸ Menu „Více“ na mobilu a nápověda v prvním kole – s méně položkami v hlavičce zatím nejsou potřeba.
 
 ## Střední závažnost
 
@@ -30,8 +31,7 @@ Stav: ✅ opraveno · 🔧 opravuje se v uvedeném PR · ⏳ po odevzdání · �
 7. ✅ (PR 4) Stránka 404 říkala „Tohoto krále neznáme“ i u adres, které s panovníky nesouvisí. Nově „Tuhle stránku kronika nezná“.
 8. ✅ (PR 4) Groš: nejvýš jedno tlačítko na stránce (úvod dole, po každém režimu, oslava karty a koruny, Jak hrát),
    malý odkaz v patičce; hlídá `e2e/kofi.spec.ts`.
-9. ⏸ Jak hrát a postupné odemykání: odemykání režimů se zatím nedělá (viz bod 3), takže Jak hrát odpovídá
-   skutečnosti beze změny. Až se odemykání udělá, doplnit i sem.
+9. ✅ (24. 11.) Jak hrát popisuje postupné odemykání (krok Herní režimy) a její odkazy fungují vždy.
 
 ## Nízká závažnost
 

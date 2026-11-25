@@ -3,6 +3,7 @@
 import { useSyncExternalStore } from "react";
 
 import { isValidSlug } from "@/lib/slug";
+import { applyReveal } from "@/lib/reveal";
 
 // Player's collection stored in localStorage.
 //   version 2: { version: 2, kings: string[], golden: string[] }
@@ -83,6 +84,8 @@ function write(collection: Collection): boolean {
     return false;
   }
   listeners.forEach((listener) => listener());
+  // A new card can reveal more game modes (src/lib/reveal.ts).
+  applyReveal();
   return true;
 }
 

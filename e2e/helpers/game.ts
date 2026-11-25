@@ -186,3 +186,16 @@ export async function dismissAllCelebrations(page: Page): Promise<ShownCelebrati
   }
   return shown;
 }
+
+/**
+ * Progressive reveal (src/lib/reveal.ts) hides later modes from a brand-new
+ * player. Tests of the full menu or home page act as a returning player: a
+ * stored "Kdo vládl dřív?" best (0) reveals everything without adding cards.
+ */
+export async function revealAll(page: Page) {
+  await page.addInitScript(() => {
+    if (window.localStorage.getItem("cesky-kral:who-first") === null) {
+      window.localStorage.setItem("cesky-kral:who-first", JSON.stringify({ version: 1, best: 0 }));
+    }
+  });
+}

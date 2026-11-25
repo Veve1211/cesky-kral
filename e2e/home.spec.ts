@@ -1,7 +1,10 @@
 import { expect, test } from "@playwright/test";
 
-import { open, setCollection } from "./helpers/game";
+import { open, setCollection, revealAll } from "./helpers/game";
 import { kings } from "./helpers/seed-answers";
+
+// Full menu and home page: act as a returning player (progressive reveal, src/lib/reveal.ts).
+test.beforeEach(async ({ page }) => revealAll(page));
 
 test("úvodní stránka: hodnost, galerie se všemi panovníky, Řeka času bez nadpisu a odkazy dole", async ({ page }) => {
   await open(page, "/");
