@@ -124,3 +124,14 @@ Data v `prisma/daily-questions.ts`, přehled ke kontrole v `docs/denni-vyzva-ota
 - Pověst (Libuše) je v otázkách výslovně „podle pověsti“ / „podle Jiráska“.
 - `prisma/seed.ts` hlídá: 1 lehká + 1 střední + 1 těžká na panovníka, 3 různé odpovědi, https zdroj, žádný text shodný s otázkou ze hry o kartu.
   Test `e2e/closed-circles.spec.ts`, únik odpovědi ze jména `e2e/answer-leaks.spec.ts`.
+
+## Dávka 8: 25 otázek Denní výzvy z faktů od Veve (25. 11. 2026)
+
+Veve dodala 39 faktů (z jiné AI) s citací a odkazem. Claude otevřel každý zdroj a hledal citaci v plném textu:
+- 11 vyřazeno jako duplicitní s existujícími otázkami (Vratislav první král, „železný a zlatý“, Pobaltí, Kunhuta Uherská,
+  dvouletý Václav IV., sesazení 1400, Jiří mimo dynastii, „král Dobře“, Fridrichova manželka a tchán, Karel I. následníkem),
+- 3 vyřazeny: krevní skupina Přemysla Otakara II. (zdroj sám píše, že to nejde ověřit), přestavba Starého královského
+  paláce (hrad.cz z prostředí vrací 403), Ludvíkovo křídlo (zdroj Sanquis – populární časopis, ne historický zdroj),
+- 25 ověřeno a převedeno na otázky (`prisma/daily-questions-2.ts`). Zdroje: Český rozhlas (Dvojka, Plus, regionální
+  stanice, Radiožurnál, Junior), NPÚ (npu.cz, hrad-krivoklat.cz), Wikisource (Jiráskovy Staré pověsti české – pověst).
+- Seed nově žádá u každého panovníka aspoň jednu lehkou, střední a těžkou otázku výzvy (dřív přesně po jedné).

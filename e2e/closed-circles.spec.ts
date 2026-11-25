@@ -7,15 +7,16 @@ import { dailyQuestions, getKing, kings } from "./helpers/seed-answers";
 
 const norm = (text: string) => text.replace(/\s+/g, " ").trim();
 
-test("data: každý panovník má vlastní 3 otázky výzvy (lehká, střední, těžká) se zdrojem, nikde jinde nejsou", () => {
+test("data: každý panovník má vlastní otázky výzvy (aspoň lehká, střední i těžká) se zdrojem, nikde jinde nejsou", () => {
   const cardTexts = new Set(kings.flatMap((king) => king.questions.map((q) => norm(q.text))));
   const dailyTexts = kings.flatMap((king) => (dailyQuestions[king.slug] ?? []).map((q) => norm(q.text)));
-  expect(dailyTexts).toHaveLength(54);
-  expect(new Set(dailyTexts).size).toBe(54);
+  // Batch 1: 3 per ruler (54), batch 2: facts found by Veve (25).
+  expect(dailyTexts).toHaveLength(79);
+  expect(new Set(dailyTexts).size).toBe(dailyTexts.length);
   for (const text of dailyTexts) expect(cardTexts.has(text), text).toBe(false);
   for (const king of kings) {
     const daily = dailyQuestions[king.slug] ?? [];
-    expect(daily.map((q) => q.difficulty).sort(), king.slug).toEqual([1, 2, 3]);
+    for (const level of [1, 2, 3]) expect(daily.some((q) => q.difficulty === level), `${king.slug} ${level}`).toBe(true);
     for (const q of daily) {
       expect(q.sourceUrl, q.text).toMatch(/^https:\/\//);
       expect(new Set([q.correct, ...q.wrong]).size, q.text).toBe(3);

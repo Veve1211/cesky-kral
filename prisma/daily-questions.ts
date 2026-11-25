@@ -7,12 +7,13 @@
 // linked source on 24. 11. 2026; the wrong answers are wrong according to it.
 // Content rules: docs/historical-content.md. Do NOT change facts here without
 // the owner's approval.
+import { dailyQuestionsBatch2 } from "./daily-questions-2";
 import type { SeedQuestion } from "./seed-data";
 
 const BSCZ = "https://biography.hiu.cas.cz/wiki/";
 const CS_WIKI = "https://cs.wikipedia.org/wiki/";
 
-export const dailyQuestions: Record<string, SeedQuestion[]> = {
+const dailyQuestionsBatch1: Record<string, SeedQuestion[]> = {
   libuse: [
     {
       difficulty: 1,
@@ -482,3 +483,8 @@ export const dailyQuestions: Record<string, SeedQuestion[]> = {
     },
   ],
 };
+
+/** Every Denní výzva question per ruler: batch 1 (3 per ruler) + batch 2 (facts from Veve). */
+export const dailyQuestions: Record<string, SeedQuestion[]> = Object.fromEntries(
+  Object.entries(dailyQuestionsBatch1).map(([slug, questions]) => [slug, [...questions, ...(dailyQuestionsBatch2[slug] ?? [])]]),
+);
