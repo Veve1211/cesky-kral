@@ -110,3 +110,17 @@ Biografický slovník českých zemí (Historický ústav AV ČR), ČT24.
 | Karel IV. | Karlův most 1357, zdroj Novinky | Zdroj neověřitelný | Zdroj s datem 9. 7. 1357 | [cs.wikipedia – Karel IV.](https://cs.wikipedia.org/wiki/Karel_IV.) |
 | Karel I. | 9 otázek, zdroj New World Encyclopedia | Zdroj neověřitelný | Všech 9 ověřeno, nový zdroj | [cs.wikipedia – Karel I. Rakouský](https://cs.wikipedia.org/wiki/Karel_I._Rakousk%C3%BD) |
 | Ferdinand I. (7), Fridrich Falcký (6), František Josef I. (6) | Zdroj Wikipedie | Správně | Zdroj povýšen na Biografický slovník českých zemí (AV ČR) | [BSČZ](https://biography.hiu.cas.cz/) |
+
+## Dávka 7: 54 otázek Denní výzvy (24. 11. 2026)
+
+Bod 12 na pokyn Veve: ke každému z 18 panovníků 3 nové otázky (lehká, střední, těžká), které
+tvoří **vlastní uzavřenou sadu Denní výzvy** (ve hře o kartu ani v mistrovském kole nejsou).
+Data v `prisma/daily-questions.ts`, přehled ke kontrole v `docs/denni-vyzva-otazky.md`.
+
+- Každá otázka má vlastní zdroj; správná odpověď i vysvětlení v něm stojí, špatné odpovědi jsou podle něj nesprávné.
+- Přednost odborným zdrojům: Biografický slovník českých zemí (HÚ AV ČR) u Ferdinanda I., Fridricha Falckého a Františka Josefa I.
+  (u ostatních panovníků má slovník zatím jen seznam literatury), archiv Českého rozhlasu (Jan Lucemburský, Karel IV., Libuše),
+  ČT24 – rozhovor historiků (Marie Terezie, Josef II.), Knihovna AV ČR (Rudolf II.). Zbytek česká Wikipedie.
+- Pověst (Libuše) je v otázkách výslovně „podle pověsti“ / „podle Jiráska“.
+- `prisma/seed.ts` hlídá: 1 lehká + 1 střední + 1 těžká na panovníka, 3 různé odpovědi, https zdroj, žádný text shodný s otázkou ze hry o kartu.
+  Test `e2e/closed-circles.spec.ts`, únik odpovědi ze jména `e2e/answer-leaks.spec.ts`.

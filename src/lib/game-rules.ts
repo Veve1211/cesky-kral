@@ -3,12 +3,21 @@ export const QUESTIONS_PER_KING = 5; // questions in one round
 
 export type Difficulty = 1 | 2 | 3; // 1 easy, 2 medium, 3 hard
 
-// One king round: 2 easy, 2 medium, 1 hard – in this order.
+// "Tři uzavřené kruhy" (three closed circles) – a question belongs to exactly one mode:
+// - Hra o kartu: the ruler's easy and medium card questions,
+// - Mistrovské kolo: the ruler's hard card questions (GOLDEN_DIFFICULTY),
+// - Denní výzva: its own pool (Question.pool = "daily"), never shown elsewhere.
+// Rychlovka mixes card questions of all rulers (never daily ones).
+export type QuestionPool = "card" | "daily";
+
+// One king round: 2 easy, 3 medium – in this order. No hard questions: those
+// belong to the Mistrovské kolo only.
 export const ROUND_PLAN: readonly { difficulty: Difficulty; count: number }[] = [
   { difficulty: 1, count: 2 },
-  { difficulty: 2, count: 2 },
-  { difficulty: 3, count: 1 },
+  { difficulty: 2, count: 3 },
 ];
+/** Difficulties of the card questions a king round draws from. */
+export const ROUND_DIFFICULTIES: readonly Difficulty[] = ROUND_PLAN.map((step) => step.difficulty);
 
 export const DIFFICULTY_LABELS: Record<Difficulty, string> = {
   1: "Lehká otázka",

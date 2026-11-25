@@ -78,7 +78,7 @@ export async function answerDaily(
   // Only the next question in order – no skipping, no answering twice.
   if (ids[attempt.answered] !== questionId) return { ok: false, error: "Neplatná odpověď." };
 
-  const result = await evaluateAnswer(questionId, answerId);
+  const result = await evaluateAnswer(questionId, answerId, "daily");
   if (!result.ok) return result;
 
   const finished = attempt.answered + 1 >= ids.length;
