@@ -221,6 +221,7 @@ export function Quiz(props: QuizProps) {
           celebrationId={current?.id}
           onClose={close}
           returnFocusTo={returnFocusTo}
+          timeline={props.mode === "king" ? props.timeline : []}
         />
       </>
     );

@@ -14,7 +14,7 @@ import { CardCorners } from "@/components/ornaments";
 import { KingRound } from "@/components/king-round";
 import { CORRECT_TO_COLLECT } from "@/lib/game-rules";
 import { endSentence, formatReign, LEGEND_NOTE } from "@/lib/king-display";
-import { getKingBySlug, getKingSlugs, kingInitial } from "@/lib/kings";
+import { getKingBySlug, getKingCards, kingInitial } from "@/lib/kings";
 import { getKingQuestionPool } from "@/lib/questions";
 
 export async function generateMetadata({
@@ -67,10 +67,11 @@ async function KingGame({ params }: { params: Promise<{ slug: string }> }) {
   const king = await getKingBySlug(slug);
   if (!king) notFound();
 
-  const [pool, allSlugs] = await Promise.all([
+  const [pool, allKings] = await Promise.all([
     getKingQuestionPool(king.slug),
-    getKingSlugs(),
+    getKingCards(),
   ]);
+  const allSlugs = allKings.map((k) => k.slug);
   const initial = kingInitial(king.name);
   const bio = king.shortBio.trim();
 
@@ -109,6 +110,7 @@ async function KingGame({ params }: { params: Promise<{ slug: string }> }) {
       <KingRound
         pool={pool}
         allKingSlugs={allSlugs}
+        timeline={allKings}
         king={{
           slug: king.slug,
           name: king.name,

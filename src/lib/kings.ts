@@ -1,6 +1,7 @@
 import "server-only";
 
 import { toChronicle, type Chronicle } from "@/lib/chronicle";
+import { kingInitial } from "@/lib/king-initial";
 import { getPrisma } from "@/lib/prisma";
 import { toKingTitle, type KingTitle } from "@/lib/king-display";
 import { isValidSlug } from "@/lib/slug";
@@ -60,6 +61,15 @@ export async function getWhoFirstKings(): Promise<WhoFirstKing[]> {
 }
 
 /** All ruler slugs in game order (the "next card" after a round follows it). */
+/** Rulers in game order (= reign) with name and portrait only – no years (Řeka času after a won card). */
+export async function getKingCards(): Promise<{ slug: string; name: string; initial: string; imageUrl: string | null }[]> {
+  const rows = await getPrisma().king.findMany({
+    orderBy: { order: "asc" },
+    select: { slug: true, name: true, imageUrl: true },
+  });
+  return rows.map((row) => ({ ...row, initial: kingInitial(row.name) }));
+}
+
 export async function getKingSlugs(): Promise<string[]> {
   const rows = await getPrisma().king.findMany({ select: { slug: true }, orderBy: { order: "asc" } });
   return rows.map((row) => row.slug);

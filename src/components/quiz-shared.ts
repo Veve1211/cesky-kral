@@ -2,6 +2,7 @@
 import type { ReactNode } from "react";
 
 import type { ChronicleKing } from "@/components/chronicle-dialog";
+import type { TimelineKing } from "@/components/timeline-placement";
 import type { Chronicle } from "@/lib/chronicle";
 import type { AnswerResult, QuizQuestion } from "@/lib/quiz-types";
 
@@ -19,6 +20,8 @@ export type QuizProps =
       mode: "king";
       questions: QuizQuestion[];
       allKingSlugs: string[];
+      /** Rulers in game order (= reign) for the "Řeka času" placement after a won card. */
+      timeline: TimelineKing[];
       /** "Zkusit znovu" starts a fresh round picked by the caller (`KingRound`). */
       onRestart?: () => void;
       /** A restarted round: keyboard focus goes to the first question, as after an in-place restart. */
