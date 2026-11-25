@@ -73,7 +73,7 @@ function validate(data: SeedKing[]) {
   }
 }
 
-// Denní výzva has its own closed pool: per seeded king exactly one easy, one
+// Denní výzva has its own closed pool: per seeded king at least one easy, one
 // medium and one hard question, none of them shared with the card questions.
 function validateDaily(data: SeedKing[], daily: Record<string, SeedQuestion[]>) {
   const slugs = new Set(data.map((king) => king.slug));
@@ -84,9 +84,10 @@ function validateDaily(data: SeedKing[], daily: Record<string, SeedQuestion[]>) 
   const dailyTexts = new Set<string>();
   for (const king of data) {
     const questions = daily[king.slug] ?? [];
-    const levels = questions.map((q) => q.difficulty).sort().join(",");
-    if (levels !== "1,2,3") {
-      throw new Error(`${king.slug}: expected one daily question per difficulty, got [${levels}]`);
+    for (const level of [1, 2, 3]) {
+      if (!questions.some((q) => q.difficulty === level)) {
+        throw new Error(`${king.slug}: no daily question of difficulty ${level}`);
+      }
     }
     for (const q of questions) {
       if (new Set([q.correct, ...q.wrong]).size !== ANSWERS_PER_QUESTION) {

@@ -71,3 +71,4 @@ Historie rozhodnutí v projektu (přesunuto z CLAUDE.md, aby zůstal krátký). 
 - 2026-11-25: díly erbu přeřazené podle atraktivity (návrh schválila Veve) – lev 9 zlatých korun, orlice 6, koruna 3 zlaté, lilie 6 stříbrných; obyčejné díly (věž, černá, zelená, hlava) už za 1–3 karty
 - 2026-11-25: hlavní tlačítko nového hráče a zamčené položky: „Získej českého panovníka“ (pokyn Veve), vracející se hráč dál „Pokračuj“
 - 2026-11-25: zpětná vazba ze stagingu – „Pokračuj a získej dalšího“, roky vlády pod portréty v Řece času po výhře, ohňostroj skončí sám (2 kola), výsledek výzvy bez přezdívky „Tvůj výsledek: N. z M“ místo „Patřilo by ti“, karta výsledku se nerozšíří přes displej
+- 2026-11-25: Denní výzva rozšířena o 25 otázek z faktů od Veve (79 celkem); zdroje Český rozhlas, NPÚ a Wikisource povoleny v síti prostředí se souhlasem Veve; Sanquis jako zdroj nepoužit

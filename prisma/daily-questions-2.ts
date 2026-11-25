@@ -1,0 +1,237 @@
+// "Denní výzva" – batch 2 (25. 11. 2026): facts found by Veve with another AI,
+// each checked by Claude in the full text of the linked source (Český rozhlas,
+// NPÚ, Wikisource for the legend). Duplicates of existing questions were dropped.
+// Content rules: docs/historical-content.md. Do NOT change facts here without
+// the owner's approval.
+import type { SeedQuestion } from "./seed-data";
+
+export const dailyQuestionsBatch2: Record<string, SeedQuestion[]> = {
+  "libuse": [
+    {
+      difficulty: 2,
+      text: "V čí prospěch Libuše podle Jiráskovy pověsti rozsoudila spor dvou sousedů o pole a meze?",
+      correct: "Ve prospěch mladšího",
+      wrong: ["Ve prospěch staršího", "Pole rozdělila napůl"],
+      explanation: "Podle Libušina rozsudku se mladšímu děla křivda – starší se pak rozhněval a odsoudil vládu ženy.",
+      sourceUrl: "https://cs.wikisource.org/wiki/Star%C3%A9_pov%C4%9Bsti_%C4%8Desk%C3%A9_(1959)/O_Libu%C5%A1i",
+    },
+    {
+      difficulty: 3,
+      text: "Před kterou modlou podle Jiráskovy pověsti Libuše klečela ve své zahradě?",
+      correct: "Před Perunem",
+      wrong: ["Před Velesem", "Před Svarogem"],
+      explanation: "Dřevěná modla se stříbrnou hlavou a zlatými vousy se jmenovala Perun.",
+      sourceUrl: "https://cs.wikisource.org/wiki/Star%C3%A9_pov%C4%9Bsti_%C4%8Desk%C3%A9_(1959)/O_Libu%C5%A1i",
+    },
+    {
+      difficulty: 2,
+      text: "Čím byla podle pověsti zvláštní Libušina zahrada na Vyšehradě?",
+      correct: "Byla jako bludiště – cizí z ní nenašel východ",
+      wrong: ["Rostly v ní jen samé lípy", "Byla celá obehnaná vodním příkopem"],
+      explanation: "Bludivé stezky v ní byly všechny sobě podobné; Libuše v ní ráda meškala se svými dívkami.",
+      sourceUrl: "https://cs.wikisource.org/wiki/Star%C3%A9_pov%C4%9Bsti_%C4%8Desk%C3%A9_(1959)/O_Bivoji",
+    },
+  ],
+  "vratislav-ii": [
+    {
+      difficulty: 2,
+      text: "Proč Vratislavovi potomci neměli nárok na královskou korunu?",
+      correct: "Královský titul nebyl dědičný",
+      wrong: ["Vratislav neměl žádné děti", "Korunu musel vrátit papeži"],
+      explanation: "Vratislav se třikrát oženil a měl mnoho potomků, ale jeho koruna dědičná nebyla.",
+      sourceUrl: "https://strednicechy.rozhlas.cz/vratislav-ii-mel-cestu-ke-kralovske-korune-spletitou-na-svou-dobu-projevil-9354591",
+    },
+  ],
+  "premysl-otakar-i": [
+    {
+      difficulty: 3,
+      text: "Co Přemysl Otakar I. prosadil pro svého syna Václava ještě za svého života?",
+      correct: "Jeho korunovaci na českého krále",
+      wrong: ["Jeho sňatek s anglickou princeznou", "Jeho volbu pražským biskupem"],
+      explanation: "Václav I. byl korunován českým králem ještě za živobytí svého otce.",
+      sourceUrl: "https://dvojka.rozhlas.cz/73-schuzka-jednooky-kral-7939998",
+    },
+  ],
+  "premysl-otakar-ii": [
+    {
+      difficulty: 3,
+      text: "Kde je dnes uložen originál ceremoniálního meče Přemysla Otakara II.?",
+      correct: "Ve Vídni",
+      wrong: ["V Českých Budějovicích", "Na Pražském hradě"],
+      explanation: "V Českých Budějovicích, které Přemysl Otakar II. založil, je k vidění jen kopie meče.",
+      sourceUrl: "https://regiony.rozhlas.cz/premysl-otakar-ii-zalozil-ctyricet-mest-ve-stredni-evrope-v-budejovicich-mu-7902729",
+    },
+    {
+      difficulty: 2,
+      text: "Kam až sahal český stát za vlády Přemysla Otakara II.?",
+      correct: "Až k Jaderskému moři",
+      wrong: ["Až k Baltskému moři", "Až k Černému moři"],
+      explanation: "Za čtvrtstoletí jeho vlády se český stát rozepjal od Krkonoš až k Jadranu.",
+      sourceUrl: "https://dvojka.rozhlas.cz/84-schuzka-pred-bitvou-na-moravskem-poli-7939953",
+    },
+  ],
+  "karel-iv": [
+    {
+      difficulty: 1,
+      text: "Kolika jazyky mluvil Karel IV.?",
+      correct: "Pěti",
+      wrong: ["Dvěma", "Osmi"],
+      explanation: "Byl to vzdělanec hovořící pěti jazyky – a zároveň dobrodruh, který miloval rytířská klání.",
+      sourceUrl: "https://dvojka.rozhlas.cz/otec-vlasti-zivot-karla-iv-myty-legendy-a-fakta-dobove-kroniky-a-autobiografie-7484393",
+    },
+    {
+      difficulty: 2,
+      text: "Čeho se Karel IV. v dospělosti tajně účastnil?",
+      correct: "Rytířských turnajů",
+      wrong: ["Alchymistických pokusů", "Lovů na medvědy v Alpách"],
+      explanation: "Podle Rádia Junior se na turnajích vydával za někoho jiného.",
+      sourceUrl: "https://junior.rozhlas.cz/karla-iv-v-detstvi-zavreli-do-sklepa-v-dospelosti-se-tajne-ucastnil-rytirskych-8473368",
+    },
+    {
+      difficulty: 1,
+      text: "Co měl chránit hrad Karlštejn, který nechal postavit Karel IV.?",
+      correct: "Korunovační klenoty Svaté říše římské",
+      wrong: ["Stříbrné doly v Kutné Hoře", "Královskou zásobu vína"],
+      explanation: "Karel IV. budoval Karlštejn jako nedobytnou pevnost nedaleko Prahy.",
+      sourceUrl: "https://hradec.rozhlas.cz/hrad-karlstejn-ma-v-zimnim-obdobi-vyjimecne-kouzlo-umozni-vam-lepe-poznat-osobu-8143853",
+    },
+  ],
+  "vaclav-iv": [
+    {
+      difficulty: 3,
+      text: "Co podepsal Václav IV. roku 1394 v Písku?",
+      correct: "Nejstarší česky psanou královskou listinu",
+      wrong: ["Dekret kutnohorský", "Zlatou bulu sicilskou"],
+      explanation: "Smlouva podepsaná v Písku je nejstarší česky psanou královskou listinou.",
+      sourceUrl: "https://budejovice.rozhlas.cz/nejstarsi-cesky-psanou-kralovskou-listinou-je-smlouva-kterou-roku-1394-podepsal-9201517",
+    },
+  ],
+  "jiri-z-podebrad": [
+    {
+      difficulty: 3,
+      text: "Kterou pražskou stavbu nechal vybudovat Jiří z Poděbrad?",
+      correct: "Malostranskou mosteckou věž",
+      wrong: ["Staroměstskou mosteckou věž", "Prašnou bránu"],
+      explanation: "Byla to obranná věž – skladovalo se v ní střelivo, potraviny a zásoby vody.",
+      sourceUrl: "https://praha.rozhlas.cz/ctyri-historicke-veze-prahy-a-jejich-zajimavosti-7306496",
+    },
+    {
+      difficulty: 2,
+      text: "Který hrad měl Jiří z Poděbrad velmi rád a s oblibou na něm trávil čas?",
+      correct: "Litice",
+      wrong: ["Karlštejn", "Křivoklát"],
+      explanation: "Na Liticích se možná i narodil; zanechal tam řadu stop.",
+      sourceUrl: "https://regiony.rozhlas.cz/za-jiriho-z-podebrad-byval-nejvyznamnejsi-hrad-litice-kral-se-na-nem-mozna-7431305",
+    },
+    {
+      difficulty: 1,
+      text: "Jakou postavu měl Jiří z Poděbrad?",
+      correct: "Podsaditou, zavalitou",
+      wrong: ["Vysokou a štíhlou", "Atletickou jako Karel IV."],
+      explanation: "Podle muzejníků byl Jiří podsaditý a zavalitý, kdežto Karel IV. spíš atletické postavy.",
+      sourceUrl: "https://plzen.rozhlas.cz/muzeum-cirkevniho-umeni-vystavuje-predmety-z-kralovskych-hrobu-8321739",
+    },
+  ],
+  "vladislav-ii-jagellonsky": [
+    {
+      difficulty: 3,
+      text: "Co nejvzácnějšího na hradě Křivoklát pochází z přestavby za Vladislava Jagellonského?",
+      correct: "Nádherná kaple a majestátní královský sál",
+      wrong: ["Hladomorna ve věži", "Zlatá ulička"],
+      explanation: "Vladislava a jeho syna Ludvíka zpodobňuje i reliéf nad vstupem do kaple.",
+      sourceUrl: "https://www.hrad-krivoklat.cz/cs/o-hradu/vyznamne-osobnosti/vladislav-jagellonsky",
+    },
+  ],
+  "ferdinand-i": [
+    {
+      difficulty: 2,
+      text: "Po kom je pojmenován letohrádek, který dal Ferdinand I. postavit v Královské zahradě Pražského hradu?",
+      correct: "Po jeho manželce, královně Anně",
+      wrong: ["Po jeho matce Janě", "Po svaté Anežce České"],
+      explanation: "Letohrádek královny Anny je patrně slohově nejčistší renesanční stavbou italského stylu v Čechách.",
+      sourceUrl: "https://hradec.rozhlas.cz/letohradek-kralovny-anny-je-ukazkou-patrne-slohove-nejcistsi-renesancni-stavby-9318605",
+    },
+    {
+      difficulty: 3,
+      text: "Kterou oboru u Bílé hory založil Ferdinand I.?",
+      correct: "Oboru Hvězda",
+      wrong: ["Stromovku", "Divokou Šárku"],
+      explanation: "Obora sloužila pro královské hony a slavnosti; letohrádek Hvězda v ní nechal postavit arcivévoda Ferdinand Tyrolský.",
+      sourceUrl: "https://zlin.rozhlas.cz/nevsedni-podobu-letohradku-hvezda-dal-rakousky-arcivevoda-a-mistodrzitel-v-9286400",
+    },
+  ],
+  "rudolf-ii": [
+    {
+      difficulty: 2,
+      text: "Čím byl Rudolf II. doslova posedlý?",
+      correct: "Vlivy a působením drahých kamenů",
+      wrong: ["Chovem dostihových koní", "Stavbou lodí"],
+      explanation: "Proto je jeho koruna posázená drahými kameny s hlubokou symbolikou.",
+      sourceUrl: "https://www.npu.cz/cs/akce/kalendar/9257-zlato-cisaru-a-kralu-vystava-svetove-sbirky-korunovacnich-klenotu",
+    },
+    {
+      difficulty: 3,
+      text: "Co se od roku 1804 stalo s korunou Rudolfa II.?",
+      correct: "Stala se symbolem hodnosti rakouských císařů",
+      wrong: ["Byla rozebrána a kameny prodány", "Byla uložena do svatovítské katedrály"],
+      explanation: "Ke skutečné korunovaci však nikdy použita nebyla.",
+      sourceUrl: "https://www.npu.cz/cs/akce/kalendar/9257-zlato-cisaru-a-kralu-vystava-svetove-sbirky-korunovacnich-klenotu",
+    },
+    {
+      difficulty: 3,
+      text: "Který zámek, letní a lovecké sídlo Habsburků, si oblíbil Rudolf II.?",
+      correct: "Brandýs nad Labem",
+      wrong: ["Konopiště", "Lány"],
+      explanation: "Zámek v Brandýse nad Labem byl letním a loveckým sídlem Habsburků.",
+      sourceUrl: "https://hradec.rozhlas.cz/zamek-brandys-nad-labem-byl-letnim-a-loveckym-sidlem-habsburku-oblibil-si-ho-i-9625368",
+    },
+  ],
+  "marie-terezie": [
+    {
+      difficulty: 3,
+      text: "Jak se jmenoval reformní trestní zákoník Marie Terezie?",
+      correct: "Constitutio criminalis Theresiana",
+      wrong: ["Codex Carolinus", "Obnovené zřízení zemské"],
+      explanation: "Zákoník mimo jiné skoncoval s popravami za čarodějnictví; česky vyšel v roce 1769.",
+      sourceUrl: "https://plus.rozhlas.cz/tereziansky-zakonik-otevrel-cestu-k-moderni-justici-od-muceni-ale-definitivne-7764270",
+    },
+    {
+      difficulty: 3,
+      text: "Kterou dceru Marie Terezie těžce znetvořily neštovice?",
+      correct: "Marii Alžbětu",
+      wrong: ["Marii Antoinettu", "Marii Kristinu"],
+      explanation: "Marie Alžběta byla předtím považována za nejkrásnější z dcer.",
+      sourceUrl: "https://dvojka.rozhlas.cz/562-schuzka-vychova-deti-byla-mi-vzdy-velkym-a-nadmiru-milym-ukolem-7939723",
+    },
+  ],
+  "josef-ii": [
+    {
+      difficulty: 1,
+      text: "Jaký byl Josef II. podle historiků?",
+      correct: "Praktický a spořivý, nepotrpěl si na luxus",
+      wrong: ["Miloval plesy a přepych", "Většinu času trávil na lovu"],
+      explanation: "Nepotrpěl si ani na přehnané ceremonie.",
+      sourceUrl: "https://budejovice.rozhlas.cz/cisar-josef-ii-byl-prakticky-a-sporivy-nepotrpel-si-na-luxus-a-prehnane-8139282",
+    },
+  ],
+  "frantisek-josef-i": [
+    {
+      difficulty: 1,
+      text: "V kolik hodin ráno vstával František Josef I.?",
+      correct: "V půl čtvrté",
+      wrong: ["V sedm", "V devět"],
+      explanation: "V pět hodin už přijímal první hlášení, snídal v šest.",
+      sourceUrl: "https://radiozurnal.rozhlas.cz/za-jak-casne-musite-rano-vstavat-zrejme-muze-frantisek-josef-i-6234807",
+    },
+  ],
+  "karel-i": [
+    {
+      difficulty: 2,
+      text: "Kde prožil Karel I. část svého dětství?",
+      correct: "Na Pražském hradě",
+      wrong: ["V Paříži", "V Petrohradě"],
+      explanation: "Do Čech se později vrátil i na vojenský výcvik.",
+      sourceUrl: "https://plus.rozhlas.cz/mel-posledni-habsbursky-cisar-karel-i-vztah-k-ceskym-zemim-dokonce-vrely-soudi-8173281",
+    },
+  ],
+};
