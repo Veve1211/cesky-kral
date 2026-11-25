@@ -5,13 +5,14 @@ import { connection } from "next/server";
 import { CrestEditor } from "@/components/crest-editor";
 import { OrnamentDivider } from "@/components/ornaments";
 import { getKingSlugs } from "@/lib/kings";
+import { LockedPage } from "@/components/locked-page";
 
 export const metadata: Metadata = {
   title: "Můj erb",
   description: "Navrhni si vlastní erb: tvar štítu, barvy podle heraldických pravidel, figura a heslo.",
 };
 
-export default function MyCrestPage() {
+function MyCrestPageContent() {
   return (
     <div className="mx-auto flex max-w-4xl flex-col gap-6">
       <header className="flex flex-col items-center gap-3 text-center">
@@ -35,4 +36,13 @@ async function Editor() {
   // The number of rulers decides "zlatá koruna u všech" (the rarest parts).
   const slugs = await getKingSlugs();
   return <CrestEditor kingSlugs={slugs} />;
+}
+
+// New players see a lock until their first card (src/lib/reveal.ts).
+export default function MyCrestPage() {
+  return (
+    <LockedPage name="Můj erb">
+      <MyCrestPageContent />
+    </LockedPage>
+  );
 }

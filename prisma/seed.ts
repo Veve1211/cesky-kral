@@ -10,7 +10,8 @@ import { PrismaPg } from "@prisma/adapter-pg";
 
 import { PrismaClient } from "../src/generated/prisma/client";
 import { chronicles, type SeedChronicle } from "./chronicles";
-import { kings, type SeedKing } from "./seed-data";
+import { dailyQuestions } from "./daily-questions";
+import { kings, type SeedKing, type SeedQuestion } from "./seed-data";
 import { ANSWERS_PER_QUESTION } from "../src/lib/game-rules";
 
 config({ path: ".env.local" });
@@ -72,6 +73,36 @@ function validate(data: SeedKing[]) {
   }
 }
 
+// Denní výzva has its own closed pool: per seeded king exactly one easy, one
+// medium and one hard question, none of them shared with the card questions.
+function validateDaily(data: SeedKing[], daily: Record<string, SeedQuestion[]>) {
+  const slugs = new Set(data.map((king) => king.slug));
+  for (const slug of Object.keys(daily)) {
+    if (!slugs.has(slug)) throw new Error(`Daily questions for unknown king: ${slug}`);
+  }
+  const cardTexts = new Set(data.flatMap((king) => king.questions.map((q) => q.text.trim())));
+  const dailyTexts = new Set<string>();
+  for (const king of data) {
+    const questions = daily[king.slug] ?? [];
+    const levels = questions.map((q) => q.difficulty).sort().join(",");
+    if (levels !== "1,2,3") {
+      throw new Error(`${king.slug}: expected one daily question per difficulty, got [${levels}]`);
+    }
+    for (const q of questions) {
+      if (new Set([q.correct, ...q.wrong]).size !== ANSWERS_PER_QUESTION) {
+        throw new Error(`${king.slug}: daily "${q.text}" needs ${ANSWERS_PER_QUESTION} different answers`);
+      }
+      if (!q.sourceUrl?.startsWith("https://")) {
+        throw new Error(`${king.slug}: daily "${q.text}" needs its own https source`);
+      }
+      const text = q.text.trim();
+      if (cardTexts.has(text)) throw new Error(`${king.slug}: daily question is also a card question: ${text}`);
+      if (dailyTexts.has(text)) throw new Error(`${king.slug}: duplicate daily question: ${text}`);
+      dailyTexts.add(text);
+    }
+  }
+}
+
 function validateChronicles(data: Record<string, SeedChronicle>) {
   for (const [slug, chronicle] of Object.entries(data)) {
     if (!chronicle.intro.trim()) throw new Error(`${slug}: chronicle intro is empty`);
@@ -105,6 +136,7 @@ function chronicleData(slug: string) {
 
 async function main() {
   validate(kings);
+  validateDaily(kings, dailyQuestions);
   validateChronicles(chronicles);
   for (const slug of Object.keys(chronicles)) {
     if (!kings.some((king) => king.slug === slug)) {
@@ -147,7 +179,12 @@ async function main() {
           // Scoped to this king only (never an unscoped DELETE).
           await tx.question.deleteMany({ where: { kingId: saved.id } });
 
-          for (const q of questions) {
+          const daily = dailyQuestions[king.slug] ?? [];
+          const pooled = [
+            ...questions.map((q) => ({ q, pool: "card" })),
+            ...daily.map((q) => ({ q, pool: "daily" })),
+          ];
+          for (const { q, pool } of pooled) {
             await tx.question.create({
               data: {
                 kingId: saved.id,
@@ -155,6 +192,7 @@ async function main() {
                 explanation: q.explanation,
                 sourceUrl: q.sourceUrl ?? sourceUrl,
                 difficulty: q.difficulty,
+                pool,
                 answers: {
                   create: [
                     { text: q.correct, isCorrect: true },
@@ -165,7 +203,7 @@ async function main() {
             });
           }
 
-          console.log(`Seeded ${king.name} (${questions.length} questions)`);
+          console.log(`Seeded ${king.name} (${questions.length} card + ${daily.length} daily questions)`);
         }
       },
       { maxWait: 10_000, timeout: 120_000 },

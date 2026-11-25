@@ -1,7 +1,10 @@
 import { expect, test } from "@playwright/test";
 
-import { open, setCollection } from "./helpers/game";
+import { open, setCollection, revealAll } from "./helpers/game";
 import { kings } from "./helpers/seed-answers";
+
+// Full menu and home page: act as a returning player (progressive reveal, src/lib/reveal.ts).
+test.beforeEach(async ({ page }) => revealAll(page));
 
 test("úvodní stránka: hodnost, galerie se všemi panovníky, Řeka času bez nadpisu a odkazy dole", async ({ page }) => {
   await open(page, "/");
@@ -51,7 +54,7 @@ test("úvod: jedno hlavní tlačítko – nový hráč „Začni hrát“, vrace
   await setCollection(page, []);
   await open(page, "/");
   const start = page.getByTestId("start-button");
-  await expect(start).toHaveText("Začni hrát");
+  await expect(start).toHaveText("Získej českého panovníka");
   await expect(start).toHaveAttribute("href", `/kral/${ordered[0].slug}`);
   await expect(start).toHaveAccessibleDescription(`První karta: ${ordered[0].name}`);
   // The daily challenge is a smaller second choice under it.
@@ -66,7 +69,7 @@ test("úvod: jedno hlavní tlačítko – nový hráč „Začni hrát“, vrace
   // Returning player: the next ruler not collected yet.
   await setCollection(page, [ordered[0].slug, ordered[1].slug, ordered[3].slug]);
   await open(page, "/");
-  await expect(start).toHaveText("Pokračuj");
+  await expect(start).toHaveText("Pokračuj a získej dalšího");
   await expect(start).toHaveAttribute("href", `/kral/${ordered[2].slug}`);
   await expect(start).toHaveAccessibleDescription(`Další karta: ${ordered[2].name}`);
 

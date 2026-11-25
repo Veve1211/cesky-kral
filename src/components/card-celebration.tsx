@@ -10,6 +10,7 @@ import { Fireworks } from "@/components/fireworks";
 import { KingPortrait } from "@/components/king-portrait";
 import { CardCorners, OrnamentDivider } from "@/components/ornaments";
 import { CrestUnlockText, DecorateCrestButton } from "@/components/crest-unlock-notice";
+import { TimelinePlacement, type TimelineKing } from "@/components/timeline-placement";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
@@ -37,7 +38,10 @@ export function CardCelebration({
   onClose,
   returnFocusTo,
   unlockedParts = [],
+  timeline = [],
 }: {
+  /** All rulers in game order – the new one drops into "Řeka času" (first time only). */
+  timeline?: readonly TimelineKing[];
   /** Crest parts this card unlocked ("Ozdobit erb"). */
   unlockedParts?: readonly string[];
   card: CelebratedCard | null;
@@ -139,6 +143,10 @@ export function CardCelebration({
                   ? "Kronikář vepsal do erbovní knihy nový list: tato karta je od dnešního dne tvoje."
                   : "Kronikář znovu potvrzuje: tato karta ti právem patří."}
               </DialogPrimitive.Description>
+
+              {firstTime && timeline.length > 0 && (
+                <TimelinePlacement kings={timeline} newSlug={card.slug} name={card.name} />
+              )}
 
               <CrestUnlockText parts={unlockedParts} />
 

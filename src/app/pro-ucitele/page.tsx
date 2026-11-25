@@ -31,7 +31,7 @@ export default function TeachersPage() {
           Co ve hře je
         </h2>
         <ul className="list-disc space-y-1 pl-5">
-          <li>18 panovníků od Libuše po Karla I. a 162 otázek ve třech obtížnostech,</li>
+          <li>18 panovníků od Libuše po Karla I. a 216 otázek ve třech obtížnostech,</li>
           <li>u každé otázky věta vysvětlení a odkaz na zdroj, ze kterého fakt pochází,</li>
           <li>pověstné postavy mají štítek „Pověst“, aby žáci poznali pověst od doložené historie.</li>
         </ul>

@@ -35,6 +35,8 @@ export type AnswerRuler = {
   questionKey: string;
   /** How many questions the ruler has – crown thresholds scale with it. */
   totalQuestions: number;
+  /** Only card questions count towards "Koruny učenosti" (Denní výzva has its own pool). */
+  countsForCrowns: boolean;
   /** How many rulers the game has (the rarest crest parts need gold for all). */
   rulerCount: number;
 };

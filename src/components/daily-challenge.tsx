@@ -13,7 +13,7 @@ import { ShareButton } from "@/components/share-button";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { useCollectionReady } from "@/lib/collection";
-import { dailyShareText, formatDailyDate, formatStreakDays } from "@/lib/daily";
+import { DAILY_MONARCH, dailyShareText, formatDailyDate, formatStreakDays } from "@/lib/daily";
 import {
   currentStreak,
   marksFor,
@@ -147,6 +147,7 @@ function DailyPlay({
           questions={questions}
           startIndex={initial.length}
           startScore={initial.filter(Boolean).length}
+          startMarks={initial}
           check={connection.phase === "online" ? check : undefined}
           onAnswered={(index, correct) => {
             setMarks((current) => (current.length === index ? [...current, correct] : current));
@@ -199,7 +200,8 @@ function DailyResult({
   return (
     <Card className="animate-card-reveal items-center text-center">
       <CardCorners className="m-1 size-8 text-gold-dark" />
-      <CardContent className="flex flex-col items-center gap-4">
+      {/* w-full: long lines (nickname hint) wrap instead of widening the card past the screen. */}
+      <CardContent className="flex w-full flex-col items-center gap-4">
         <h2
           ref={heading}
           tabIndex={-1}
@@ -229,6 +231,17 @@ function DailyResult({
             </li>
           ))}
         </ol>
+
+        {/* Everyone with a perfect challenge rules for the day (Veve, 25. 11.). */}
+        {marks.length > 0 && score === marks.length && (
+          <p
+            data-testid="daily-monarch"
+            className="gilt rounded-2xl px-5 py-3 font-heading text-2xl font-bold text-navy shadow-md"
+          >
+            <span aria-hidden>👑 </span>
+            {DAILY_MONARCH}!
+          </p>
+        )}
 
         {streak > 0 && (
           <p className="font-heading text-2xl font-bold">

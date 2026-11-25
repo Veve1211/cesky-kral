@@ -57,3 +57,17 @@ Historie rozhodnutí v projektu (přesunuto z CLAUDE.md, aby zůstal krátký). 
 - 2026-11-24: po výhře karty je jeden hlavní krok „Hrát o další kartu“ (další chybějící panovník podle `order`), sbírka jen jako odkaz; `getKingSlugs` vrací panovníky v herním pořadí (audit bod 5)
 - 2026-11-24: střídání otázek ve hře o kartu – výběr kola v prohlížeči z celého fondu panovníka, přednost neviděným (localStorage `cesky-kral:seen`, max 60 id); žádná cookie, protože Soukromí slibuje „Žádné cookies“; správnost dál zná jen server
 - 2026-11-24: `main` má `min-h-dvh` – patička nezačíná na obrazovce, obsah vykreslený v prohlížeči ji neodstrčí (CLS /sbirka 0,79 → 0, Lighthouse desktop 76 → 99); detail v `docs/audit.md`
+- 2026-11-24: tři uzavřené kruhy otázek (pokyn Veve) – hra o kartu jen lehké + střední, mistrovské kolo jen těžké, Denní výzva vlastních 54 otázek (`Question.pool`, aditivní migrace); dřív hráč v mistrovském kole potkal otázky, které už viděl v kole o kartu, a výzva brala otázky z karet
+- 2026-11-24: jméno panovníka v Denní výzvě a Rychlovce velké s 👑 (dřív drobný zlatý nápis, který se přehlížel)
+- 2026-11-24: `quiz.tsx` rozdělený (bod 14) na kvíz, `quiz-results.tsx` a `quiz-shared.ts` – každý soubor pod 450 řádků, chování beze změny
+- 2026-11-24: PWA (bod 13) jen manifest + ikony s korunou + meta pro iPhone, bez service workeru – hra potřebuje server (otázky, skóre), offline by nic nepřineslo a cache by mohla držet staré otázky; návod „Přidat na plochu“ v Jak hrát
+- 2026-11-24: postupné odhalování režimů (bod 15) přes atribut na `<html>` nastavený inline skriptem před vykreslením – stránka nebliká a nic neposkočí (CLS); skrývá se jen navigace, přímé odkazy (učitelé, sdílení) fungují vždy; kdo už hrál pozdější režim, vidí vše
+- 2026-11-25: místo postupného skrývání (1 a 3 karty) vidí nový hráč všechny režimy hned se zámkem 🔒 a odkazem na první kartu; vše se odemkne po první kartě (pokyn Veve – hráč má vědět, co ho čeká)
+- 2026-11-25: postup kola jako korunky (zlatá = správně, ✗ = špatně), obtížnost slovem; „Zkusit znovu“ ve hře o kartu opakuje stejné otázky v jiném pořadí – jde o zapamatování (pokyn Veve ze stagingu)
+- 2026-11-25: kvízy už po správné odpovědi samy nepokračují – fakt (vysvětlení) se nestihl přečíst; Kdo vládl dřív? a Řeka času automatický posun nechávají
+- 2026-11-25: po prvním získání karty animace zařazení panovníka do Řeky času (přání Veve); ukazuje jen získané panovníky a žádné roky, aby neprozradila odpovědi pro Kdo vládl dřív?
+- 2026-11-25: zamčené režimy zamykají celou stránku (`LockedPage`: zámek + „Hrát o první kartu“), ne jen ikonu – přání Veve; e2e testy startují jako vracející se hráč (`storageState` v playwright.config), nový hráč jen v `progressive-reveal.spec.ts`
+- 2026-11-25: fakt po odpovědi větší (📜, text-base/lg); titul „Dnešní král / královna“ pro každého, kdo dá Denní výzvu bez chyby (výsledek + sdílení), „Dnešní vládce“ zůstává pro 1. místo
+- 2026-11-25: díly erbu přeřazené podle atraktivity (návrh schválila Veve) – lev 9 zlatých korun, orlice 6, koruna 3 zlaté, lilie 6 stříbrných; obyčejné díly (věž, černá, zelená, hlava) už za 1–3 karty
+- 2026-11-25: hlavní tlačítko nového hráče a zamčené položky: „Získej českého panovníka“ (pokyn Veve), vracející se hráč dál „Pokračuj“
+- 2026-11-25: zpětná vazba ze stagingu – „Pokračuj a získej dalšího“, roky vlády pod portréty v Řece času po výhře, ohňostroj skončí sám (2 kola), výsledek výzvy bez přezdívky „Tvůj výsledek: N. z M“ místo „Patřilo by ti“, karta výsledku se nerozšíří přes displej

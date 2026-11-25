@@ -28,8 +28,8 @@
 - Prostředí: Claude Code na webu (claude.ai/code), bez Dockeru
 
 ## Herní logika (zkráceně, detail v `docs/game-logic.md`)
-- 18 panovníků, každý 9 otázek (3 lehké, 3 střední, 3 těžké), každá 3 odpovědi, 1 správná; správnost zná jen server
-- Hra o kartu: 5 otázek, 4 správně = karta do sbírky; Mistrovské kolo = zlatá karta
+- 18 panovníků, každý 9 otázek do hry o kartu a mistrovského kola (3 lehké, 3 střední, 3 těžké) + 3 vlastní otázky Denní výzvy; každá 3 odpovědi, 1 správná; správnost zná jen server
+- Tři uzavřené kruhy: hra o kartu (2 lehké + 3 střední, 4 správně = karta), Mistrovské kolo (všechny těžké = zlatá karta), Denní výzva (vlastní sada) – otázky se nikdy nesdílí
 - Režimy: Denní výzva, Rychlovka, Kdo vládl dřív?, Řeka času; skóre do žebříčků počítá jen server
 - Odměny: karta, koruny učenosti, zlatá karta, hodnost, díly erbu, série 🔥
 - Bez účtů: postup v localStorage, do žebříčků jen přezdívka, server zná jen hash tokenu
@@ -86,7 +86,7 @@ Pokud NODE_ENV=production:
 - Příkazy: `npm run dev`, `npm run build`, `npm run lint`, `npm run typecheck`, `npm test`, `npm run db:migrate`, `npm run db:seed`, `npm run test:e2e`
 - `npm start` (Railway): `prisma migrate deploy` → `prisma db seed` → `next start`
 - Soukromí: `src/app/soukromi` (co se ukládá v prohlížeči a na serveru, kontakt pro smazání), odkaz v patičce; při změně ukládaných údajů stránku uprav
-- SEO a bezpečnost: `src/app/sitemap.ts` (veřejné stránky + králové ze seedu), `src/app/robots.ts`, adresa webu v `src/lib/site-url.ts`, bezpečnostní hlavičky v `next.config.ts`; ikony `src/app/favicon.ico` a `apple-icon.png` (koruna)
+- SEO a bezpečnost: `src/app/sitemap.ts` (veřejné stránky + králové ze seedu), `src/app/robots.ts`, adresa webu v `src/lib/site-url.ts`, bezpečnostní hlavičky v `next.config.ts`; ikony `src/app/favicon.ico` a `apple-icon.png` (koruna); PWA „Přidat na plochu“: `src/app/manifest.ts` + `public/icons/` (192, 512, maskable), `appleWebApp` v layoutu, bez service workeru (test `e2e/pwa.spec.ts`)
 
 ## Testy
 - Jednotkové testy (Vitest, `npm test`): čistá herní logika v `src/lib/*.test.ts` (hodnosti, koruny, denní výzva, erb, další krok), bez DB, běží v CI před buildem

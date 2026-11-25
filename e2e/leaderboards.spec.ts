@@ -223,7 +223,7 @@ test("po dohrání: pořadí, co chybělo, zápis přezdívkou, Dnešní vládce
 
   await playDaily(page, [true, true, true, true, true]);
   const standing = page.getByTestId("daily-standing");
-  await expect(standing).toContainText(/Patřilo by ti \d+\. z \d+/);
+  await expect(standing).toContainText(/Tvůj výsledek: \d+\. z \d+/);
 
   // Bad nickname first, then a good one.
   const field = standing.getByLabel("Zapiš se do žebříčku – stačí přezdívka");
@@ -245,7 +245,7 @@ test("po dohrání: pořadí, co chybělo, zápis přezdívkou, Dnešní vládce
   await page.getByRole("button", { name: "Sdílet" }).click();
   await expect
     .poll(() => page.evaluate(() => (window as unknown as { shared?: string }).shared))
-    .toMatch(/5\/5 👑👑👑👑👑 🏆 \d+\. místo z \d+/);
+    .toMatch(/5\/5 👑👑👑👑👑 · dnešní král \/ královna 👑 🏆 \d+\. místo z \d+/);
 
   // The home page keeps only the main game in front: today's ruler lives on /vyzva and /zebricky.
   await open(page, "/");

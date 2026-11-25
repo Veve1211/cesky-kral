@@ -63,6 +63,10 @@ async function HomeContent() {
       <section aria-label="Hrát" className="-mt-2 flex flex-col items-center gap-3">
         <StartButton kings={kings.map(({ slug, name }) => ({ slug, name }))} />
         <DailyHomeButton />
+        {/* New players: one sentence about the locks (src/lib/reveal.ts). */}
+        <p data-testid="reveal-hint" className="reveal-locked max-w-sm text-center text-sm text-ink/80">
+          🔒 Vyhraj první kartu a odemkne se ti Denní výzva, Rychlovka, Kdo vládl dřív?, žebříčky i vlastní erb.
+        </p>
       </section>
 
       <ReignTimeline variant="compact" kings={kings} />

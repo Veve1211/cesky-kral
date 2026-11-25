@@ -12,15 +12,16 @@ import {
   pickDailyQuestions,
   shiftDateKey,
 } from "../src/lib/daily";
-import { answer, currentQuestion, open, progress } from "./helpers/game";
-import { kings } from "./helpers/seed-answers";
+import { answer, currentQuestion, open, progress, revealAll } from "./helpers/game";
+import { dailyQuestions, kings } from "./helpers/seed-answers";
 
 const DAILY_KEY = "cesky-kral:daily";
 
 // --- pure logic --------------------------------------------------------------
 
+// The daily challenge draws only from its own pool (never the card questions).
 const pool = kings.flatMap((king) =>
-  king.questions.map((q) => ({ kingSlug: king.slug, text: q.text, difficulty: q.difficulty as 1 | 2 | 3 })),
+  (dailyQuestions[king.slug] ?? []).map((q) => ({ kingSlug: king.slug, text: q.text, difficulty: q.difficulty as 1 | 2 | 3 })),
 );
 
 test.describe("logika výzvy", () => {
@@ -96,6 +97,8 @@ async function stubShare(page: Page) {
 }
 
 test("na úvodní stránce je výzva malým odkazem hned pod hlavním tlačítkem", async ({ page }) => {
+  // A returning player (a new one sees the challenge after the first card).
+  await revealAll(page);
   await open(page, "/");
   const link = page.getByRole("link", { name: /Denní výzva/ });
   await expect(link).toBeVisible();
@@ -208,7 +211,7 @@ test("série dní: včera dohraná výzva se dnes prodlouží, starší série z
   await page.getByRole("button", { name: "Sdílet" }).click();
   await expect
     .poll(() => page.evaluate(() => (window as unknown as { shared?: string }).shared))
-    .toContain("5/5 👑👑👑👑👑 🔥 3 dny");
+    .toContain("5/5 👑👑👑👑👑 · dnešní král / královna 👑 🔥 3 dny");
 });
 
 test("přerušená série se počítá od jedné", async ({ page }) => {

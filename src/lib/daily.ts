@@ -3,12 +3,16 @@
 // Every day has one set of questions, the same for every player. The day is
 // the calendar date in the Czech time zone, so a new challenge starts at
 // midnight in Prague (DST included).
-import { ROUND_PLAN, type Difficulty } from "@/lib/game-rules";
+import type { Difficulty } from "@/lib/game-rules";
 import { shareIcons } from "@/lib/share-text";
 
 export const DAILY_TIME_ZONE = "Europe/Prague";
-/** Same shape as a king round: 2 easy, 2 medium, 1 hard. */
-export const DAILY_PLAN = ROUND_PLAN;
+/** 2 easy, 2 medium, 1 hard – from the daily pool only (Question.pool = "daily"). */
+export const DAILY_PLAN: readonly { difficulty: Difficulty; count: number }[] = [
+  { difficulty: 1, count: 2 },
+  { difficulty: 2, count: 2 },
+  { difficulty: 3, count: 1 },
+];
 export const DAILY_QUESTIONS = DAILY_PLAN.reduce((sum, step) => sum + step.count, 0);
 
 const DATE_KEY = /^(\d{4})-(\d{2})-(\d{2})$/;
@@ -160,6 +164,9 @@ export function pickDailyQuestions<T extends DailyCandidate>(dateKey: string, po
   return picked;
 }
 
+/** Title for everyone who answers the whole challenge right (Veve, 25. 11.). */
+export const DAILY_MONARCH = "Jsi dnešní král / královna";
+
 // --- share text --------------------------------------------------------------
 
 /**
@@ -176,5 +183,6 @@ export function dailyShareText(
   const icons = shareIcons(marks);
   const streakText = streak >= 2 ? ` 🔥 ${formatStreakDays(streak)}` : "";
   const placeText = place ? ` 🏆 ${place.rank}. místo z ${place.total}` : "";
-  return `Český král – výzva ${formatDailyDate(dateKey)} ${score}/${marks.length} ${icons}${streakText}${placeText}`;
+  const monarchText = marks.length > 0 && score === marks.length ? " · dnešní král / královna 👑" : "";
+  return `Český král – výzva ${formatDailyDate(dateKey)} ${score}/${marks.length} ${icons}${monarchText}${streakText}${placeText}`;
 }

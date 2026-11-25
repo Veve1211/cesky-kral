@@ -44,9 +44,13 @@ model Question {
   sourceUrl   String?
   /// 1 = easy, 2 = medium, 3 = hard (CHECK constraint in migration)
   difficulty  Int      @default(1)
+  /// "card" = Hra o kartu, Mistrovské kolo, Rychlovka; "daily" = Denní výzva only
+  /// (CHECK constraint in migration) – the pools never mix
+  pool        String   @default("card")
   answers     Answer[]
 
   @@index([kingId, difficulty])
+  @@index([pool])
 }
 
 model Answer {

@@ -1,11 +1,11 @@
-// "Začni hrát" / "Pokračuj" – where the main home button leads.
+// "Získej českého panovníka" / "Pokračuj" – where the main home button leads.
 // Pure logic (no DB, no window), shared by the client and the tests.
 
 export type StepKing = { slug: string; name: string };
 
 export type NextStep =
-  | { kind: "start"; href: string; label: "Začni hrát"; detail: string }
-  | { kind: "continue"; href: string; label: "Pokračuj"; detail: string };
+  | { kind: "start"; href: string; label: "Získej českého panovníka"; detail: string }
+  | { kind: "continue"; href: string; label: "Pokračuj a získej dalšího" | "Pokračuj"; detail: string };
 
 /**
  * - new player (empty collection): the first ruler in order
@@ -24,11 +24,11 @@ export function nextStep(
   const ownedHere = kings.filter((king) => owned.has(king.slug));
   if (ownedHere.length === 0) {
     const first = kings[0];
-    return { kind: "start", href: `/kral/${first.slug}`, label: "Začni hrát", detail: `První karta: ${first.name}` };
+    return { kind: "start", href: `/kral/${first.slug}`, label: "Získej českého panovníka", detail: `První karta: ${first.name}` };
   }
   const missing = kings.find((king) => !owned.has(king.slug));
   if (missing) {
-    return { kind: "continue", href: `/kral/${missing.slug}`, label: "Pokračuj", detail: `Další karta: ${missing.name}` };
+    return { kind: "continue", href: `/kral/${missing.slug}`, label: "Pokračuj a získej dalšího", detail: `Další karta: ${missing.name}` };
   }
   const goldenSet = new Set(golden);
   const notGolden = kings.find((king) => !goldenSet.has(king.slug));

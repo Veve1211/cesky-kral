@@ -5,8 +5,11 @@ import { randomBytes } from "node:crypto";
 import { expect, type APIRequestContext, type Page, test } from "@playwright/test";
 
 import { isChronological } from "../src/lib/games";
-import { dismissAllCelebrations, open, playRound, waitForHydration } from "./helpers/game";
+import { dismissAllCelebrations, open, playRound, waitForHydration, revealAll } from "./helpers/game";
 import { getKing } from "./helpers/seed-answers";
+
+// Full menu and home page: act as a returning player (progressive reveal, src/lib/reveal.ts).
+test.beforeEach(async ({ page }) => revealAll(page));
 
 const reignFrom = (slug: string) => getKing(slug).reignFrom!;
 const nickname = (prefix: string) => `${prefix} ${randomBytes(4).toString("hex")}`.slice(0, 16);

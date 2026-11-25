@@ -5,7 +5,10 @@
 // No Ko-fi button in the header.
 import { expect, type Page, test } from "@playwright/test";
 
-import { open } from "./helpers/game";
+import { open, revealAll } from "./helpers/game";
+
+// Full menu and home page: act as a returning player (progressive reveal, src/lib/reveal.ts).
+test.beforeEach(async ({ page }) => revealAll(page));
 
 const WIDTHS = [320, 340, 360, 375, 390, 414, 430, 460, 480, 640, 768, 1023, 1024, 1280];
 
@@ -15,7 +18,8 @@ async function headerState(page: Page) {
     const header = document.querySelector("body > header")!;
     const logo = header.querySelector('a[href="/"] span')!;
     const nav = header.querySelector('nav[aria-label="Hlavní navigace"]')!;
-    const links = [...nav.querySelectorAll("a")];
+    // Only the links shown (locked variants of the modes are display: none – src/lib/reveal.ts).
+    const links = [...nav.querySelectorAll("a")].filter((a) => a.getClientRects().length > 0);
     const inside = (el: Element) => {
       const r = el.getBoundingClientRect();
       return r.left >= 0 && r.right <= width + 0.5 && r.width > 0;
