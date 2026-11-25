@@ -16,9 +16,7 @@ Stav: ✅ opraveno · 🔧 opravuje se v uvedeném PR · ⏳ po odevzdání · �
    otázky: Denní výzva 765 → 571 px, Rychlovka 713 → 515 px; Kdo vládl dřív? obě karty celé (dřív jen první);
    Řeka času první dvojice karet celá. Počítač (720 px): Denní výzva 774 → 698 px. Hlídá týž test.
 3. ✅ (PR 2) **Přehlcený první dojem.** Pod nadpisem je jedna věta, o čem hra je, a hned pod ní
-   velké „Začni hrát“ – na mobilu obojí bez posouvání (test). ✅ (24. 11.) Postupné odhalování:
-   nový hráč vidí jen hru o kartu, galerii, sbírku a Jak hrát; po první kartě Denní výzvu a Můj erb, po třech
-   kartách Rychlovku, Kdo vládl dřív?, Řeku času a žebříčky (`src/lib/reveal.ts`, test `e2e/progressive-reveal.spec.ts`).
+   velké „Začni hrát“ – na mobilu obojí bez posouvání (test). ✅ (24.–25. 11.) Zamčené režimy: nový hráč vidí všechny režimy, pozdější se zámkem 🔒 vedoucím na první kartu; první karta odemkne vše (`src/lib/reveal.ts`, test `e2e/progressive-reveal.spec.ts`).
    ⏸ Menu „Více“ na mobilu a nápověda v prvním kole – s méně položkami v hlavičce zatím nejsou potřeba.
 
 ## Střední závažnost

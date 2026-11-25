@@ -5,6 +5,8 @@ import Link from "next/link";
 import { useCollectionReady } from "@/lib/collection";
 import { DAILY_QUESTIONS, dailyDateKey, formatStreakDays } from "@/lib/daily";
 import { currentStreak, marksFor, useDailyProgress } from "@/lib/daily-progress";
+import { FIRST_KING_HREF, LOCKED_NOTE } from "@/lib/reveal";
+import { cn } from "@/lib/utils";
 
 /** Second choice on the home page (under "Začni hrát"): today's challenge and its state. */
 export function DailyHomeButton() {
@@ -30,24 +32,43 @@ export function DailyHomeButton() {
   }
 
   // A card under the main button: clearly visible, but smaller than "Začni hrát".
+  // New players see it locked (🔒 → first card round, src/lib/reveal.ts).
+  const cardClass =
+    "flex w-full max-w-sm items-center gap-3 rounded-2xl bg-navy px-3.5 py-2 text-parchment shadow-md ring-1 ring-gold/70 transition-colors outline-none hover:bg-navy/90 focus-visible:ring-4 focus-visible:ring-ring/60";
   return (
-    <Link
-      href="/vyzva"
-      aria-describedby="daily-home-status"
-      data-testid="daily-home-card"
-      data-reveal-at="1"
-      className="flex w-full max-w-sm items-center gap-3 rounded-2xl bg-navy px-3.5 py-2 text-parchment shadow-md ring-1 ring-gold/70 transition-colors outline-none hover:bg-navy/90 focus-visible:ring-4 focus-visible:ring-ring/60"
-    >
-      <span aria-hidden className="flex size-10 shrink-0 items-center justify-center rounded-full bg-gold/15 text-xl ring-1 ring-gold">
-        👑
-      </span>
-      <span className="flex min-w-0 flex-1 flex-col items-start text-left">
-        <span className="font-heading text-lg leading-tight font-bold">Denní výzva</span>
-        <span id="daily-home-status" className="text-xs leading-snug text-parchment/85">
-          {status}
+    <>
+      <Link
+        href="/vyzva"
+        aria-describedby="daily-home-status"
+        data-testid="daily-home-card"
+        className={cn(cardClass, "reveal-open")}
+      >
+        <span aria-hidden className="flex size-10 shrink-0 items-center justify-center rounded-full bg-gold/15 text-xl ring-1 ring-gold">
+          👑
         </span>
-      </span>
-      <span className="shrink-0 rounded-full bg-gold px-3 py-1.5 text-xs font-bold text-navy shadow">{action}</span>
-    </Link>
+        <span className="flex min-w-0 flex-1 flex-col items-start text-left">
+          <span className="font-heading text-lg leading-tight font-bold">Denní výzva</span>
+          <span id="daily-home-status" className="text-xs leading-snug text-parchment/85">
+            {status}
+          </span>
+        </span>
+        <span className="shrink-0 rounded-full bg-gold px-3 py-1.5 text-xs font-bold text-navy shadow">{action}</span>
+      </Link>
+      <Link
+        href={FIRST_KING_HREF}
+        aria-label={`Denní výzva – ${LOCKED_NOTE.toLowerCase()}. Hrát o první kartu`}
+        data-testid="daily-home-locked"
+        className={cn(cardClass, "reveal-locked")}
+      >
+        <span aria-hidden className="flex size-10 shrink-0 items-center justify-center rounded-full bg-gold/15 text-xl ring-1 ring-gold">
+          🔒
+        </span>
+        <span className="flex min-w-0 flex-1 flex-col items-start text-left">
+          <span className="font-heading text-lg leading-tight font-bold">Denní výzva</span>
+          <span className="text-xs leading-snug text-parchment/85">{LOCKED_NOTE}</span>
+        </span>
+        <span className="shrink-0 rounded-full bg-gold px-3 py-1.5 text-xs font-bold text-navy shadow">Hrát o kartu</span>
+      </Link>
+    </>
   );
 }
