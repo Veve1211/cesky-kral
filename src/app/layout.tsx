@@ -64,6 +64,10 @@ export const metadata: Metadata = {
     title: SITE_TITLE,
     description: SITE_DESCRIPTION,
   },
+  // Google Search Console ownership token. Keep permanently: removing it revokes verification.
+  verification: {
+    google: "aaMHtPCvfHmWkj8NtAzXgA32i6dDhTEyxg4atZH8368",
+  },
 };
 
 export const viewport: Viewport = {
