@@ -62,3 +62,4 @@ Historie rozhodnutí v projektu (přesunuto z CLAUDE.md, aby zůstal krátký). 
 - 2026-11-24: `quiz.tsx` rozdělený (bod 14) na kvíz, `quiz-results.tsx` a `quiz-shared.ts` – každý soubor pod 450 řádků, chování beze změny
 - 2026-11-24: PWA (bod 13) jen manifest + ikony s korunou + meta pro iPhone, bez service workeru – hra potřebuje server (otázky, skóre), offline by nic nepřineslo a cache by mohla držet staré otázky; návod „Přidat na plochu“ v Jak hrát
 - 2026-11-24: postupné odhalování režimů (bod 15) přes atribut na `<html>` nastavený inline skriptem před vykreslením – stránka nebliká a nic neposkočí (CLS); skrývá se jen navigace, přímé odkazy (učitelé, sdílení) fungují vždy; kdo už hrál pozdější režim, vidí vše
+- 2026-11-25: postup kola jako korunky (zlatá = správně, ✗ = špatně), obtížnost slovem; „Zkusit znovu“ ve hře o kartu opakuje stejné otázky v jiném pořadí – jde o zapamatování (pokyn Veve ze stagingu)

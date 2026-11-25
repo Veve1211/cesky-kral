@@ -1,7 +1,6 @@
-// Question rotation: a new king round prefers questions the player has not seen yet
-// (localStorage `cesky-kral:seen`, no cookie). A round has 2 of the 3 easy and all
-// 3 medium questions (hard ones are for the Mistrovské kolo), so the next round
-// always starts with the unseen easy one.
+// Question rotation: a new king round (a new visit of the page) prefers questions
+// the player has not seen yet (localStorage `cesky-kral:seen`, no cookie).
+// "Zkusit znovu" repeats the same questions in a new order, so the player learns them.
 import { expect, test } from "@playwright/test";
 
 import { currentQuestion, open, playRound } from "./helpers/game";
@@ -11,20 +10,19 @@ test.use({ reducedMotion: "reduce" });
 const SEEN_KEY = "cesky-kral:seen";
 const SLUG = "karel-iv";
 
-test("po Zkusit znovu začíná 2. kolo otázkou, která v 1. kole nebyla", async ({ page }) => {
+test("Zkusit znovu: stejné otázky jako v prohraném kole (jen v jiném pořadí)", async ({ page }) => {
   await open(page, `/kral/${SLUG}`);
   const first = await playRound(page, [false, false, false, false, false]);
-  const firstTexts = new Set(first.map((q) => q.text));
-  expect(firstTexts.size).toBe(5);
+  const firstTexts = first.map((q) => q.text).sort();
+  expect(new Set(firstTexts).size).toBe(5);
 
   await page.getByRole("button", { name: "Zkusit znovu" }).click();
-  const second = await currentQuestion(page);
-  expect(firstTexts.has(second.text)).toBe(false);
+  const second = await playRound(page, [false, false, false, false, false]);
+  expect(second.map((q) => q.text).sort()).toEqual(firstTexts);
 
-  // 5 seen + the one unseen easy question; the rest repeats the oldest – the round pool has 6.
   const seen = await page.evaluate((key) => JSON.parse(window.localStorage.getItem(key) ?? "null"), SEEN_KEY);
   expect(seen.version).toBe(1);
-  expect(seen.ids).toHaveLength(6);
+  expect(seen.ids).toHaveLength(5);
 });
 
 test("nové načtení stránky je nové kolo a začíná jinou otázkou", async ({ page }) => {

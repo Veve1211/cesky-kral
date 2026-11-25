@@ -45,6 +45,8 @@ export type QuizProps =
       questions: QuizQuestion[];
       startIndex: number;
       startScore: number;
+      /** Right/wrong of the questions answered before a resume (round crowns). */
+      startMarks: readonly boolean[];
       onAnswered: (index: number, correct: boolean) => void;
       onFinished: () => void;
       /** Checks (and records) the answer on the server – scored mode. */
