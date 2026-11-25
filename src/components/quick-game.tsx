@@ -37,7 +37,7 @@ export function QuickGame({ fallbackQuestions }: { fallbackQuestions: QuizQuesti
   }, [ready, round]);
 
   if (phase.kind === "connecting") {
-    return <div aria-busy="true" aria-label="Připravuji otázky" className="parchment h-80 animate-pulse rounded-2xl" />;
+    return <div role="status" aria-busy="true" aria-label="Připravuji otázky" className="parchment h-80 animate-pulse rounded-2xl" />;
   }
 
   if (phase.kind === "offline") {

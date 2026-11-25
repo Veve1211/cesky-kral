@@ -1,4 +1,5 @@
 import { cache, Suspense } from "react";
+import type { Metadata } from "next";
 import { connection } from "next/server";
 
 import { CollectionGallery } from "@/components/collection-gallery";
@@ -8,6 +9,12 @@ import { KofiButton } from "@/components/kofi-button";
 import { ReignTimeline } from "@/components/reign-timeline";
 import { StartButton, StartButtonSkeleton } from "@/components/start-button";
 import { getKings } from "@/lib/kings";
+import { jsonLdString, websiteJsonLd } from "@/lib/structured-data";
+
+// Canonical URL only here: set in the layout, every page without its own would inherit "/".
+export const metadata: Metadata = {
+  alternates: { canonical: "/" },
+};
 
 // One DB query per request, shared by the rank pill and the rest of the page.
 const loadKings = cache(async () => {
@@ -24,6 +31,8 @@ const loadKings = cache(async () => {
 export default function HomePage() {
   return (
     <div className="flex flex-col gap-6 sm:gap-8">
+      {/* Schema.org WebSite: constant data from code, `<` escaped (no user input). */}
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLdString(websiteJsonLd()) }} />
       <section className="flex flex-col items-center gap-3 text-center">
         <Suspense fallback={<div className="parchment h-[136px] w-full max-w-xl animate-pulse rounded-2xl sm:h-24" aria-hidden />}>
           <HomeRankSection />
@@ -84,7 +93,7 @@ async function HomeContent() {
 
 function HomeSkeleton() {
   return (
-    <div aria-busy="true" aria-label="Načítám" className="flex flex-col gap-6 sm:gap-8">
+    <div role="status" aria-busy="true" aria-label="Načítám" className="flex flex-col gap-6 sm:gap-8">
       <div className="-mt-2 flex justify-center">
         <StartButtonSkeleton />
       </div>

@@ -66,3 +66,22 @@ nestáhne. Zbytek jsou vestavěné polyfilly Next.js v hlavním chunku (~1,4 kB,
 - Měřit před opravou: K9 vypadal jako jasná úspora a ukázal se jako nulový.
 - Nejvíc pomohly levné, úzké změny s číslem (K2, K3) – každá v jednom PR s testem.
 - Bezpečnostní nálezy byly v okrajových případech (velikost požadavku, uchovávání dat), ne v hlavní logice.
+
+## Závěrečný technický audit (25. 11. 2026)
+
+Kontrola produkční připravenosti: ostrý web, staging a repozitář (větev z `dev`). Jen opravy, žádné nové funkce.
+
+| Oblast | Nález | Oprava |
+|---|---|---|
+| HTML (W3C Nu validátor, serverem vykreslené HTML 17 stránek) | `/kral/*` a mistrovská kola: `<title>` a meta značky ve `<body>`, `<head>` bez titulku; 10 načítacích bloků s `aria-label` na `div` bez role; `mailto` s mezerami | metadata panovníků ze seedu + `generateStaticParams` (v `<head>`); `role="status"`; `encodeURIComponent`. Výsledek: 0 chyb |
+| SEO | staging indexovatelný (stejný obsah jako ostrý web, chybí noindex); žádné canonical URL; `/erb` (404) v sitemap | `X-Robots-Tag: noindex` jen na stagingu, sitemap v robots.txt jen na ostrém; canonical na všech veřejných stránkách; `/erb` ze sitemap pryč |
+| Schema.org | žádná strukturovaná data | `WebSite` (název, adresa, jazyk, popis) na úvodu |
+| Hlavičky | chybí HSTS, `X-Powered-By: Next.js` | HSTS 1 rok (bez subdomén a preload), `poweredByHeader: false` |
+| Závislosti | `npm audit` 0 zranitelností; záplaty Next 16.4.6, React 19.3.1 | aktualizováno (přesné verze) |
+| Přístupnost (axe-core, WCAG 2.2 AA, mobil + počítač, nový i vracející se hráč, i po odpovědi) | bez nálezů v ustáleném stavu; při běžící animaci karty dočasně nízký kontrast (mezistav), experimentální pravidlo „label-content-name-mismatch“ (přístupné jméno začíná viditelným textem – v pořádku) | beze změny |
+| Klávesnice | všechny zastávky Tab na `/`, `/kral/karel-iv`, `/muj-erb`, `/zebricky` mají viditelný fokus | beze změny |
+| Odkazy | interní: 52 adres, všechny 200; externí (89) nešly z prostředí ověřit (síťová politika) | ruční kontrola |
+| Mobilní výkon (Lighthouse 13, mobil, lokální produkční build) | `/` 96–97, `/vyzva` 99, `/sbirka` 94–96; `/kral/karel-iv` 83–84 (LCP ~4,4 s simulovaně) – stejné i před změnami (80–85) | beze změny – portrét je v streamované části stránky, oprava by byla větší přestavba |
+| Analytika | v projektu žádná není | nepřidáno (Soukromí: „Žádné cookies“) |
+
+Testy po opravách (lokálně, testovací Postgres 16): lint ✓, typecheck ✓, Vitest 76/76 ✓, produkční build ✓, Playwright 404 prošlo / 0 selhalo / 40 záměrně přeskočeno (testy jen pro jeden projekt – mobil nebo počítač).

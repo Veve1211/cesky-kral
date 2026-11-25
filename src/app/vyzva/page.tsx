@@ -12,6 +12,7 @@ import { getDailyQuestions } from "@/lib/questions";
 import { LockedPage } from "@/components/locked-page";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/vyzva" },
   title: "Denní výzva",
   description: `Každý den ${DAILY_QUESTIONS} otázek o českých panovnících, pro všechny stejných. Kolik dáš ty?`,
 };

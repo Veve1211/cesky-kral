@@ -11,17 +11,23 @@ import { CardCorners, OrnamentDivider } from "@/components/ornaments";
 import { Quiz } from "@/components/quiz";
 import { endSentence, LEGEND_NOTE } from "@/lib/king-display";
 import { getKingBySlug, kingInitial } from "@/lib/kings";
+import { getKingMeta, kingMetaSlugs } from "@/lib/king-meta";
 import { getGoldenQuestions } from "@/lib/questions";
+
+// Known rulers: the page shell and its <head> metadata are prerendered at build time.
+export function generateStaticParams() {
+  return kingMetaSlugs();
+}
 
 export async function generateMetadata({
   params,
 }: PageProps<"/kral/[slug]/zlate-kolo">): Promise<Metadata> {
-  await connection();
   const { slug } = await params;
-  const king = await getKingBySlug(slug);
+  const king = getKingMeta(slug);
   if (!king) return { title: "Král nenalezen" };
   return {
     title: `Mistrovské kolo: ${king.name}`,
+    alternates: { canonical: `/kral/${king.slug}/zlate-kolo` },
     description: `Mistrovská úroveň: všechny těžké otázky o panovníkovi ${endSentence(king.name)}`,
   };
 }
@@ -97,7 +103,7 @@ async function GoldenRound({ params }: { params: Promise<{ slug: string }> }) {
 
 function GoldenSkeleton() {
   return (
-    <div aria-busy="true" aria-label="Načítám mistrovské kolo" className="flex flex-col gap-6">
+    <div role="status" aria-busy="true" aria-label="Načítám mistrovské kolo" className="flex flex-col gap-6">
       <div className="h-72 animate-pulse rounded-2xl bg-navy/80" />
       <div className="parchment h-80 animate-pulse rounded-2xl" />
     </div>

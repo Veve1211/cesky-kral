@@ -46,7 +46,7 @@ export function DailyChallenge({ dateKey, questions }: { dateKey: string; questi
 }
 
 function DailySkeleton() {
-  return <div aria-busy="true" aria-label="Načítám výzvu" className="parchment h-80 animate-pulse rounded-2xl" />;
+  return <div role="status" aria-busy="true" aria-label="Načítám výzvu" className="parchment h-80 animate-pulse rounded-2xl" />;
 }
 
 type Connection =

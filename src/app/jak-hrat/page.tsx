@@ -17,6 +17,7 @@ import { unlockTable } from "@/lib/heraldry";
 import { TIER_SHORT, tierThresholds } from "@/lib/mastery";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/jak-hrat" },
   title: "Jak hrát",
   description:
     "Pravidla hry Český král: jak získáš panovníka do sbírky, jaké jsou herní režimy a odkud pocházejí fakta.",

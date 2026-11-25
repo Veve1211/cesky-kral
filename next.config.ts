@@ -1,7 +1,16 @@
 import type { NextConfig } from "next";
 
+import { isIndexable } from "./src/lib/site-url";
+
+// Railway serves both environments only over HTTPS and redirects HTTP with 301 (checked
+// 25. 11. 2026), so HSTS is safe there. No includeSubDomains/preload: the parent domain
+// belongs to Railway. Browsers ignore HSTS on http://localhost.
+const HSTS = { key: "Strict-Transport-Security", value: "max-age=31536000" };
+// Staging (see isIndexable): keep every response (pages, images, OG images) out of search results.
+const NOINDEX = { key: "X-Robots-Tag", value: "noindex, nofollow" };
+
 const nextConfig: NextConfig = {
-  /* config options here */
+  poweredByHeader: false,
   cacheComponents: true,
   partialPrefetching: true,
   images: {
@@ -22,6 +31,8 @@ const nextConfig: NextConfig = {
             key: "Content-Security-Policy",
             value: "frame-ancestors 'none'; base-uri 'self'; object-src 'none'",
           },
+          ...(process.env.NODE_ENV === "production" ? [HSTS] : []),
+          ...(isIndexable() ? [] : [NOINDEX]),
         ],
       },
     ];

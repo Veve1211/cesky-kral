@@ -4,6 +4,7 @@ import Link from "next/link";
 import { CardCorners, OrnamentDivider } from "@/components/ornaments";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/pro-ucitele" },
   title: "Pro učitele",
   description:
     "Jak použít Český král v hodině dějepisu: rozcvička, chronologie, opakování. Zdarma, bez registrace a bez osobních údajů žáků.",
@@ -84,7 +85,7 @@ export default function TeachersPage() {
         </h2>
         <p>
           Hru jste vyzkoušeli se třídou, našli jste chybu nebo vám chybí panovník? Ozvěte se na{" "}
-          <a href={`mailto:${FEEDBACK_EMAIL}?subject=Český král ve třídě`} className={linkClass}>
+          <a href={`mailto:${FEEDBACK_EMAIL}?subject=${encodeURIComponent("Český král ve třídě")}`} className={linkClass}>
             {FEEDBACK_EMAIL}
           </a>
           .

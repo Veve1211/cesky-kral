@@ -13,6 +13,7 @@ import { GAME_INFO, GAME_MODES } from "@/lib/games";
 import { LockedPage } from "@/components/locked-page";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/zebricky" },
   title: "Žebříčky",
   description: "Nejlepší hráči Českého krále: Dnešní vládce, týdenní a celkové žebříčky.",
 };

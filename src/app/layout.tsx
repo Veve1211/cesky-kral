@@ -8,6 +8,7 @@ import { SiteHeader } from "@/components/site-header";
 import "./globals.css";
 import { siteUrl } from "@/lib/site-url";
 import { REVEAL_SCRIPT } from "@/lib/reveal";
+import { SITE_DESCRIPTION, SITE_NAME } from "@/lib/structured-data";
 
 // Keep preloads, but avoid late font swaps after the page has painted on a slow network.
 // latin-ext subset = Czech diacritics (ř, ě, š, č, ů ...)
@@ -33,11 +34,8 @@ const uncial = Uncial_Antiqua({
   display: "optional",
 });
 
-const SITE_NAME = "Český král";
 const SITE_TITLE = `${SITE_NAME} – Sbírej české panovníky`;
 const SITE_YEAR = 2026;
-const SITE_DESCRIPTION =
-  "Kvízová hra o českých panovnících pro žáky, učitele dějepisu i všechny, koho baví dějiny. Za správné odpovědi získáš sběratelské karty.";
 
 export const metadata: Metadata = {
   metadataBase: siteUrl(),
