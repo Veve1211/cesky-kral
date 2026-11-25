@@ -1,44 +1,26 @@
-// After a right answer the game moves on by itself after about a second;
-// a wrong answer in a quiz waits for "Další" (explanation can be read).
-// With "reduce motion" nothing moves on by itself.
+// Quizzes never move on by themselves: after every answer the player reads the
+// explanation (the fact) and clicks "Další otázka" (Veve, 25. 11.).
+// Kdo vládl dřív? and Řeka času (no facts to read) move on after a right answer;
+// with "reduce motion" nothing moves on by itself.
 import { expect, test } from "@playwright/test";
 
 import { currentQuestion, open, progress, settleAnswer, waitForHydration } from "./helpers/game";
 import { kingByName } from "./helpers/seed-answers";
 
-test("kvíz: po správné odpovědi další otázka naskočí sama, po chybné čeká na Další", async ({ page }) => {
+test("kvíz: ani po správné odpovědi nenaskočí další otázka sama – vysvětlení jde v klidu přečíst", async ({ page }) => {
   await open(page, "/kral/josef-ii");
   const first = await currentQuestion(page);
   const right = page.getByRole("button", { name: first.correct, exact: true });
   await waitForHydration(right);
   await right.click();
   await settleAnswer(page, "Správně!");
-  await expect(page.getByTestId("auto-advance")).toBeVisible();
-  // No click – the next question comes by itself within about a second.
-  await expect(progress(page, 2, 5)).toBeVisible({ timeout: 3000 });
-  await expect(page.getByRole("heading", { level: 2, name: (await currentQuestion(page)).text })).toBeFocused();
-
-  const second = await currentQuestion(page);
-  await page.getByRole("button", { name: second.wrong[0], exact: true }).click();
-  await settleAnswer(page, "Tentokrát vedle.");
+  await expect(page.getByText(first.explanation)).toBeVisible();
   await expect(page.getByTestId("auto-advance")).toHaveCount(0);
-  await page.waitForTimeout(2000);
-  await expect(progress(page, 2, 5)).toBeVisible();
-  await page.getByRole("button", { name: "Další otázka" }).click();
-  await expect(progress(page, 3, 5)).toBeVisible();
-});
-
-test("omezený pohyb v systému: nic nenaskočí samo", async ({ page }) => {
-  await page.emulateMedia({ reducedMotion: "reduce" });
-  await open(page, "/kral/josef-ii");
-  const first = await currentQuestion(page);
-  const right = page.getByRole("button", { name: first.correct, exact: true });
-  await waitForHydration(right);
-  await right.click();
-  await settleAnswer(page, "Správně!");
-  await page.waitForTimeout(2000);
+  await page.waitForTimeout(2500);
   await expect(progress(page, 1, 5)).toBeVisible();
-  await expect(page.getByTestId("auto-advance")).toHaveCount(0);
+  await page.getByRole("button", { name: "Další otázka" }).click();
+  await expect(progress(page, 2, 5)).toBeVisible();
+  await expect(page.getByRole("heading", { level: 2, name: (await currentQuestion(page)).text })).toBeFocused();
 });
 
 test("Kdo vládl dřív?: po správné volbě přijde další dvojice sama", async ({ page }) => {

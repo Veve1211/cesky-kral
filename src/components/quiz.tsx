@@ -16,7 +16,6 @@ import { RoundCrowns } from "@/components/round-crowns";
 import { TierCelebration, type CelebratedRuler } from "@/components/tier-celebration";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { AUTO_ADVANCE_MS, useAutoAdvanceAllowed } from "@/lib/auto-advance";
 import { addGoldenCard, addToCollection, readCollection, useCollection, useCollectionReady } from "@/lib/collection";
 import { unlockedBy } from "@/lib/crest-unlocks";
 import { CORRECT_TO_COLLECT } from "@/lib/game-rules";
@@ -143,17 +142,8 @@ export function Quiz(props: QuizProps) {
     return saved;
   }
 
-  // A right answer moves on by itself after a short moment (not while a
-  // celebration is open – it starts again after "Pokračovat"). A wrong one
-  // waits for "Další", so the right answer and the explanation can be read.
-  const nextRef = useRef<() => void>(() => {});
-  const autoAdvanceAllowed = useAutoAdvanceAllowed();
-  const autoAdvance = autoAdvanceAllowed && feedback?.correct === true && celebrations.length === 0 && !finished;
-  useEffect(() => {
-    if (!autoAdvance) return;
-    const timer = window.setTimeout(() => nextRef.current(), AUTO_ADVANCE_MS);
-    return () => window.clearTimeout(timer);
-  }, [autoAdvance, index]);
+  // No automatic next question (Veve, 25. 11.): after every answer the player
+  // reads the explanation (the fact) and moves on with "Další otázka".
 
   function next() {
     if (!feedback) return;
@@ -189,10 +179,6 @@ export function Quiz(props: QuizProps) {
     }
     setFinished(true);
   }
-
-  useEffect(() => {
-    nextRef.current = next;
-  });
 
   function restart() {
     if ((props.mode === "quick" || props.mode === "king") && props.onRestart) {
@@ -416,13 +402,6 @@ export function Quiz(props: QuizProps) {
               <Button id="quiz-next" onClick={next} autoFocus className="relative self-end overflow-hidden">
                 {index + 1 < total ? "Další otázka" : "Zobrazit výsledek"}
                 <ArrowRight aria-hidden />
-                {autoAdvance && (
-                  <span
-                    aria-hidden
-                    data-testid="auto-advance"
-                    className="animate-auto-advance absolute inset-x-0 bottom-0 h-1 origin-left bg-gold"
-                  />
-                )}
               </Button>
             </div>
           )}
