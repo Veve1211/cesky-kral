@@ -147,6 +147,7 @@ function DailyPlay({
           questions={questions}
           startIndex={initial.length}
           startScore={initial.filter(Boolean).length}
+          startMarks={initial}
           check={connection.phase === "online" ? check : undefined}
           onAnswered={(index, correct) => {
             setMarks((current) => (current.length === index ? [...current, correct] : current));
