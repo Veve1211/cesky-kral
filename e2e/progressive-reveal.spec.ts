@@ -51,7 +51,7 @@ test("zamčená stránka: nový hráč vidí jen zámek a cestu k první kartě,
     const lock = page.getByTestId("locked-page");
     await expect(lock, path).toBeVisible();
     await expect(lock).toContainText("Odemkne se po první kartě");
-    await expect(lock.getByRole("link", { name: "Hrát o první kartu" })).toHaveAttribute("href", `/kral/${first.slug}`);
+    await expect(lock.getByRole("link", { name: "Získej českého panovníka" })).toHaveAttribute("href", `/kral/${first.slug}`);
   }
   await setCollection(page, [first.slug]);
   await open(page, "/rychlovka");

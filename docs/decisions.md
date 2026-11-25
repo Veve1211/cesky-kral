@@ -68,3 +68,5 @@ Historie rozhodnutí v projektu (přesunuto z CLAUDE.md, aby zůstal krátký). 
 - 2026-11-25: po prvním získání karty animace zařazení panovníka do Řeky času (přání Veve); ukazuje jen získané panovníky a žádné roky, aby neprozradila odpovědi pro Kdo vládl dřív?
 - 2026-11-25: zamčené režimy zamykají celou stránku (`LockedPage`: zámek + „Hrát o první kartu“), ne jen ikonu – přání Veve; e2e testy startují jako vracející se hráč (`storageState` v playwright.config), nový hráč jen v `progressive-reveal.spec.ts`
 - 2026-11-25: fakt po odpovědi větší (📜, text-base/lg); titul „Dnešní král / královna“ pro každého, kdo dá Denní výzvu bez chyby (výsledek + sdílení), „Dnešní vládce“ zůstává pro 1. místo
+- 2026-11-25: díly erbu přeřazené podle atraktivity (návrh schválila Veve) – lev 9 zlatých korun, orlice 6, koruna 3 zlaté, lilie 6 stříbrných; obyčejné díly (věž, černá, zelená, hlava) už za 1–3 karty
+- 2026-11-25: hlavní tlačítko nového hráče a zamčené položky: „Získej českého panovníka“ (pokyn Veve), vracející se hráč dál „Pokračuj“

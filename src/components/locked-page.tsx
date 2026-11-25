@@ -6,7 +6,7 @@ import { FIRST_KING_HREF, LOCKED_NOTE } from "@/lib/reveal";
 
 /**
  * A game mode a new player can't use yet (Veve, 25. 11.): until the first card the
- * page shows only a lock and "Hrát o první kartu" (src/lib/reveal.ts). Both variants
+ * page shows only a lock and "Získej českého panovníka" (src/lib/reveal.ts). Both variants
  * are in the HTML; CSS switches them before the first paint, so nothing flashes.
  * Without JavaScript or storage the page is open.
  */
@@ -29,7 +29,7 @@ export function LockedPage({ name, children }: { name: string; children: React.R
           {LOCKED_NOTE}. Odpověz správně aspoň na 4 z 5 otázek o panovníkovi a získej svou první kartu.
         </p>
         <Button asChild size="lg">
-          <Link href={FIRST_KING_HREF}>Hrát o první kartu</Link>
+          <Link href={FIRST_KING_HREF}>Získej českého panovníka</Link>
         </Button>
       </section>
       <div className="reveal-open contents">{children}</div>

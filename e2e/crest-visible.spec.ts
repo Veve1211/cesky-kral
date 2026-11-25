@@ -52,7 +52,7 @@ test("hlavička a Moje sbírka vedou k erbu", async ({ page }) => {
 test("oslava karty i koruny ukáže nový díl erbu a tlačítko Ozdobit erb", async ({ page }) => {
   await setCollection(page, []);
   await open(page, "/kral/karel-iv");
-  // Five right answers: the first card (unlocks the key), then the bronze crown.
+  // Five right answers: the first card unlocks the key (and more), then the bronze crown.
   for (let i = 1; i <= 5; i++) {
     const question = await currentQuestion(page);
     const button = page.getByRole("button", { name: question.correct, exact: true });
@@ -62,13 +62,9 @@ test("oslava karty i koruny ukáže nový díl erbu a tlačítko Ozdobit erb", a
     await goNext(page, i, 5);
   }
   const card = page.getByTestId("card-celebration");
-  await expect(card.getByTestId("crest-unlock")).toHaveText("🛡️ Nový díl erbu odemčen: figura Klíč");
-  await expect(card.getByRole("link", { name: "Ozdobit erb" })).toHaveAttribute("href", "/muj-erb");
-  await card.getByRole("button", { name: "Pokračovat" }).click();
-  const crown = page.getByTestId("tier-celebration");
-  await expect(crown.getByTestId("crest-unlock")).toContainText("Nové díly erbu odemčeny:");
-  await expect(crown.getByTestId("crest-unlock")).toContainText("figura Věž");
-  await crown.getByRole("link", { name: "Ozdobit erb" }).click();
+  await expect(card.getByTestId("crest-unlock")).toContainText("Nové díly erbu odemčeny:");
+  await expect(card.getByTestId("crest-unlock")).toContainText("figura Klíč");
+  await card.getByRole("link", { name: "Ozdobit erb" }).click();
   await expect(page).toHaveURL("/muj-erb");
   // The key is free in the editor now.
   await expect(page.getByRole("group", { name: "Figura", exact: true }).getByRole("button", { name: "Klíč", exact: true })).toBeVisible();
