@@ -1,18 +1,16 @@
 import { describe, expect, it } from "vitest";
 
-import { REVEAL_ALL_AT, REVEAL_DAILY_AT, REVEAL_SCRIPT, revealLevel } from "@/lib/reveal";
+import { REVEAL_SCRIPT, UNLOCK_AT, revealLevel } from "@/lib/reveal";
 
-describe("progressive reveal of game modes", () => {
-  it("new player: only the main game; first card: daily + crest; three cards: everything", () => {
+describe("locked game modes for new players", () => {
+  it("new player: locked; the first card unlocks everything", () => {
     expect(revealLevel(0, false)).toBe(0);
-    expect(revealLevel(REVEAL_DAILY_AT, false)).toBe(1);
-    expect(revealLevel(REVEAL_ALL_AT - 1, false)).toBe(1);
-    expect(revealLevel(REVEAL_ALL_AT, false)).toBe(2);
-    expect(revealLevel(18, false)).toBe(2);
+    expect(revealLevel(UNLOCK_AT, false)).toBe(1);
+    expect(revealLevel(18, false)).toBe(1);
   });
 
-  it("a player who already used a later mode keeps everything", () => {
-    expect(revealLevel(0, true)).toBe(2);
+  it("a player who already used a later mode keeps everything open", () => {
+    expect(revealLevel(0, true)).toBe(1);
   });
 
   it("the inline script follows the same rule", () => {
@@ -26,8 +24,7 @@ describe("progressive reveal of game modes", () => {
     const cards = (n: number) => JSON.stringify({ version: 2, kings: Array.from({ length: n }, (_, i) => `k${i}`), golden: [] });
     expect(run({})).toBe("0");
     expect(run({ "cesky-kral:collection": cards(1) })).toBe("1");
-    expect(run({ "cesky-kral:collection": cards(3) })).toBe("2");
-    expect(run({ "cesky-kral:daily": "{}" })).toBe("2");
+    expect(run({ "cesky-kral:daily": "{}" })).toBe("1");
     expect(run({ "cesky-kral:collection": "{broken" })).toBeUndefined();
   });
 });

@@ -1,26 +1,29 @@
-// Progressive reveal of game modes for new players (game audit, point 3 / task 15).
+// Locked game modes for new players (game audit, point 3 / task 15; changed by
+// Veve 25. 11. 2026: show everything at once, locked until the first card).
 //
-// A brand-new player sees only the main game (Hra o kartu) and the gallery.
-// After the first card: Denní výzva and Můj erb. After three cards (or when the
-// player already used a later mode on this device): every mode.
+// A brand-new player sees every mode, but Denní výzva, Rychlovka, Kdo vládl dřív?,
+// Žebříčky and Můj erb carry a 🔒 and lead to the first card round ("Odemkne se po
+// první kartě"). The first card (or earlier use of a later mode on this device)
+// unlocks everything. Every page still works by its address (teachers' links).
 //
-// Only menus and home-page entries are hidden – every page still works by its
-// address. Without JavaScript or storage nothing is hidden (no attribute).
-//
-// The level lives on <html data-reveal="0|1|2">; CSS (globals.css) hides
-// elements marked `data-reveal-at="1|2"` above the current level. The inline
-// script in the root layout sets it before the first paint (no flash, no layout
-// shift); `applyReveal()` updates it when a card is won.
+// The state lives on <html data-reveal="0|1"> (0 = locked). Elements come in two
+// variants: `.reveal-open` (the real link) and `.reveal-locked` (lock + link to the
+// first card round); CSS in globals.css shows one of them. The inline script in the
+// root layout sets the attribute before the first paint (no flash, no layout
+// shift); `applyReveal()` updates it when a card is won. Without JavaScript or
+// storage there is no attribute and everything is open.
 
-export const REVEAL_DAILY_AT = 1; // cards for Denní výzva + Můj erb
-export const REVEAL_ALL_AT = 3; // cards for Rychlovka, Kdo vládl dřív?, Řeka času, Žebříčky
+/** Cards needed to unlock every mode. */
+export const UNLOCK_AT = 1;
 
-export type RevealLevel = 0 | 1 | 2;
+/** The first ruler of the game (seed order 1) – where a locked entry leads. */
+export const FIRST_KING_HREF = "/kral/libuse";
+
+export type RevealLevel = 0 | 1;
 
 /** Pure rule, shared with tests. */
 export function revealLevel(cards: number, usedLaterModes: boolean): RevealLevel {
-  if (usedLaterModes || cards >= REVEAL_ALL_AT) return 2;
-  return cards >= REVEAL_DAILY_AT ? 1 : 0;
+  return usedLaterModes || cards >= UNLOCK_AT ? 1 : 0;
 }
 
 // Mirrors the storage keys of collection.ts ("cesky-kral:collection"),
@@ -50,4 +53,7 @@ export function applyReveal() {
 }
 
 /** Inline script for <head> (same rule as `revealLevel`) – a constant string, no user data. */
-export const REVEAL_SCRIPT = `(function(){try{var s=window.localStorage,c=0,r=s.getItem("cesky-kral:collection");if(r){var d=JSON.parse(r);if(d&&Array.isArray(d.kings))c=d.kings.length}var u=s.getItem("cesky-kral:daily")!==null||s.getItem("cesky-kral:who-first")!==null;document.documentElement.setAttribute("data-reveal",String(u||c>=${REVEAL_ALL_AT}?2:c>=${REVEAL_DAILY_AT}?1:0))}catch(e){}})();`;
+export const REVEAL_SCRIPT = `(function(){try{var s=window.localStorage,c=0,r=s.getItem("cesky-kral:collection");if(r){var d=JSON.parse(r);if(d&&Array.isArray(d.kings))c=d.kings.length}var u=s.getItem("cesky-kral:daily")!==null||s.getItem("cesky-kral:who-first")!==null;document.documentElement.setAttribute("data-reveal",u||c>=${UNLOCK_AT}?"1":"0")}catch(e){}})();`;
+
+/** Shown on locked entries and read by screen readers. */
+export const LOCKED_NOTE = "Odemkne se po první kartě";
