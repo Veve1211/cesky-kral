@@ -9,6 +9,8 @@ import { useCollectionReady } from "@/lib/collection";
 import { useSavedCrest } from "@/lib/crest-progress";
 import { DEFAULT_CREST } from "@/lib/heraldry";
 import type { KingSummary } from "@/lib/kings";
+import { FIRST_KING_HREF, LOCKED_NOTE } from "@/lib/reveal";
+import { cn } from "@/lib/utils";
 
 /**
  * Home page, top: the rank as a proper block (rank, cards collected, golden
@@ -36,8 +38,8 @@ export function HomeMoreLinks() {
   const card =
     "parchment group relative flex items-center gap-4 rounded-2xl p-4 ring-1 ring-gold/50 outline-none transition-transform hover:-translate-y-0.5 hover:ring-gold focus-visible:ring-4 focus-visible:ring-ring/60";
   return (
-    <nav aria-label="Další na Českém králi" data-reveal-at="1" className="grid gap-4 sm:grid-cols-2">
-      <Link href="/muj-erb" data-testid="home-crest-link" aria-label="Můj erb" className={card}>
+    <nav aria-label="Další na Českém králi" className="grid gap-4 sm:grid-cols-2">
+      <Link href="/muj-erb" data-testid="home-crest-link" aria-label="Můj erb" className={cn(card, "reveal-open")}>
         <CardCorners className="m-1 size-6 text-gold-dark" />
         <CrestSvg design={design} withMotto={false} label="" className="h-20 w-auto shrink-0 drop-shadow" />
         <span className="flex flex-col gap-1">
@@ -45,7 +47,7 @@ export function HomeMoreLinks() {
           <span className="text-sm text-ink/80">{saved ? "Ozdob svůj štít novými díly." : "Navrhni si vlastní rodový erb."}</span>
         </span>
       </Link>
-      <Link href="/kdo-driv" aria-label="Kdo vládl dřív?" data-reveal-at="2" className={card}>
+      <Link href="/kdo-driv" aria-label="Kdo vládl dřív?" className={cn(card, "reveal-open")}>
         <CardCorners className="m-1 size-6 text-gold-dark" />
         <span
           aria-hidden
@@ -56,6 +58,38 @@ export function HomeMoreLinks() {
         <span className="flex flex-col gap-1">
           <span className="font-heading text-2xl leading-tight font-bold">Kdo vládl dřív?</span>
           <span className="text-sm text-ink/80">Dva panovníci, jedna otázka: kdo byl první?</span>
+        </span>
+      </Link>
+      {/* New players: the same two cards, locked (🔒 → first card round, src/lib/reveal.ts). */}
+      <Link
+        href={FIRST_KING_HREF}
+        data-testid="home-locked"
+        aria-label={`Můj erb – ${LOCKED_NOTE.toLowerCase()}`}
+        className={cn(card, "reveal-locked")}
+      >
+        <CardCorners className="m-1 size-6 text-gold-dark" />
+        <span aria-hidden className="relative shrink-0">
+          <CrestSvg design={DEFAULT_CREST} withMotto={false} label="" className="h-20 w-auto opacity-60 drop-shadow" />
+          <span className="absolute -right-1 -bottom-1 text-2xl">🔒</span>
+        </span>
+        <span className="flex flex-col gap-1">
+          <span className="font-heading text-2xl leading-tight font-bold">Můj erb</span>
+          <span className="text-sm text-ink/80">{LOCKED_NOTE}.</span>
+        </span>
+      </Link>
+      <Link
+        href={FIRST_KING_HREF}
+        data-testid="home-locked"
+        aria-label={`Kdo vládl dřív? – ${LOCKED_NOTE.toLowerCase()}`}
+        className={cn(card, "reveal-locked")}
+      >
+        <CardCorners className="m-1 size-6 text-gold-dark" />
+        <span aria-hidden className="gilt flex size-20 shrink-0 items-center justify-center rounded-full p-[3px] opacity-60 shadow">
+          <span className="flex size-full items-center justify-center rounded-full bg-navy text-4xl">🔒</span>
+        </span>
+        <span className="flex flex-col gap-1">
+          <span className="font-heading text-2xl leading-tight font-bold">Kdo vládl dřív?</span>
+          <span className="text-sm text-ink/80">{LOCKED_NOTE}.</span>
         </span>
       </Link>
     </nav>

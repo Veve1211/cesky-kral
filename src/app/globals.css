@@ -548,21 +548,12 @@ body:has([data-testid="card-celebration"], [data-testid="tier-celebration"]) .ko
   display: none;
 }
 
-/* Progressive reveal of game modes (src/lib/reveal.ts): <html data-reveal="0|1|2">
-   hides menu items and home entries above the player's level. No attribute
-   (no JS, blocked storage) = everything visible. */
-html[data-reveal="0"] [data-reveal-at="1"],
-html[data-reveal="0"] [data-reveal-at="2"],
-html[data-reveal="1"] [data-reveal-at="2"] {
-  display: none;
-}
-/* Hints about what unlocks next: only for the level they describe. */
-[data-reveal-hint] {
-  display: none;
-}
-html[data-reveal="0"] [data-reveal-hint="0"],
-html[data-reveal="1"] [data-reveal-hint="1"] {
-  display: block;
+/* Locked game modes for new players (src/lib/reveal.ts): <html data-reveal="0|1">.
+   0 = locked: show the `.reveal-locked` variant (🔒 → first card round) instead of
+   `.reveal-open`. No attribute (no JS, blocked storage) = everything open. */
+html:not([data-reveal="0"]) .reveal-locked,
+html[data-reveal="0"] .reveal-open {
+  display: none !important;
 }
 
 /* Řeka času after a won card: the new ruler drops into its place, the gap opens

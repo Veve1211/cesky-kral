@@ -18,7 +18,8 @@ async function headerState(page: Page) {
     const header = document.querySelector("body > header")!;
     const logo = header.querySelector('a[href="/"] span')!;
     const nav = header.querySelector('nav[aria-label="Hlavní navigace"]')!;
-    const links = [...nav.querySelectorAll("a")];
+    // Only the links shown (locked variants of the modes are display: none – src/lib/reveal.ts).
+    const links = [...nav.querySelectorAll("a")].filter((a) => a.getClientRects().length > 0);
     const inside = (el: Element) => {
       const r = el.getBoundingClientRect();
       return r.left >= 0 && r.right <= width + 0.5 && r.width > 0;
