@@ -200,7 +200,8 @@ function DailyResult({
   return (
     <Card className="animate-card-reveal items-center text-center">
       <CardCorners className="m-1 size-8 text-gold-dark" />
-      <CardContent className="flex flex-col items-center gap-4">
+      {/* w-full: long lines (nickname hint) wrap instead of widening the card past the screen. */}
+      <CardContent className="flex w-full flex-col items-center gap-4">
         <h2
           ref={heading}
           tabIndex={-1}

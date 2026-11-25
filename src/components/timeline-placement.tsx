@@ -2,17 +2,26 @@
 
 import { KingPortrait } from "@/components/king-portrait";
 import { useCollection } from "@/lib/collection";
+import { formatReign } from "@/lib/king-display";
 import { cn } from "@/lib/utils";
 
 /** A ruler as the river needs it – no years (the order is the game order, by reign). */
-export type TimelineKing = { slug: string; name: string; initial: string; imageUrl: string | null };
+export type TimelineKing = {
+  slug: string;
+  name: string;
+  initial: string;
+  imageUrl: string | null;
+  isLegend: boolean;
+  reignFrom: number | null;
+  reignTo: number | null;
+};
 
 /**
  * End of a won card (first time): the new ruler drops into its place in
- * "Řeka času" among the rulers already collected (Veve, 25. 11.). Only collected
- * rulers are shown, in the game order (= order of reign, legends first), so the
- * river never tells anything about the ones still missing. Reduced motion: no
- * movement, the new ruler is only highlighted.
+ * "Řeka času" among the rulers already collected (Veve, 25. 11.), each with the
+ * years of reign under the portrait. Only collected rulers are shown, in the game
+ * order (= order of reign, legends first), so the river tells nothing about the
+ * ones still missing. Reduced motion: no movement, the new one is only highlighted.
  */
 export function TimelinePlacement({ kings, newSlug, name }: { kings: readonly TimelineKing[]; newSlug: string; name: string }) {
   const collection = useCollection();
@@ -37,12 +46,22 @@ export function TimelinePlacement({ kings, newSlug, name }: { kings: readonly Ti
               <li
                 key={king.slug}
                 data-new={isNew || undefined}
-                className={cn("shrink-0", isNew ? "timeline-drop-in w-14" : "w-10 opacity-80")}
+                className={cn("shrink-0", isNew ? "timeline-drop-in w-14" : "w-12 opacity-90")}
               >
                 <span className="sr-only">{king.name}</span>
                 <div className={cn("rounded-lg p-0.5", isNew ? "gilt shadow-[0_0_18px_var(--tier-light)]" : "bg-navy ring-1 ring-gold/50")}>
                   <KingPortrait name={king.name} initial={king.initial} imageUrl={king.imageUrl} sizes="56px" />
                 </div>
+                {/* When they ruled – the river shows where in time the new ruler belongs. */}
+                <p
+                  data-testid="timeline-years"
+                  className={cn(
+                    "mt-1 text-center text-[10px] leading-tight whitespace-nowrap tabular-nums",
+                    isNew ? "font-bold text-[var(--tier-light)]" : "text-parchment/75",
+                  )}
+                >
+                  {formatReign(king) ?? "pověst"}
+                </p>
               </li>
             );
           })}

@@ -60,9 +60,12 @@ export function DailyStanding({ dateKey, onStanding }: { dateKey: string; onStan
           </p>
         )
       ) : (
-        <p className="font-heading text-xl font-bold">
-          <span aria-hidden>🏆 </span>Patřilo by ti {placeText(standing.rank, standing.total)}
-        </p>
+        <>
+          <p className="font-heading text-xl font-bold">
+            <span aria-hidden>🏆 </span>Tvůj výsledek: {placeText(standing.rank, standing.total)}
+          </p>
+          <p className="text-sm text-ink/85">V žebříčku zatím vidět nejsi – stačí si zvolit přezdívku.</p>
+        </>
       )}
       {gap && <p className="text-sm text-ink/85">{gap}</p>}
       {!standing.ranked && (
