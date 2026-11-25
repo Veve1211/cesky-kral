@@ -280,7 +280,12 @@ test("oslava karty s omezeným pohybem: jen jemná záře, bez ohňostroje", asy
   // No sideways scrolling; name and both buttons fully on screen.
   expect(await dialog.evaluate((el) => getComputedStyle(el).overflowX)).toBe("hidden");
   await expect(dialog.getByRole("heading")).toBeInViewport({ ratio: 1 });
-  await dialog.getByRole("button", { name: "Pokračovat" }).scrollIntoViewIfNeeded();
-  await expect(dialog.getByRole("button", { name: "Pokračovat" })).toBeInViewport({ ratio: 1 });
-  await expect(dialog.getByRole("link", { name: "Zobrazit ve sbírce" })).toBeInViewport({ ratio: 1 });
+  // The dialog scrolls (Řeka času under the text); the buttons are the last thing in it.
+  // Portraits in the river may still load and move the buttons – scroll until both are on screen.
+  const link = dialog.getByRole("link", { name: "Zobrazit ve sbírce" });
+  await expect(async () => {
+    await link.scrollIntoViewIfNeeded();
+    await expect(dialog.getByRole("button", { name: "Pokračovat" })).toBeInViewport({ ratio: 1, timeout: 500 });
+    await expect(link).toBeInViewport({ ratio: 1, timeout: 500 });
+  }).toPass({ timeout: 10_000 });
 });
