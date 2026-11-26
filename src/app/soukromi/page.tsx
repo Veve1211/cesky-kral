@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 
 import { CardCorners, OrnamentDivider } from "@/components/ornaments";
+import { umamiConfig } from "@/lib/umami";
 
 export const metadata: Metadata = {
   alternates: { canonical: "/soukromi" },
@@ -14,6 +15,7 @@ const sectionClass = "parchment relative rounded-2xl p-6 sm:p-8";
 const listClass = "flex list-disc flex-col gap-2 pl-5";
 
 export default function PrivacyPage() {
+  const analyticsEnabled = Boolean(umamiConfig());
   return (
     <div className="mx-auto flex max-w-2xl flex-col gap-8">
       <header className="flex flex-col items-center gap-3 text-center">
@@ -66,14 +68,27 @@ export default function PrivacyPage() {
           Co neukládáme
         </h2>
         <ul className={listClass}>
-          <li>Jméno, e-mail, věk ani polohu.</li>
+          <li>{analyticsEnabled ? "Jméno, e-mail, věk ani přesnou polohu." : "Jméno, e-mail, věk ani polohu."}</li>
           <li>
-            IP adresu. Server ji krátce drží jen v paměti jako ochranu před zahlcením a do databáze ji
+            IP adresu. Herní server ji krátce drží jen v paměti jako ochranu před zahlcením a do databáze ji
             nezapisuje.
           </li>
-          <li>Žádné cookies, žádná analytika ani reklama.</li>
+          <li>{analyticsEnabled ? "Žádné cookies ani reklama." : "Žádné cookies, žádná analytika ani reklama."}</li>
         </ul>
       </section>
+
+      {analyticsEnabled && (
+        <section aria-labelledby="analytics-heading" className={sectionClass}>
+          <CardCorners className="m-1 size-8 text-gold-dark" />
+          <h2 id="analytics-heading" className="mb-4 text-3xl font-bold">Návštěvnost webu</h2>
+          <p>
+            Pomocí Umami měříme návštěvy veřejných stránek bez cookies. Posíláme adresu stránky bez
+            parametrů a základní údaje o prohlížeči. Umami může z IP adresy odvodit přibližnou
+            polohu. Identifikátory hráčů, postup ve hře ani odkazy na sdílené erby do statistik
+            neposíláme. Respektujeme nastavení Do Not Track.
+          </p>
+        </section>
+      )}
 
       <section aria-labelledby="school-heading" className={sectionClass}>
         <CardCorners className="m-1 size-8 text-gold-dark" />

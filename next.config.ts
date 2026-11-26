@@ -1,5 +1,6 @@
 import type { NextConfig } from "next";
 
+import { indexNowKey } from "./src/lib/indexnow";
 import { isIndexable } from "./src/lib/site-url";
 
 // Railway serves both environments only over HTTPS and redirects HTTP with 301 (checked
@@ -17,6 +18,12 @@ const nextConfig: NextConfig = {
     // Defaults plus 320 and 480: king cards (~150–275 CSS px) on 1.75–3× screens
     // otherwise jump to 384 or 640 px images.
     imageSizes: [32, 48, 64, 96, 128, 256, 320, 384, 480],
+  },
+  async rewrites() {
+    const key = indexNowKey();
+    return isIndexable() && key
+      ? [{ source: `/${key}.txt`, destination: "/api/indexnow-key" }]
+      : [];
   },
   async headers() {
     return [

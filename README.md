@@ -221,6 +221,20 @@ npm run dev
 
 Hra běží na <http://localhost:3000>.
 
+## Volitelné integrace v produkci
+
+- **Umami.** V produkční službě Railway nastav `UMAMI_SCRIPT_URL` a `UMAMI_WEBSITE_ID`
+  podle skutečného webu v Umami. Znovu nasaď aplikaci a ověř příjem návštěvy v Umami.
+  Bez obou platných hodnot se tracker nenačte. Použij Umami 2.18 nebo novější kvůli
+  filtru odesílaných dat. Tracker měří jen veřejné adresy ze sitemap bez parametrů,
+  fragmentu a referreru. Dobu uchování určuje nastavení instance Umami.
+- **IndexNow.** V produkční službě Railway nastav `INDEXNOW_KEY` pro build i runtime
+  a znovu nasaď aplikaci. Veřejný soubor `/<klíč>.txt` pak vrací právě tento klíč.
+  Po ověření nového produkčního nasazení spusť s týmž klíčem v prostředí
+  `npm run indexnow:submit -- /vyzva`. Místo `/vyzva` uveď skutečně změněné či odstraněné
+  veřejné cesty. Příkaz před odesláním ověří veřejný klíč na produkční doméně.
+  Odesílání se nespouští automaticky při buildu ani na stagingu.
+
 ## Testy (Playwright, E2E)
 
 Testy proklikají hru v prohlížeči jako hráč – na počítači (Desktop Chrome) i na mobilu (iPhone 13).
