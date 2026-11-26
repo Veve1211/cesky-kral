@@ -57,3 +57,11 @@ test("sociální sítě dostanou popis přímo v hlavičce stránky", async ({ r
     expect(head, agent).toContain('property="og:image"');
   }
 });
+
+test("úvodní HTML má ověřovací značky Seznamu a Googlu v hlavičce", async ({ request }) => {
+  const response = await request.get("/", { headers: { "user-agent": "SeznamBot/4.0" } });
+  expect(response.ok()).toBe(true);
+  const head = (await response.text()).match(/<head>[\s\S]*?<\/head>/i)?.[0];
+  expect(head).toContain('<meta name="seznam-wmt" content="ShB4nDb6AEyn2MP1A8LdrapSIgn9KYKQ"');
+  expect(head).toContain('<meta name="google-site-verification" content="aaMHtPCvfHmWkj8NtAzXgA32i6dDhTEyxg4atZH8368"');
+});
