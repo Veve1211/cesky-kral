@@ -15,14 +15,19 @@ import { KingRound } from "@/components/king-round";
 import { CORRECT_TO_COLLECT } from "@/lib/game-rules";
 import { endSentence, formatReign, LEGEND_NOTE } from "@/lib/king-display";
 import { getKingBySlug, getKingCards, kingInitial } from "@/lib/kings";
+import { getKingMeta, kingMetaSlugs } from "@/lib/king-meta";
 import { getKingQuestionPool } from "@/lib/questions";
+
+// Known rulers: the page shell and its <head> metadata are prerendered at build time.
+export function generateStaticParams() {
+  return kingMetaSlugs();
+}
 
 export async function generateMetadata({
   params,
 }: PageProps<"/kral/[slug]">): Promise<Metadata> {
-  await connection();
   const { slug } = await params;
-  const king = await getKingBySlug(slug);
+  const king = getKingMeta(slug);
   if (!king) return { title: "Král nenalezen" };
   // Own preview for sharing a ruler's link (the image is `opengraph-image.tsx`).
   const title = `${king.name} – hra o kartu`;
@@ -31,6 +36,7 @@ export async function generateMetadata({
   return {
     title: king.name,
     description,
+    alternates: { canonical: `/kral/${king.slug}` },
     openGraph: {
       type: "website",
       locale: "cs_CZ",
@@ -130,7 +136,7 @@ async function KingGame({ params }: { params: Promise<{ slug: string }> }) {
 
 function GameSkeleton() {
   return (
-    <div aria-busy="true" aria-label="Načítám hru" className="flex flex-col gap-6">
+    <div role="status" aria-busy="true" aria-label="Načítám hru" className="flex flex-col gap-6">
       <div className="parchment h-72 animate-pulse rounded-2xl" />
       <div className="parchment h-80 animate-pulse rounded-2xl" />
     </div>

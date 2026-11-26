@@ -12,6 +12,7 @@ import { getDailyQuestions } from "@/lib/questions";
 import { LockedPage } from "@/components/locked-page";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/vyzva" },
   title: "Denní výzva",
   description: `Každý den ${DAILY_QUESTIONS} otázek o českých panovnících, pro všechny stejných. Kolik dáš ty?`,
 };
@@ -24,8 +25,12 @@ const RULES = [
 
 function DailyPageContent() {
   return (
-    <div className="mx-auto flex max-w-xl flex-col gap-3 sm:gap-6">
-      <ModeHeader icon="👑" title="Denní výzva">
+    <div className="mx-auto flex max-w-xl flex-col gap-3 sm:gap-6 sm:[@media(max-height:760px)]:gap-3">
+      <ModeHeader
+        icon="👑"
+        title="Denní výzva"
+        className="sm:[@media(max-height:760px)]:gap-2 sm:[@media(max-height:760px)]:py-3"
+      >
         <Suspense fallback={<p className="h-5" />}>
           <DailyDate />
         </Suspense>

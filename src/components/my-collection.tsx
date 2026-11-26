@@ -103,7 +103,7 @@ export function MyCollection({ kings }: { kings: KingSummary[] }) {
 
 export function MyCollectionSkeleton() {
   return (
-    <div aria-busy="true" aria-label="Načítám sbírku" className="flex flex-col gap-10">
+    <div role="status" aria-busy="true" aria-label="Načítám sbírku" className="flex flex-col gap-10">
       <div className="parchment h-28 animate-pulse rounded-2xl" />
       <div className="grid grid-cols-2 gap-4 sm:grid-cols-3">
         {Array.from({ length: 3 }, (_, i) => (

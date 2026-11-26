@@ -4,6 +4,7 @@ import { kings } from "../../prisma/seed-data";
 import { siteUrl } from "@/lib/site-url";
 
 // Public pages only; the personal collection pages (/sbirka, /muj-erb) live in the player's browser.
+// /erb is only a shared-crest link (it needs query parameters; without them it is a 404).
 const PAGES = [
   "/",
   "/jak-hrat",
@@ -13,7 +14,6 @@ const PAGES = [
   "/reka-casu",
   "/kdo-driv",
   "/hod-gros",
-  "/erb",
   "/zebricky",
   "/zdroje",
   "/soukromi",

@@ -7,6 +7,7 @@ import { OrnamentDivider } from "@/components/ornaments";
 import { getKings } from "@/lib/kings";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/sbirka" },
   title: "Moje sbírka",
   description: "Panovníci, které už máš ve sbírce, a ti, kteří ti ještě chybí.",
 };

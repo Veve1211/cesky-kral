@@ -6,6 +6,7 @@ import { CardCorners, OrnamentDivider } from "@/components/ornaments";
 import { KOFI_URL } from "@/lib/kofi";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/hod-gros" },
   title: "Hoď groš",
   description: "Český král je zdarma, bez reklam a bez registrace. Groš pomůže s provozem a dalšími panovníky.",
 };

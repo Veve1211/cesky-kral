@@ -5,6 +5,7 @@ import { CardCorners, OrnamentDivider } from "@/components/ornaments";
 import { fontCredits, imageCredits } from "@/lib/image-credits";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/zdroje" },
   title: "Zdroje",
   description: "Původ a licence obrázků a písem použitých ve hře Český král.",
 };
