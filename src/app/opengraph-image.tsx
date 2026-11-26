@@ -43,7 +43,7 @@ export default async function OpenGraphImage() {
             color: PARCHMENT,
           }}
         >
-          <svg width="120" height="90" viewBox="0 0 48 36">
+          <svg width="144" height="108" viewBox="0 0 48 36">
             <path d="M4 30 L8 10 L17 20 L24 4 L31 20 L40 10 L44 30 Z" fill={GOLD} />
             <rect x="4" y="30" width="40" height="4" rx="1" fill={GOLD} />
             <circle cx="8" cy="9" r="2.5" fill={GOLD} />
@@ -76,7 +76,7 @@ export default async function OpenGraphImage() {
               maxWidth: 900,
             }}
           >
-            Sbírej české panovníky. Odpovídej na otázky a získej jejich karty.
+            Sbírej karty českých panovníků
           </div>
         </div>
       </div>
