@@ -25,8 +25,12 @@ const RULES = [
 
 function DailyPageContent() {
   return (
-    <div className="mx-auto flex max-w-xl flex-col gap-3 sm:gap-6">
-      <ModeHeader icon="👑" title="Denní výzva">
+    <div className="mx-auto flex max-w-xl flex-col gap-3 sm:gap-6 sm:[@media(max-height:760px)]:gap-3">
+      <ModeHeader
+        icon="👑"
+        title="Denní výzva"
+        className="sm:[@media(max-height:760px)]:gap-2 sm:[@media(max-height:760px)]:py-3"
+      >
         <Suspense fallback={<p className="h-5" />}>
           <DailyDate />
         </Suspense>
