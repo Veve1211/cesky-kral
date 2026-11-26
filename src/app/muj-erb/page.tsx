@@ -8,6 +8,7 @@ import { getKingSlugs } from "@/lib/kings";
 import { LockedPage } from "@/components/locked-page";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/muj-erb" },
   title: "Můj erb",
   description: "Navrhni si vlastní erb: tvar štítu, barvy podle heraldických pravidel, figura a heslo.",
 };

@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import { CardCorners, OrnamentDivider } from "@/components/ornaments";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/soukromi" },
   title: "Soukromí",
   description: "Jaké údaje hra Český král ukládá a jaké ne. Bez účtů, bez e-mailu, bez cookies.",
 };

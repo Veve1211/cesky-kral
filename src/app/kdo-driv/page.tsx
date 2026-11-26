@@ -9,6 +9,7 @@ import { pickPair } from "@/lib/who-first";
 import { LockedPage } from "@/components/locked-page";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/kdo-driv" },
   title: "Kdo vládl dřív?",
   description: "Dva panovníci, jedna otázka: kdo z nich začal vládnout dřív? Kolik jich trefíš za sebou?",
 };

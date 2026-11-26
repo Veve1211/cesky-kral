@@ -67,7 +67,7 @@ function fixDesign(design: CrestDesign, counts: CrownCounts): CrestDesign {
  */
 export function CrestEditor({ kingSlugs }: { kingSlugs: string[] }) {
   const ready = useCollectionReady();
-  if (!ready) return <div aria-busy="true" aria-label="Načítám erb" className="parchment h-96 animate-pulse rounded-2xl" />;
+  if (!ready) return <div role="status" aria-busy="true" aria-label="Načítám erb" className="parchment h-96 animate-pulse rounded-2xl" />;
   // Read once: later saves must not reset the editor.
   return <Editor kingSlugs={kingSlugs} initial={readSavedCrest() ?? DEFAULT_CREST} />;
 }

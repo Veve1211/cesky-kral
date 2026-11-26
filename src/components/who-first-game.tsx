@@ -92,7 +92,7 @@ export function WhoFirstGame({
 
   if (!pair) {
     if (variant === "full" && !offline && kings.length >= 2) {
-      return <div aria-busy="true" aria-label="Připravuji dvojici" className="parchment h-72 animate-pulse rounded-2xl" />;
+      return <div role="status" aria-busy="true" aria-label="Připravuji dvojici" className="parchment h-72 animate-pulse rounded-2xl" />;
     }
     return (
       <p className="text-center text-muted-foreground">

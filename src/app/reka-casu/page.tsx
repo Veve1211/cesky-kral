@@ -6,6 +6,7 @@ import { TIMELINE_SIZE } from "@/lib/games";
 import { LockedPage } from "@/components/locked-page";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/reka-casu" },
   title: "Řeka času",
   description: "Seřaď české panovníky podle toho, kdo začal vládnout dřív. Kolik kol dáš bez chyby?",
 };

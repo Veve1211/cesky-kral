@@ -10,6 +10,7 @@ import { getRandomQuestions } from "@/lib/questions";
 import { LockedPage } from "@/components/locked-page";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/rychlovka" },
   title: "Rychlovka",
 };
 

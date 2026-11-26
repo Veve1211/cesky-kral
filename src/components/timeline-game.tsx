@@ -75,7 +75,7 @@ export function TimelineGame() {
   if (game === "offline") {
     return <p className="parchment rounded-2xl p-6 text-center">Řeka času teď nejde hrát. Zkus to prosím za chvíli.</p>;
   }
-  if (!game) return <div aria-busy="true" aria-label="Připravuji panovníky" className="parchment h-96 animate-pulse rounded-2xl" />;
+  if (!game) return <div role="status" aria-busy="true" aria-label="Připravuji panovníky" className="parchment h-96 animate-pulse rounded-2xl" />;
 
   const rulers = slugs.map((slug) => game.rulers.find((r) => r.slug === slug)).filter((r): r is GameRuler => r !== undefined);
   const locked = isPending || feedback !== null;
