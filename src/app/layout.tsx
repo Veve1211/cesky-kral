@@ -5,10 +5,13 @@ import { Grenze_Gotisch, Inter, Uncial_Antiqua } from "next/font/google";
 
 import { OrnamentDivider } from "@/components/ornaments";
 import { SiteHeader } from "@/components/site-header";
+import { UmamiAnalytics } from "@/components/umami-analytics";
 import "./globals.css";
 import { siteUrl } from "@/lib/site-url";
 import { REVEAL_SCRIPT } from "@/lib/reveal";
 import { SITE_DESCRIPTION, SITE_NAME } from "@/lib/structured-data";
+import { umamiConfig } from "@/lib/umami";
+import sitemap from "./sitemap";
 
 // Keep preloads, but avoid late font swaps after the page has painted on a slow network.
 // latin-ext subset = Czech diacritics (ř, ě, š, č, ů ...)
@@ -73,6 +76,7 @@ export const viewport: Viewport = {
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
+  const analytics = umamiConfig();
   return (
     <html
       lang="cs"
@@ -86,6 +90,12 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <script dangerouslySetInnerHTML={{ __html: REVEAL_SCRIPT }} />
       </head>
       <body className="flex min-h-full flex-col overflow-x-hidden">
+        {analytics && (
+          <UmamiAnalytics
+            {...analytics}
+            publicPaths={sitemap().map(({ url }) => new URL(url).pathname)}
+          />
+        )}
         <SiteHeader />
         {/* min-h-dvh: the footer starts below the fold, so client-rendered content never pushes it (CLS). */}
         <main className="mx-auto min-h-dvh w-full max-w-5xl flex-1 px-4 py-8 sm:py-12">
