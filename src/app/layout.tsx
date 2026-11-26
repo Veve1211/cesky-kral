@@ -83,6 +83,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       suppressHydrationWarning
     >
       <head>
+        <meta name="seznam-wmt" content="ShB4nDb6AEyn2MP1A8LdrapSIgn9KYKQ" />
         {/* Progressive reveal of game modes (src/lib/reveal.ts): a constant script, no user data. */}
         <script dangerouslySetInnerHTML={{ __html: REVEAL_SCRIPT }} />
       </head>
